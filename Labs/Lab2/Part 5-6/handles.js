@@ -32,6 +32,10 @@ module.exports = {
               {
                 res.write("Bonjour, je m'appelle Marc et je suis un collaborateur de cette petite application. <br/>Celle-ci est creee dans le cadre du cours de Technologies Web a l'ECE Paris.")
               }
+              else if (params['name'] === "Olivier")
+              {
+                res.write("Bonjour, je m'appelle Olivier et je suis un collaborateur de cette petite application. <br/>Celle-ci est creee dans le cadre du cours de Technologies Web a l'ECE Paris.")
+              }
               else if (params['name'])
               {
                 res.write("Bonjour " + params['name'])
