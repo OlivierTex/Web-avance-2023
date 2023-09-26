@@ -12,8 +12,6 @@ const content = '<!DOCTYPE html>' +
 '    </body>' +
 '</html>'
 
-const handles = require('./handles')
-
 const express = require('express')
 const app = express()
 
