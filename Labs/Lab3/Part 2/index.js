@@ -51,7 +51,20 @@ app.get('/articles/:articleId/comments', (req, res) => {
     res.json(comments);
   });
 
-app.post('/articles/:articleId/comments', (req, res) => {   // potentiellement à debug - probleme au moment du test 
+
+
+  /*
+ potentiellement à debug - probleme au moment du test 
+
+ - fix sur la requête à bien encadrer avec les guillemets, exemple : 
+ 
+ curl -X POST -H "Content-Type: application/json" -d "{
+  \"content\": \"Nouveau commentaire sur l'article\",
+  \"author\": \"Prénom Nom\"
+}" http://localhost:8080/articles/6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b/comments
+
+  */
+app.post('/articles/:articleId/comments', (req, res) => {   
     const articleId = req.params.articleId;
     const newComment = {
       id: uuidv4(),
