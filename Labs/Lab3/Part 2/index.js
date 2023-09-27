@@ -1,6 +1,5 @@
 // ./index.js
 
-// Define a string constant concatenating strings
 const content = '<!DOCTYPE html>' +
 '<html>' +
 '    <head>' +
@@ -13,24 +12,68 @@ const content = '<!DOCTYPE html>' +
 '</html>'
 
 const express = require('express')
+const { v4: uuidv4 } = require('uuid');
+
 const app = express()
+
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 
 app.set('port', 8080)
 
 const db = require('./dbClient')
 
-app.get('/hello', function (req, res) {
-    res.send("Vous pouvez visiter : <br/> -> /hello/SaisirUnNom pour dire bonjour a la personne <br/> -> /hello/SaisirNomAuteur pour avoir plus d'informations sur l'auteur")
- })
+app.get('/articles', (req, res) => {
+    res.json(db.articles);
+  });
+  
+app.post('/articles', (req, res) => {
+    const newArticle = req.body;
+    newArticle.id = uuidv4();
+    db.articles.push(newArticle);
+    res.status(201).json(newArticle);
+  });
 
+app.get('/articles/:articleId', (req, res) => {
+    const articleId = req.params.articleId;
+    const article = db.articles.find((article) => article.id === articleId);
+    if (article) {
+      res.json(article);
+    } else {
+      res.status(404).json({ message: 'Article not found' });
+    }
+  });
 
-app.get('/hello/:name', function (req, res) {
-    if (req.params.name === 'Greg')
-        res.send("Bonjour, je m'appelle Greg et je suis l'auteur de cette petite application. <br/>Celle-ci est creee dans le cadre du cours de Technologies Web a l'ECE Paris.")
-    else
-        res.send("Hello " + req.params.name)
-})
+app.get('/articles/:articleId/comments', (req, res) => {
+    const articleId = req.params.articleId;
+    const comments = db.comments.filter((comment) => comment.articleId === articleId);
+    res.json(comments);
+  });
 
+app.post('/articles/:articleId/comments', (req, res) => {   // potentiellement à debug - probleme au moment du test 
+    const articleId = req.params.articleId;
+    const newComment = {
+      id: uuidv4(),
+      timestamp: Date.now(),
+      content: req.body.content,
+      articleId,
+      author: req.body.author,
+    };
+    db.comments.push(newComment);
+    res.status(201).json(newComment);
+  });
+  
+app.get('/articles/:articleId/comments/:commentId', (req, res) => {
+    const articleId = req.params.articleId;
+    const commentId = req.params.commentId;
+    const comment = db.comments.find((comment) => comment.id === commentId && comment.articleId === articleId);
+    if (comment) {
+      res.json(comment);
+    } else {
+      res.status(404).json({ message: 'Comment not found' });
+    }
+});
 
 app.listen(
   app.get('port'), 
