@@ -12,10 +12,26 @@ const content = '<!DOCTYPE html>' +
 '    </body>' +
 '</html>'
 
-const http = require('http')
-const handles = require('./handles')
+const express = require('express')
+const app = express()
 
-http
-.createServer(handles.serverHandle)
-.listen(8080)
+app.set('port', 8080)
 
+
+app.get('/hello', function (req, res) {
+    res.send("Vous pouvez visiter : <br/> -> /hello/SaisirUnNom pour dire bonjour a la personne <br/> -> /hello/SaisirNomAuteur pour avoir plus d'informations sur l'auteur")
+ })
+
+
+app.get('/hello/:name', function (req, res) {
+    if (req.params.name === 'Greg')
+        res.send("Bonjour, je m'appelle Greg et je suis l'auteur de cette petite application. <br/>Celle-ci est creee dans le cadre du cours de Technologies Web a l'ECE Paris.")
+    else
+        res.send("Hello " + req.params.name)
+})
+
+
+app.listen(
+  app.get('port'), 
+  () => console.log(`server listening on ${app.get('port')}`)
+)
