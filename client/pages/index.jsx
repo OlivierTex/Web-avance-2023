@@ -1,21 +1,15 @@
-import Link from 'next/link'
- 
+import Layout from '../components/layout'
+import Navigation from '../components/navigation'
+
 function Home() {
   return (
-    <ul>
-      <li>
-        <Link href="/">Home</Link>
-      </li>
-      <li>
-        <Link href="/about">About</Link>
-      </li>
-      <li>
-        <Link href="/contacts">Contacts</Link>
-      </li>
-      <li>
-        <Link href="/articles">Articles</Link>
-      </li>
-    </ul>
+    <Layout>
+      <h1>Bienvenue</h1>
+      {
+        <Navigation/>
+      }
+    </Layout>
+    
   )
 }
  
