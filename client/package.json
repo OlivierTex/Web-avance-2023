@@ -1,4 +1,12 @@
 {
+  "name": "client-lab4",
+  "version":"1.0.0",
+  "description": "Getting started with React and Next.js",
+  "url": "http://localhost:3000/",
+  "author": "Greg - Olivier - Marc",
+  "license": "ISC",
+  
+  
   "dependencies": {
     "next": "^13.5.4",
     "react": "^18.2.0",
