@@ -5,15 +5,15 @@
   <ol>
     <li>
       <a href="#participant">Participant</a>
-      <ul>
-        <li><a href="#testing">Testing</a></li>
-      </ul>
     </li>
     <li>
-      <a href="#back-end">Back End</a>
+        <a href="#testing">Testing</a>
     </li>
     <li>
-        <a href="#front-end">Front end</a>
+      <a href="#server">Server</a>
+    </li>
+    <li>
+        <a href="#client">Client</a>
     </li>
   </ol>
 </details>
@@ -47,13 +47,13 @@ http://localhost:3000
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Back-end 
+## Server 
 
 We use node.js
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Front-end 
+## Client 
 
 We're using next.js as the Framework for and jsx/js for programming and tailwind CSS.
 
