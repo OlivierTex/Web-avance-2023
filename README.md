@@ -4,7 +4,10 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#participant">Participant</a>
+      <a href="#participants">Participants</a>
+    </li>
+    <li>
+        <a href="#progress">Progress</a>
     </li>
     <li>
         <a href="#testing">Testing</a>
@@ -18,10 +21,19 @@
   </ol>
 </details>
 
-## Participant 
+## Participants 
 
-Olivier TEXIER, Marc HAM-CHOU-CHONG et Greg DEMIRDJIAN
+Olivier TEXIER:
+Marc HAM-CHOU-CHONG:
+Greg DEMIRDJIAN:
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Progress
+
+In this section you'll find the parts/labs that work. Currently we have up to lab5 working. 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Testing 
 
