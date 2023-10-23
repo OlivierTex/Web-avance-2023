@@ -23,15 +23,22 @@
 
 ## Participants 
 
-Olivier TEXIER:
-Marc HAM-CHOU-CHONG:
-Greg DEMIRDJIAN:
+Olivier TEXIER : olivier.texier@edu.ece.fr  
+Marc HAM-CHOU-CHONG : marc.hamchouchong@edu.ece.fr  
+Greg DEMIRDJIAN : greg.demirdjian@edu.ece.fr
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Progress
 
-In this section you'll find the parts/labs that work. Currently we have up to lab5 working. 
+In this section, we'll explain what stage our project has reached.  
+  
+At this point, we've integrated the first six labs and they're all up and running.
+  - The first three labs form the server section. 
+  - The rest are on the client side and are still being developed.
+
+
+Our latest addition is the use of SSG to generate the articles pages.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -61,13 +68,13 @@ http://localhost:3000
 
 ## Server 
 
-We use node.js
+We use Node.js.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Client 
 
-We're using next.js as the Framework for and jsx/js for programming and tailwind CSS.
+We're using React together with Next.js and tailwind CSS.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
