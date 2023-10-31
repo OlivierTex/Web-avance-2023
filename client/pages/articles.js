@@ -24,13 +24,13 @@ export default function Articles(articles) {
   }, []);
 
   return (
-    <div className='bg-gray-500'> 
+    <div>
       <Layout>
-        <h1 className="wt-title">Articles<br /><br /></h1>
-        <ul>
+        <h1 className="text-3xl text-center mt-8">Articles</h1>
+        <ul className="mt-8">
           {articlesData.map((article) => (
-            <li key={article.id}>
-              <Link className='italic font-bold text-2xl text-blue-900 underline' href={`/articles/${article.id}`}>
+            <li key={article.id} className="text-center">
+              <Link className="text-blue-900 hover:underline" href={`/articles/${article.id}`}>
                 {article.title}
               </Link>
             </li>
