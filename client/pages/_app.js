@@ -3,7 +3,7 @@ import '../styles/globals.css';
 
 function App({ Component, pageProps }) {
   return (
-    <div className="block h-full bg-zinc-200">
+    <div className="block h-full bg-custom3">
       <Layout>
         <Component {...pageProps} />
       </Layout>
