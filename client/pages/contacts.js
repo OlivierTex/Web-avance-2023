@@ -1,8 +1,6 @@
-import Layout from '../components/layout';
-
 export default function Contacts() {
   return (
-    <Layout>
+    <div>
       <h1 className="text-3xl text-center mt-8">Contacts</h1>
 
       <form className="mt-8">
@@ -40,6 +38,6 @@ export default function Contacts() {
         <p className="text-lg">Téléphone : +33 X XX XX XX XX</p>
         <p className="text-lg">Email : xxx@xxx.com</p>
       </div>
-    </Layout>
+    </div>
   );
 }

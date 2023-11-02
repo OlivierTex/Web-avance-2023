@@ -1,8 +1,13 @@
+import Layout from '../components/layout';
 import '../styles/globals.css';
 
 function App({ Component, pageProps }) {
   return (
-      <Component {...pageProps} />
+    <div className="block h-full bg-zinc-200">
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </div>
   );
 }
 
