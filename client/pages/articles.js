@@ -39,7 +39,7 @@ export default function Articles(articles) {
             </button>        
           </div>
         </div>
-        <div className="w-11/12 mx-auto">
+        <div className="w-4/5 mx-auto">
         <div className="flex flex-wrap justify-center mt-8 gap-y-4">
           {articlesData.map((article) => (
             <div key={article.id} className={`${getClassName(articlesPerRow)} px-2 aspect-[1]`}>
