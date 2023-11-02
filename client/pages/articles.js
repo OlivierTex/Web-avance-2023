@@ -32,8 +32,8 @@ export default function Articles(articles) {
             {articlesData.map((article) => (
               <div key={article.id} className={`p-4 ${articlesPerRow === 2 ? 'w-1/2': articlesPerRow === 4 ? 'w-1/4': 'w-1/6'}`}>
                 <Link href={`/articles/${article.id}`}>
-                  <div className="block h-full bg-neutral-50 border border-gray-300 p-2 hover:bg-zinc-400">
-                  <img src={article.image} alt={article.title} className="w-full object-cover"/>
+                  <div className="block h-full relative group bg-neutral-50 border border-gray-300 p-2">
+                  <img src={article.image} alt={article.title} className="w-full object-cover transition duration-300 transform group-hover:scale-110"/>
                   </div>
                 </Link>
               </div>

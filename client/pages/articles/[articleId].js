@@ -10,7 +10,7 @@ const Article = () => {
   const article = articles.find((a) => a.id === parseInt(articleId));
 
   return (
-    <Layout>
+    <div>
       {article ? (
         <div>
           <h1>Article {article.id}</h1>
@@ -20,7 +20,7 @@ const Article = () => {
       ) : (
         <p>Article not found</p>
       )}
-    </Layout>
+    </div>
   );
 };
 
