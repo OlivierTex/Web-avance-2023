@@ -1,6 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    font-family: Inter;
+  }
+}
 
 .wt-title {
     @apply text-3xl font-bold underline mb-10;
@@ -11,5 +20,5 @@
   }
   
   .nav-link:hover {
-    @apply text-blue-500 underline;
+    @apply text-custom4 underline;
   }

@@ -26,18 +26,14 @@ export default function Contacts() {
       <div className="text-center mt-8 text-custom5">
         <p className="text-lg">Contacts :</p>
         <br />
-        - Greg Demirdjian
+        greg.demirdjian@edu.ece.fr
         <br />
-        - Marc Hamchouchong
+        marc.hamchouchong@edu.ece.fr
         <br />
-        - Olivier Texier
+        olivier.texier@edu.ece.fr
       </div>
 
-      <div className="text-custom5 text-center mt-8">
-        <p className="text-lg">Adresse : XXX Rue de XXXX, 75000 Paris</p>
-        <p className="text-lg">Téléphone : +33 X XX XX XX XX</p>
-        <p className="text-lg">Email : xxx@xxx.com</p>
-      </div>
+
     </div>
   );
 }
