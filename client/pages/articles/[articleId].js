@@ -37,9 +37,9 @@ const Article = () => {
   return (
     <div className={isImageFullscreen ? 'h-screen overflow-hidden' : 'min-h-screen'}>
       {article ? (
-        <div className={isImageFullscreen ? 'hidden' : 'max-w-3xl mx-auto py-8'}>
+        <div className={isImageFullscreen ? 'hidden' : 'w-3/5 mx-auto py-8'}>
           <h1 className="text-3xl text-custom5 font-bold text-center mb-4">{article.title}</h1>
-          <img className="w-full h-auto object-cover mx-auto max-w-full max-h-screen mb-4 cursor-pointer" src={article.image} onClick={toggleFullscreen}/>
+          <img className="w-auto h-auto object-cover mx-auto max-h-screen mb-4 cursor-pointer border-4 border-custom1" src={article.image} onClick={toggleFullscreen}/>
           <div className="text-center text-custom5 mb-4">
             <p>By :{' '} <a href={article.linkToPP} target="_blank" rel="noopener noreferrer" className="text-custom5 underline hover:text-custom4">{article.author}</a></p>
             <p className="text-custom5">Catégorie : {article.tag}</p>
@@ -58,6 +58,7 @@ const Article = () => {
       )}
     </div>
   );
+  
 };
 
 
