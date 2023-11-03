@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
 
 @tailwind base;
 @tailwind components;
@@ -11,7 +9,41 @@
   }
 }
 
-.wt-title {
+:root{
+    --ecriture:#f1f1f1;
+    --background:#262626; 
+}
+
+
+
+  .header{
+    background-color: var(--background);
+    @apply p-4 h-20
+  }
+
+  .body{
+    background-color: var(--background);
+  }
+
+  .navigation{
+    background-color: var(--background);
+    @apply  p-4 flex flex-col items-center
+  }
+
+  .footer{
+    background-color: var(--background);
+    @apply p-4 text-center
+  }
+
+  .h1{
+    @apply text-3xl text-center text-custom5 mt-8;
+  }
+
+  .paragraphe{
+    @apply text-lg text-center text-custom5 mt-4;
+  }
+
+  .wt-title {
     @apply text-3xl font-bold underline mb-10;
   }
 
@@ -22,3 +54,8 @@
   .nav-link:hover {
     @apply text-custom4 underline;
   }
+
+  .bouton-sumbit {
+  @apply bg-custom5 text-white p-2 mt-4 hover:bg-custom4 transition-all duration-300 rounded-md
+  }
+  
