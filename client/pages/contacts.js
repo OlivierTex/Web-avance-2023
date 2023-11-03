@@ -1,6 +1,6 @@
 export default function Contacts() {
   return (
-    <div>
+    <div className={`bg-light dark:bg-dark`}>
       <h1 className="h1">Contacts</h1>
 
       <form className="mt-8">
@@ -17,7 +17,7 @@ export default function Contacts() {
 
         <button
           type="submit"bg
-          className="bouton-sumbit"
+          className="bg-custom5 text-white p-2 mt-4 hover:bg-custom4 transition-all duration-300 rounded-md"
         >
           Envoyer
         </button>
