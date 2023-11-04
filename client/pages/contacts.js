@@ -17,14 +17,14 @@ export default function Contacts() {
 
         <button
           type="submit"bg
-          className="bg-custom5 text-white p-2 mt-4 hover:bg-custom4 transition-all duration-300 rounded-md"
+          className="bouton-sumbit "
         >
           Envoyer
         </button>
       </form>
 
-      <div className="text-center mt-8 text-custom5">
-        <p className="text-lg">Contacts :</p>
+      <div className="paragraphe">
+        <p className="paragraphe">Contacts :</p>
         <br />
         greg.demirdjian@edu.ece.fr
         <br />

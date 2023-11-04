@@ -14,15 +14,15 @@
 }
 
 .h1{
-  @apply text-3xl text-center mt-8;
+  @apply text-3xl text-center mt-8 dark:text-white;
 }
 
 .h2{
-  @apply mt-6 text-3xl font-bold text-gray-900;
+  @apply mt-6 text-3xl font-bold text-gray-900 dark:text-white;
 }
 
 .paragraphe{
-  @apply text-lg text-center mt-4;
+  @apply text-lg text-center mt-4 dark:text-white;
 }
 
 .bouton-sumbit {
@@ -34,9 +34,9 @@
 }
 
 .nav-link{
-  @apply w-32 text-center text-lg font-medium px-3 py-2 rounded-md;
+  @apply w-32 text-center text-lg font-medium px-3 py-2 rounded-md dark:text-white;
 }
 
 .footer-link{
-  @apply mx-2;
+  @apply mx-2 dark:text-white;
 }

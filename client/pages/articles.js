@@ -25,7 +25,7 @@ export default function Articles() {
   return (
     <div className={`bg-light dark:bg-dark`}>
       <div className="mb-8">
-        <h1 className="text-custom5 text-3xl text-center mt-8">Catalogue photos</h1>
+        <h1 className="h1">Catalogue photos</h1>
         <div className="flex justify-end mt-4 space-x-4 w-11/12">
           <div className="scale-75">
             <button onClick={() => handleArticlesPerRowChange(2)} className={`${articlesPerRow === 2 ? 'border border-custom5 bg-custom4' : 'bg-custom3'} px-4 py-2 rounded-md`}>

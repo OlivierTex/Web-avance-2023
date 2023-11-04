@@ -45,9 +45,9 @@ function Bank() {
 
   return (
     <div className="bg-light dark:bg-dark">
-      <h1 className="text-center text-2xl font-bold my-4">Banque d'image</h1>
-      <p className="text-center text-lg mb-4">Découvrez notre sélection de photos de haute qualité.</p>
-
+      <h1 className="h1">Banque d'image</h1>
+      <p className="paragraphe">Découvrez notre sélection de photos de haute qualité.</p>
+      <br></br>
       <form onSubmit={handleSearch} className="flex justify-center mb-4">
         <input
           type="search"
