@@ -11,7 +11,8 @@ module.exports = {
     extend: {
       colors: {
         light: '#f1f1f1',
-        dark: '#262626',
+        dark: '#243447',
+        'custom-blue': '#243c5a',
       },
       fontFamily: {
         'custom': ['Inter', 'sans-serif'],

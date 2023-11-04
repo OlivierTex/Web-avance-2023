@@ -16,3 +16,27 @@
 .h1{
   @apply text-3xl text-center mt-8;
 }
+
+.h2{
+  @apply mt-6 text-3xl font-bold text-gray-900;
+}
+
+.paragraphe{
+  @apply text-lg text-center mt-4;
+}
+
+.bouton-sumbit {
+  @apply bg-gray-800 text-white px-4 py-2 rounded-md;
+}
+
+.barre-de-recherche{
+  @apply  max-w-md mx-auto bg-white rounded-lg shadow-md;
+}
+
+.nav-link{
+  @apply w-32 text-center text-lg font-medium px-3 py-2 rounded-md;
+}
+
+.footer-link{
+  @apply mx-2;
+}

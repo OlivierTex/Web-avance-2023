@@ -14,10 +14,15 @@ export default function DarkModeToggle() {
 
   return (
     <button
-      className="bg-gray-800 text-white px-4 py-2 rounded-md"
-      onClick={toggleDarkMode}
-    >
-      {isDarkMode ? 'Activer le Mode Clair' : 'Activer le Mode Sombre'}
-    </button>
+    className="bg-gray-800 text-white px-4 py-2 rounded-md flex items-center justify-center"
+    onClick={toggleDarkMode}
+  >
+    {isDarkMode ? (
+      <img src="/public/images/sun-regular.svg" alt="Activer le Mode Clair" />
+    ) : (
+      <img src="/public/images/moon-regular.svg" alt="Activer le Mode Sombre" />
+    )}
+  </button>
+  
   );
 }
