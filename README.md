@@ -64,11 +64,11 @@ Once the application is launched, you can access it through any search engine pa
 
 http://localhost:3000
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 You can also visit the site by clicking on the link :
 
 https://ece-webtech-602-ce7143o40-oliviertexs-projects.vercel.app/
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Server 
 
