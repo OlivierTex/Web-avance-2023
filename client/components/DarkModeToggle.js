@@ -18,9 +18,9 @@ export default function DarkModeToggle() {
     onClick={toggleDarkMode}
   >
     {isDarkMode ? (
-      <img src="/public/images/sun-regular.svg" alt="Activer le Mode Clair" />
+      <img src="/images/sun-regular.svg" alt="Activer le Mode Clair" className="w-8 h-8"/>
     ) : (
-      <img src="/public/images/moon-regular.svg" alt="Activer le Mode Sombre" />
+      <img src="/images/moon-regular.svg" alt="Activer le Mode Sombre"className="w-8 h-8"/>
     )}
   </button>
   
