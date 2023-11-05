@@ -37,8 +37,14 @@ At this point, we've integrated the first six labs and they're all up and runnin
   - The first three labs form the server section. 
   - The rest are on the client side and are still being developed.
 
+Our latest additions include : 
+- Adding styles with tailwind css.
+- Using SSG to generate article pages.
+- Using the state component.
+- Retrieving images from an image bank with an API.  
 
-Our latest addition is the use of SSG to generate the articles pages.
+You can check the latest deployment here : [ece-webtech-602.vercel.app](https://ece-webtech-602.vercel.app)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -63,10 +69,6 @@ npm run dev
 Once the application is launched, you can access it through any search engine parsing the following :
 
 http://localhost:3000
-
-You can also visit the site by clicking on the link :
-
-[ece-webtech-602.vercel.app](https://ece-webtech-602.vercel.app)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
