@@ -2,34 +2,24 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Bank() {
-  const [searchTerm, setSearchTerm] = useState(''); 
-  const [images, setImages] = useState([]); 
-  const [randomImages, setRandomImages] = useState([]); 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [images, setImages] = useState([]);
+  const [randomImages, setRandomImages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const apiKey = '2vzVSb3MiYTutC5TeAiwIn8rGEZBoyhbbBws2jTY4bZq34GJhY8vOz5U'; 
+  const itemsPerPage = 16;
 
   useEffect(() => {
-    const getRandomImages = async () => {
-      const randomApiUrl = 'https://api.pexels.com/v1/curated?per_page=16'; 
+    loadImages(currentPage);
+  }, [currentPage]);
 
-      try {
-        const response = await axios.get(randomApiUrl, {
-          headers: {
-            Authorization: apiKey,
-          },
-        });
+  const loadImages = async (page) => {
+    const baseUrl = 'https://api.pexels.com/v1/';
+    const apiUrl = searchTerm === ''
+      ? `${baseUrl}curated?per_page=${itemsPerPage}&page=${page}`
+      : `${baseUrl}search?query=${searchTerm}&per_page=${itemsPerPage}&page=${page}`;
 
-        setRandomImages(response.data.photos);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    getRandomImages(); 
-  }, []); 
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    const apiUrl = `https://api.pexels.com/v1/search?query=${searchTerm}&per_page=16`; 
     try {
       const response = await axios.get(apiUrl, {
         headers: {
@@ -37,10 +27,26 @@ function Bank() {
         },
       });
 
-      setImages(response.data.photos); 
+      if (searchTerm === '') {
+        setRandomImages(response.data.photos);
+      } else {
+        setImages(response.data.photos);
+      }
+
+      setTotalPages(Math.ceil(response.data.total_results / itemsPerPage));
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    setCurrentPage(1); 
+    loadImages(1);
+  };
+
+  const handlePageClick = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -49,7 +55,7 @@ function Bank() {
       <p className="paragraphe">Découvrez notre sélection de photos de haute qualité.</p>
       <br></br>
       <form onSubmit={handleSearch} className="flex justify-center mb-4">
-        <select id="infoSelect" name="infos" onchange="reloadPageWithSelection()">
+      <select id="infoSelect" name="infos" onchange="reloadPageWithSelection()">
           <option value="info1">Mise en avant</option>
           <option value="info2">Like : Odre croissant</option>
           <option value="info3">Like : Odre décroissant</option>
@@ -65,10 +71,7 @@ function Bank() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button
-          type="submit"
-          className="bg-gray-800 text-white px-4 py-2 rounded-md ml-4"
-        >
+        <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-md ml-4">
           Rechercher
         </button>
       </form>
@@ -85,6 +88,19 @@ function Bank() {
             ))
           )}
         </div>
+      </div>
+
+      <div className="flex justify-center items-center mt-4">
+        {Array.from({ length: 5 }, (_, index) => index + 1).map(pageNumber => (
+          <button
+            key={pageNumber}
+            onClick={() => handlePageClick(pageNumber)}
+            disabled={currentPage === pageNumber}
+            className={`mx-1 px-3 py-1 border rounded ${currentPage === pageNumber ? 'bg-blue-500 text-white' : 'bg-white'}`}
+          >
+            {pageNumber}
+          </button>
+        ))}
       </div>
     </div>
   );
