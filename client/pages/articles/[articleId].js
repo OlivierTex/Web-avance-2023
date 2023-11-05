@@ -2,12 +2,8 @@ import { useRouter } from 'next/router';
 import articles from '../../data/data';
 import { useState, useEffect } from 'react';
 
-const Article = () => {
+const Article = ({ article }) => {
   const router = useRouter();
-  const { articleId } = router.query;
-
-  // Trouver l'article correspondant à l'articleId dans les données
-  const article = articles.find((a) => a.id === parseInt(articleId));
 
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
 
@@ -61,5 +57,23 @@ const Article = () => {
   
 };
 
+export async function getStaticPaths() {
+  const paths = articles.map((article) => ({
+    params: { articleId: article.id.toString() },
+  }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  const articleId = parseInt(params.articleId);
+  const article = articles.find((a) => a.id === articleId);
+
+  return {
+    props: {
+      article,
+    },
+  };
+}
 
 export default Article;
