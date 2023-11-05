@@ -23,14 +23,14 @@ export default function Contacts() {
         </button>
       </form>
 
-      <div className="paragraphe">
-        <p className="paragraphe">Contacts :</p>
+      <div className="paragraph">
+        <p className="paragraph">Contacts :</p>
         <br />
-        greg.demirdjian@edu.ece.fr
+        greg.demirdjian@edu.ece.fr <a href="https://www.linkedin.com/in/olivier-texier-898828222/" className="nav-link">linkedin</a>
         <br />
-        marc.hamchouchong@edu.ece.fr
+        marc.hamchouchong@edu.ece.fr <a href="https://www.linkedin.com/in/olivier-texier-898828222/" className="nav-link">linkedin</a>
         <br />
-        olivier.texier@edu.ece.fr
+        olivier.texier@edu.ece.fr  <a href="https://www.linkedin.com/in/olivier-texier-898828222/" className="nav-link">linkedin</a>
       </div>
 
 

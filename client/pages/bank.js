@@ -49,10 +49,17 @@ function Bank() {
       <p className="paragraphe">Découvrez notre sélection de photos de haute qualité.</p>
       <br></br>
       <form onSubmit={handleSearch} className="flex justify-center mb-4">
+        <select id="infoSelect" name="infos" onchange="reloadPageWithSelection()">
+          <option value="info1">Mise en avant</option>
+          <option value="info2">Like : Odre croissant</option>
+          <option value="info3">Like : Odre décroissant</option>
+          <option value="info4">Commentaire : Odre croissant</option>
+          <option value="info5">Commentaire : Odre décroissant</option>
+        </select>
         <input
           type="search"
           id="default-search"
-          className="block p-4 pl-10 w-1/2 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          className="block p-4 pl-10 w-1/2 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white ml-4"
           placeholder="Search Mockups, Logos..."
           required
           value={searchTerm}
