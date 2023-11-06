@@ -1,4 +1,3 @@
-// login.js
 import React, { useState } from 'react';
 import Link from 'next/link';
 
@@ -8,9 +7,9 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    // Ici, vous pouvez intégrer la logique de connexion ou appeler une fonction API.
+   
     console.log('Login credentials', { email, password });
-    // À remplacer par votre logique de connexion
+   
   };
 
   return (

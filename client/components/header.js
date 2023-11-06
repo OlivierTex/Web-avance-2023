@@ -20,7 +20,7 @@ const Header = () => {
           <Link href="/contacts" className="nav-link">Contacts</Link>
         </nav>
         <br></br>
-        <div class="w-full border-b-2 border-black"></div>
+        <div className="w-full border-b-2 border-black"></div>
       </header>
     </div>
   );

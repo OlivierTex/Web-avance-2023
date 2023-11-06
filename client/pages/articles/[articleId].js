@@ -20,13 +20,13 @@ const Article = ({ article }) => {
   useEffect(() => {
     if (isImageFullscreen) {
       document.addEventListener('click', handleOutsideClick);
-      document.body.style.overflow = 'hidden'; //désactiver la barre de scroll
+      document.body.style.overflow = 'hidden'; 
     } else {
-      document.body.style.overflow = 'auto'; //réactiver la barre de scroll
+      document.body.style.overflow = 'auto'; 
     }
     return () => {
       document.removeEventListener('click', handleOutsideClick);
-      document.body.style.overflow = 'auto'; //réactiver la barre de scroll
+      document.body.style.overflow = 'auto'; 
     };
   }, [isImageFullscreen]);
 

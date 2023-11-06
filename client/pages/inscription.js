@@ -6,9 +6,9 @@ const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    // Ici, vous pouvez intégrer la logique d'inscription ou appeler une fonction API.
+   
     console.log('Signup credentials', { email, password });
-    // À remplacer par votre logique d'inscription
+    
   };
 
   return (
