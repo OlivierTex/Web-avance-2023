@@ -72,8 +72,8 @@ function Bank() {
   const DefaultView = () => {
     return (
       <div className="container mx-auto">
-      <div className={`grid grid-cols-1 ${imagesPerRow === 2 ? 'sm:grid-cols-2' : ''} ${imagesPerRow === 4 ? 'md:grid-cols-4' : ''} ${imagesPerRow === 6 ? 'xl:grid-cols-6' : ''} gap-4`}>
-        {(searchTerm === '' ? randomImages : images).map((image) => (
+    <div className={`grid grid-cols-1 ${imagesPerRow === 2 ? 'sm:grid-cols-2' : ''} ${imagesPerRow === 4 ? 'md:grid-cols-4' : ''} ${imagesPerRow === 6 ? 'grid-cols-6' : ''} gap-4`}>
+    {(searchTerm === '' ? randomImages : images).map((image) => (
           <Link key={image.id} href={`/ID/${image.id}`} passHref> {}
             <img src={image.src.medium} alt={image.alt} className="rounded-md shadow-lg cursor-pointer" /> {}
           </Link>
