@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 
 function Bank() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -8,7 +9,9 @@ function Bank() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const apiKey = '2vzVSb3MiYTutC5TeAiwIn8rGEZBoyhbbBws2jTY4bZq34GJhY8vOz5U'; 
-  const itemsPerPage = 16;
+  const itemsPerPage = 30;
+  const [imagesPerRow, setImagesPerRow] = useState(4);
+  const [viewMode, setViewMode] = useState('default');
 
   useEffect(() => {
     loadImages(currentPage);
@@ -39,6 +42,19 @@ function Bank() {
     }
   };
 
+  const getClassName = (count) => {
+    switch (count) {
+      case 2:
+        return 'w-6/12';
+      case 4:
+        return 'w-3/12';
+      case 6:
+        return 'w-2/12';
+      default:
+        return 'w-3/12';
+    }
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     setCurrentPage(1);
@@ -49,12 +65,56 @@ function Bank() {
     setCurrentPage(pageNumber);
   };
 
+  const handleImagesPerRowChange = (num) => {
+    setImagesPerRow(num);
+  };
+
+  const DefaultView = () => {
+    return (
+      <div className="container mx-auto">
+      <div className={`grid grid-cols-1 ${imagesPerRow === 2 ? 'sm:grid-cols-2' : ''} ${imagesPerRow === 4 ? 'md:grid-cols-4' : ''} ${imagesPerRow === 6 ? 'xl:grid-cols-6' : ''} gap-4`}>
+        {(searchTerm === '' ? randomImages : images).map((image) => (
+          <Link key={image.id} href={`/ID/${image.id}`} passHref> {}
+            <img src={image.src.medium} alt={image.alt} className="rounded-md shadow-lg cursor-pointer" /> {}
+          </Link>
+        ))}
+      </div>
+    </div>
+    );
+  };
+
+  const GridView = () => {
+    return (
+      <div className="w-4/5 mx-auto">
+        <div className="flex flex-wrap justify-center mt-8 gap-y-4">
+          {(searchTerm === '' ? randomImages : images).map((image) => (
+            <div key={image.id} className={`${getClassName(imagesPerRow)} px-2 aspect-[1]`}>
+               <Link key={image.id} href={`/ID/${image.id}`} passHref>
+                <div className="block h-full relative group bg-custom4 border border-custom1 p-1 overflow-hidden cursor-pointer">
+                  <img src={image.src.medium} className="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110" alt={image.alt} />
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="bg-light dark:bg-dark">
       <h1 className="h1">Banque d'image</h1>
       <p className="paragraphe">Découvrez notre sélection de photos de haute qualité.</p>
+      
       <form onSubmit={handleSearch} className="flex justify-center mb-4">
-        <select id="infoSelect" name="infos" onchange="reloadPageWithSelection()">
+        <select 
+          id="infoSelect" 
+          name="infos" 
+          className="select-css" 
+          /*onChange={(e) => {
+            // Logique pour gérer le changement de sélection, si nécessaire
+          }}*/
+        >
           <option value="info1">Mise en avant</option>
           <option value="info2">Like : Odre croissant</option>
           <option value="info3">Like : Odre décroissant</option>
@@ -64,25 +124,41 @@ function Bank() {
         <input
           type="search"
           id="default-search"
-          className="block p-4 pl-10 w-1/2 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white ml-4"
+          className="block p-4 pl-10 w-1/2 text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white ml-4"
           placeholder="Search Mockups, Logos..."
           required
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-md ml-4">
+        <button type="submit" className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4">
           Rechercher
         </button>
-      </form>
-
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {(searchTerm === '' ? randomImages : images).map((image) => (
-            <img key={image.id} src={image.src.medium} alt={image.alt} className="rounded-md shadow-lg"/>
-          ))}
+        <div className=" ml-4">
+          <button onClick={() => handleImagesPerRowChange(2)} className={`${imagesPerRow === 2 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md`}>
+            <img src="/images/layout-1-64.svg"  className="w-10 h-10"/>
+          </button>
+          <button onClick={() => handleImagesPerRowChange(4)} className={`${imagesPerRow === 4 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md ml-2`}>
+            <img src="/images/layout-2-64.svg" className="w-10 h-10" />
+          </button>
+          <button onClick={() => handleImagesPerRowChange(6)} className={`${imagesPerRow === 6 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md ml-2`}>
+            <img src="/images/layout-3-64.svg" className="w-10 h-10"  />
+          </button>
         </div>
+      </form>
+  
+      <div className="container mx-auto">
+        <div className="flex justify-center mb-4">
+          <button onClick={() => setViewMode('default')} className={`px-4 py-2 rounded-md ${viewMode === 'default' ? 'bg-gray-300' : ''}`}>
+            Default View
+          </button>
+          <button onClick={() => setViewMode('grid')} className={`px-4 py-2 rounded-md ml-2 ${viewMode === 'grid' ? 'bg-gray-300' : ''}`}>
+            Grid View
+          </button>
+        </div>
+        {viewMode === 'default' ? <DefaultView /> : <GridView />}
       </div>
-            <br></br><br></br>
+  
+          <br></br><br></br>
       <div className="flex justify-center mb-4">
         <ul className="inline-flex -space-x-px text-sm">
           <li>
@@ -122,6 +198,7 @@ function Bank() {
       </div>
     </div>
   );
+  
 }
 
 export default Bank;
