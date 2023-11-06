@@ -21,13 +21,13 @@
   </ol>
 </details>
 
+
 ## Participants 
 
 Olivier TEXIER : olivier.texier@edu.ece.fr  
 Marc HAM-CHOU-CHONG : marc.hamchouchong@edu.ece.fr  
 Greg DEMIRDJIAN : greg.demirdjian@edu.ece.fr
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Progress
 
@@ -45,8 +45,6 @@ Our latest additions include :
 
 You can check the latest deployment here : [ece-webtech-602.vercel.app](https://ece-webtech-602.vercel.app)
 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Testing 
 
@@ -70,17 +68,14 @@ Once the application is launched, you can access it through any search engine pa
 
 http://localhost:3000
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Server 
 
 We use Node.js.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Client 
 
 We're using React together with Next.js and tailwind CSS.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
