@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getAPIKey, getAPIBaseURL } from '../../API/API_pexels';
 
 const ImageDetail = () => {
   const router = useRouter();
@@ -12,8 +13,9 @@ const ImageDetail = () => {
     if (!router.isReady) return;
 
     const fetchImageDetails = async () => {
-      const apiKey = '2vzVSb3MiYTutC5TeAiwIn8rGEZBoyhbbBws2jTY4bZq34GJhY8vOz5U'; 
-      const url = `https://api.pexels.com/v1/photos/${id}`;
+      const apiKey = getAPIKey(); 
+      const baseUrl = getAPIBaseURL();
+      const url = `${baseUrl}photos/${id}`;
 
       try {
         const response = await axios.get(url, {
