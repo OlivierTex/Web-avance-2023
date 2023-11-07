@@ -1,5 +1,5 @@
-/*
-function isAuthenticated() {
+
+function isAuthenticated() {/*
     return localStorage.getItem('userToken') ? true : false;
   }
   
@@ -26,6 +26,6 @@ function isAuthenticated() {
       }
     } else {
       window.location.href = '/login';
-    }
-  }*/
+    }*/
+  }
   
