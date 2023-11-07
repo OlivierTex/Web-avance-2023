@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import { getAPIKey, getAPIBaseURL } from '../API/API_request';
 
 function Bank() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -8,8 +9,8 @@ function Bank() {
   const [randomImages, setRandomImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const apiKey = '2vzVSb3MiYTutC5TeAiwIn8rGEZBoyhbbBws2jTY4bZq34GJhY8vOz5U'; 
-  const itemsPerPage = 30;
+  const apiKey = getAPIKey();
+  const itemsPerPage = 24;
   const [imagesPerRow, setImagesPerRow] = useState(4);
   const [viewMode, setViewMode] = useState('default');
 
@@ -18,7 +19,7 @@ function Bank() {
   }, [currentPage]);
 
   const loadImages = async (page) => {
-    const baseUrl = 'https://api.pexels.com/v1/';
+    const baseUrl = getAPIBaseURL();
     const apiUrl = searchTerm === ''
       ? `${baseUrl}curated?per_page=${itemsPerPage}&page=${page}`
       : `${baseUrl}search?query=${searchTerm}&per_page=${itemsPerPage}&page=${page}`;
@@ -71,15 +72,15 @@ function Bank() {
 
   const DefaultView = () => {
     return (
-      <div className="container mx-auto">
-    <div className={`grid grid-cols-1 ${imagesPerRow === 2 ? 'sm:grid-cols-2' : ''} ${imagesPerRow === 4 ? 'md:grid-cols-4' : ''} ${imagesPerRow === 6 ? 'grid-cols-6' : ''} gap-4`}>
-    {(searchTerm === '' ? randomImages : images).map((image) => (
-          <Link key={image.id} href={`/ID/${image.id}`} passHref> {}
-            <img src={image.src.medium} alt={image.alt} className="rounded-md shadow-lg cursor-pointer" /> {}
-          </Link>
-        ))}
+      <div className="w-4/5 mx-auto">
+        <div className={`grid grid-cols-1 ${imagesPerRow === 2 ? 'sm:grid-cols-2' : ''} ${imagesPerRow === 4 ? 'md:grid-cols-4' : ''} ${imagesPerRow === 6 ? 'grid-cols-6' : ''} gap-4`}>
+        {(searchTerm === '' ? randomImages : images).map((image) => (
+              <Link key={image.id} href={`/ID/${image.id}`} passHref> {}
+                <img src={image.src.medium}  className="rounded-md shadow-lg cursor-pointer transition-transform duration-500 transform hover:scale-110" alt={image.alt} /> {}
+              </Link>
+          ))}
+        </div>
       </div>
-    </div>
     );
   };
 
@@ -105,12 +106,12 @@ function Bank() {
     <div className="bg-light dark:bg-dark">
       <h1 className="h1">Banque d'image</h1>
       <p className="paragraphe">Découvrez notre sélection de photos de haute qualité.</p>
-      
-      <form onSubmit={handleSearch} className="flex justify-center mb-4">
+      <br></br>
+      <form onSubmit={handleSearch} className="flex justify-center mb-4 dropdown rounded-md">
         <select 
           id="infoSelect" 
           name="infos" 
-          className="select-css" 
+          className="rounded-md" 
           /*onChange={(e) => {
             // Logique pour gérer le changement de sélection, si nécessaire
           }}*/
@@ -145,6 +146,7 @@ function Bank() {
           </button>
         </div>
       </form>
+      <br></br>
   
       <div className="container mx-auto">
         <div className="flex justify-center mb-4">
