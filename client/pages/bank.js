@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import { getAPIKey, getAPIBaseURL } from '../API/API_request';
+import { getAPIKey, getAPIBaseURL } from '../API/API_pexels';
 
 function Bank() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -69,30 +69,45 @@ function Bank() {
   const handleImagesPerRowChange = (num) => {
     setImagesPerRow(num);
   };
-
   const DefaultView = () => {
     return (
       <div className="w-4/5 mx-auto">
-        <div className={`grid grid-cols-1 ${imagesPerRow === 2 ? 'sm:grid-cols-2' : ''} ${imagesPerRow === 4 ? 'md:grid-cols-4' : ''} ${imagesPerRow === 6 ? 'grid-cols-6' : ''} gap-4`}>
-        {(searchTerm === '' ? randomImages : images).map((image) => (
-              <Link key={image.id} href={`/ID/${image.id}`} passHref> {}
-                <img src={image.src.medium}  className="rounded-md shadow-lg cursor-pointer transition-transform duration-500 transform hover:scale-110" alt={image.alt} /> {}
-              </Link>
+        <br></br><br></br>
+        <div className={`grid grid-cols-1 ${imagesPerRow === 2 ? 'sm:grid-cols-2' : ''} ${imagesPerRow === 4 ? 'md:grid-cols-4' : ''} ${imagesPerRow === 6 ? 'grid-cols-6' : ''} gap-4 place-items-center`}>
+          {(searchTerm === '' ? randomImages : images).map((image) => (
+            <Link key={image.id} href={`/ID/${image.id}`} passHref>
+              <img 
+                src={image.src.medium} 
+                srcSet={`${image.src.small} 640w, ${image.src.medium} 1280w, ${image.src.large} 1920w`}
+                sizes="(max-width: 640px) 640px, (max-width: 768px) 1280px, 1920px"
+                className="rounded-md shadow-lg cursor-pointer transition-transform duration-500 transform hover:scale-105" 
+                alt={image.alt} 
+              />
+            </Link>
           ))}
         </div>
       </div>
     );
   };
-
+  
+  
   const GridView = () => {
     return (
       <div className="w-4/5 mx-auto">
         <div className="flex flex-wrap justify-center mt-8 gap-y-4">
           {(searchTerm === '' ? randomImages : images).map((image) => (
             <div key={image.id} className={`${getClassName(imagesPerRow)} px-2 aspect-[1]`}>
-               <Link key={image.id} href={`/ID/${image.id}`} passHref>
+              <Link href={`/ID/${image.id}`} passHref>
                 <div className="block h-full relative group bg-custom4 border border-custom1 p-1 overflow-hidden cursor-pointer">
-                  <img src={image.src.medium} className="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110" alt={image.alt} />
+                  <img 
+                    src={image.src.medium} 
+                    srcSet={`${image.src.small} 640w, 
+                            ${image.src.medium} 1280w, 
+                            ${image.src.large} 1920w`}
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+                    className="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110" 
+                    alt={image.alt} 
+                  />
                 </div>
               </Link>
             </div>
@@ -107,49 +122,51 @@ function Bank() {
       <h1 className="h1">Banque d'image</h1>
       <p className="paragraphe">Découvrez notre sélection de photos de haute qualité.</p>
       <br></br>
-      <form onSubmit={handleSearch} className="flex justify-center mb-4 dropdown rounded-md">
-        <select 
-          id="infoSelect" 
-          name="infos" 
-          className="rounded-md" 
-          /*onChange={(e) => {
-            // Logique pour gérer le changement de sélection, si nécessaire
-          }}*/
-        >
-          <option value="info1">Mise en avant</option>
-          <option value="info2">Like : Odre croissant</option>
-          <option value="info3">Like : Odre décroissant</option>
-          <option value="info4">Commentaire : Odre croissant</option>
-          <option value="info5">Commentaire : Odre décroissant</option>
-        </select>
-        <input
-          type="search"
-          id="default-search"
-          className="block p-4 pl-10 w-1/2 text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white ml-4"
-          placeholder="Search Mockups, Logos..."
-          required
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button type="submit" className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4">
-          Rechercher
-        </button>
-        <div className=" ml-4">
-          <button onClick={() => handleImagesPerRowChange(2)} className={`${imagesPerRow === 2 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md`}>
-            <img src="/images/layout-1-64.svg"  className="w-10 h-10"/>
+      <div className="w-4/5 mx-auto">
+        <form onSubmit={handleSearch} className="flex justify-center mb-2 dropdown rounded-md">
+          <select 
+            id="infoSelect" 
+            name="infos" 
+            className="rounded-md" 
+            /*onChange={(e) => {
+              // Logique pour gérer le changement de sélection, si nécessaire
+            }}*/
+          >
+            <option value="info1">Mise en avant</option>
+            <option value="info2">Like : Odre croissant</option>
+            <option value="info3">Like : Odre décroissant</option>
+            <option value="info4">Commentaire : Odre croissant</option>
+            <option value="info5">Commentaire : Odre décroissant</option>
+          </select>
+          <input
+            type="search"
+            id="default-search"
+            className="block p-4 pl-10 w-1/3 text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white ml-4"
+            placeholder="Search Mockups, Logos..."
+            required
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button type="submit" className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4">
+            Rechercher
           </button>
-          <button onClick={() => handleImagesPerRowChange(4)} className={`${imagesPerRow === 4 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md ml-2`}>
-            <img src="/images/layout-2-64.svg" className="w-10 h-10" />
-          </button>
-          <button onClick={() => handleImagesPerRowChange(6)} className={`${imagesPerRow === 6 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md ml-2`}>
-            <img src="/images/layout-3-64.svg" className="w-10 h-10"  />
-          </button>
-        </div>
-      </form>
-      <br></br>
+          <div className=" ml-4">
+            <button onClick={() => handleImagesPerRowChange(2)} className={`${imagesPerRow === 2 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md`}>
+              <img src="/images/layout-1-64.svg"  className="w-8 h-8"/>
+            </button>
+            <button onClick={() => handleImagesPerRowChange(4)} className={`${imagesPerRow === 4 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md ml-2`}>
+              <img src="/images/layout-2-64.svg" className="w-8 h-8" />
+            </button>
+            <button onClick={() => handleImagesPerRowChange(6)} className={`${imagesPerRow === 6 ? 'border border-gray-800 bg-gray-200' : 'bg-gray-100'} px-4 py-2 rounded-md ml-2`}>
+              <img src="/images/layout-3-64.svg" className="w-8 h-8"  />
+            </button>
+          </div>
+        </form>
+      </div>
+      <br></br><br></br>
   
-      <div className="container mx-auto">
-        <div className="flex justify-center mb-4">
+      <div className="container mx-auto ">
+        <div className="flex justify-center mb-4 ">
           <button onClick={() => setViewMode('default')} className={`px-4 py-2 rounded-md ${viewMode === 'default' ? 'bg-gray-300' : ''}`}>
             Default View
           </button>
