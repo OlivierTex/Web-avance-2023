@@ -13,7 +13,7 @@ const ImageDetail = () => {
     if (!router.isReady) return;
 
     const fetchImageDetails = async () => {
-      const apiKey = getAPIKey(); 
+      const apiKey = getAPIKey();
       const baseUrl = getAPIBaseURL();
       const url = `${baseUrl}photos/${id}`;
 
@@ -56,16 +56,26 @@ const ImageDetail = () => {
     setIsImageFullscreen(!isImageFullscreen);
   };
 
-  const handleDownload = (url, filename) => {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.style.display = 'none';
+  const handleDownload = async (url, filename) => {
+    try {
+      const response = await axios.get(url, {
+        responseType: 'blob', 
+      });
 
-    document.body.appendChild(link);
-    link.click();
+      const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
 
-    document.body.removeChild(link);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', filename);
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Error during image download', error);
+    }
   };
 
   if (!imageDetails) {
@@ -73,62 +83,58 @@ const ImageDetail = () => {
   }
 
   return (
-    <div>
-      <div className="container mx-auto p-4">
-        <div className="h-screen flex flex-col items-center justify-center">
-          <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
-          <p><strong>Image Name:</strong> {imageDetails.alt}</p>
-          <br></br>
-          <div 
-            onClick={toggleFullscreen} 
-            className="cursor-pointer"
-          >
-            <img src={imageDetails.src.original} alt={imageDetails.alt} className="w-auto h-auto object-cover mx-auto max-h-screen mb-4 cursor-pointer border-4 border-custom1" />
-          </div>
-          <div className="text-center">
-            <p><strong>Photographer:</strong> {imageDetails.photographer}</p>
-            <p><strong>Photographer URL:</strong> <a href={imageDetails.photographer_url} target="_blank" rel="noreferrer">{imageDetails.photographer_url}</a></p>
-            <p><strong>Image URL:</strong> <a href={imageDetails.url} target="_blank" rel="noreferrer">{imageDetails.url}</a></p>
-            <p><strong>Dimensions:</strong> {imageDetails.width} x {imageDetails.height}</p>
-          </div>
-          <br></br>
+      <div className="body">
+        <br></br>
+          <div className="relative">
+          <p className="text-center"><strong>Image Name:</strong> {imageDetails.alt}</p>
           <button 
             onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="absolute top-0 right-0 bg-gray-800 text-white px-2 py-1 rounded-md text-xs"
           >
             Download Image
           </button>
-          
-        </div>
-        <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
-      </div>
-  
-      {isImageFullscreen && (
-        <div 
-          className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 flex justify-center items-center" 
-          onClick={toggleFullscreen} 
-        >
-          <div className="relative">
+          </div>
+             <br></br>
+          <div onClick={toggleFullscreen} className="cursor-pointer">
             <img 
               src={imageDetails.src.original} 
               alt={imageDetails.alt} 
-              className="h-screen mx-auto" 
+              className="w-auto h-auto object-cover mx-auto max-h-screen mb-4 cursor-pointer border-4 border-custom1" 
             />
-            <button 
-              onClick={(e) => {
-                e.stopPropagation(); 
-                toggleFullscreen();
-              }} 
-              className="absolute top-4 right-4 text-white text-3xl focus:outline-none"
-            >
-              ×
-            </button>
           </div>
-        </div>
-      )}
-    </div>
+          <div className="space-y-2 text-center">
+            <p>Photographer: {imageDetails.photographer}</p>
+            <p>Photographer <a href={imageDetails.photographer_url} target="_blank" rel="noreferrer">{imageDetails.photographer_url}</a></p>
+            <p>Image URL: <a href={imageDetails.url} target="_blank" rel="noreferrer">{imageDetails.url}</a></p>
+            <p>Dimensions: {imageDetails.width} x {imageDetails.height}</p>
+          </div>
+          <br></br>
+       
+        {isImageFullscreen && (
+          <div 
+            className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 flex justify-center items-center" 
+            onClick={toggleFullscreen} 
+          >
+            <div className="relative">
+              <img 
+                src={imageDetails.src.original} 
+                alt={imageDetails.alt} 
+                className="h-screen mx-auto" 
+              />
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation(); 
+                  toggleFullscreen();
+                }} 
+                className="absolute top-4 right-4 text-white text-3xl focus:outline-none"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
   );
-  
 };
 
 export default ImageDetail;
