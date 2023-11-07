@@ -101,10 +101,6 @@ function Bank() {
                 <div className="block h-full relative group bg-custom4 border border-custom1 p-1 overflow-hidden cursor-pointer">
                   <img 
                     src={image.src.medium} 
-                    srcSet={`${image.src.small} 640w, 
-                            ${image.src.medium} 1280w, 
-                            ${image.src.large} 1920w`}
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
                     className="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110" 
                     alt={image.alt} 
                   />
