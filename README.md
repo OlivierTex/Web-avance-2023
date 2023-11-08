@@ -73,9 +73,10 @@ http://localhost:3000
 
 We use Node.js.
 
+README du [server](server/README.md)  
 
 ## Client 
 
 We're using React together with Next.js and tailwind CSS.
 
-
+README du [client](client/README.md)  
