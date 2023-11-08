@@ -1,10 +1,11 @@
-# Lab: getting started with React and Next.js
+# WebApp with Next and React
 
-We are using React and Next together to create a simple web application, a blogging website with dummy data for now. 
+We are using React and Next together to create a simple web application, an image bank using APIs to fetch data and images.  
+Also we use tailwind css to style our pages.
 
 ## Prerequisites
 
-This lab requires to have installed Node.js
+This App requires to have installed Node.js
 
 ## Installing dependencies
 

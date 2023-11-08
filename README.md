@@ -50,14 +50,9 @@ You can check the latest deployment here : [ece-webtech-602.vercel.app](https://
 
 You can test it using the following command while in the directory :
 
-Update librairy : 
 ```bash
  npm install 
 ```
-or : 
-```bash
-npm update 
- ```
 
 Server launch :
 ```bash
