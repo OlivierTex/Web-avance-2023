@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../supabase';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 export default function Admin() {
+  const router = useRouter();
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState('all');
   const [username, setUsername] = useState('');
@@ -62,10 +65,20 @@ export default function Admin() {
       console.error('Une erreur s\'est produite lors de l\'inscription:', error.message);
     }
   };
+
+  const deconnecterUtilisateur = () => {
+    Cookies.remove('mon_cookie_auth');  
+    router.push('/login');
+  };
+
+
   
   return (
     <div className={`bg-light dark:bg-dark`}>
       <h1 className="h1">Compte Admin</h1>
+      <div>
+      <button onClick={deconnecterUtilisateur} className="text-blue-600 hover:text-blue-900 ml-4">Se déconnecter</button>
+    </div>
       <div className="p">
        Ajout utilisateur
       </div>

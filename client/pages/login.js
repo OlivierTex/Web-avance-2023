@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Cookies from 'js-cookie';
 import { supabase } from '../supabase';
 import { useRouter } from 'next/router';
 
@@ -27,17 +28,21 @@ const Login = () => {
 
       if (data.length > 0) {
         const user = data[0];
+        const userId = user.id;
         const userType = user.type_compte;
+
+        Cookies.set('mon_cookie_auth', 'connecte', { path: '/' });
+        Cookies.set('userId', userId, { path: '/' });
+        Cookies.set('userType', userType, { path: '/' });
 
         console.log('Avant la redirection');
         if (userType === 'user') {
-          await  router.push(`/utilisateur/${user.id}`);
+          await router.push(`/utilisateur/${userId}`);
           console.log('log user !');
-        }
-        else if (userType === 'admin') {
-          await  router.push(`/admin/${user.id}`);
+        } else if (userType === 'admin') {
+          await router.push(`/admin/${userId}`);
           console.log('log admin!');
-        } 
+        }
         console.log('Après la redirection');
       } else {
         setErrorMessage('Adresse e-mail ou mot de passe incorrect.');
@@ -99,7 +104,7 @@ const Login = () => {
           </div>
           <div className="mt-6">
             <Link href="/inscription" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                Inscription
+              Inscription
             </Link>
           </div>
         </div>
