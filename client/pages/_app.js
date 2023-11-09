@@ -1,15 +1,18 @@
 import Layout from '../components/layout';
 import '../styles/globals.css';
+import { AuthProvider } from '../components/authcontex';
 
 function App({ Component, pageProps }) {
   return (
-    <div className={`bg-light dark:bg-dark`}>
-    <div className="body">
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </div>
-    </div>
+    <AuthProvider>
+      <div className={`bg-light dark:bg-dark`}>
+        <div className="body">
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </div>
+      </div>
+    </AuthProvider>
   );
 }
 

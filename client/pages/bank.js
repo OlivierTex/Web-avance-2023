@@ -125,15 +125,11 @@ function Bank() {
             id="infoSelect" 
             name="infos" 
             className="rounded-md" 
-            /*onChange={(e) => {
-              // Logique pour gérer le changement de sélection, si nécessaire
-            }}*/
           >
-            <option value="info1">Mise en avant</option>
-            <option value="info2">Like : Odre croissant</option>
-            <option value="info3">Like : Odre décroissant</option>
+            <option value="info1">Recommandé </option>
+            <option value="info2">Mise en avant</option>
+            <option value="info3">Like : Odre croissant</option>
             <option value="info4">Commentaire : Odre croissant</option>
-            <option value="info5">Commentaire : Odre décroissant</option>
           </select>
           <input
             type="search"

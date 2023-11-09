@@ -10,7 +10,7 @@ const Header = () => {
           <a  className="name-site">ImageHive</a>
           <div className="flex justify-end space-x-2">
             <Link href="/login" className="bg-gray-800 text-white px-4 py-2 rounded-md">Login</Link>
-            <Link href="/compte" className="bg-gray-800 text-white px-4 py-2 rounded-md">Compte</Link>
+            <Link href="/dashboard/user" className="bg-gray-800 text-white px-4 py-2 rounded-md">Compte</Link>
           </div>
         </div>
         <br></br>

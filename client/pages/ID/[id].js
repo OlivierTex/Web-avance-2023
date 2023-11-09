@@ -118,17 +118,14 @@ const ImageDetail = () => {
   return (
     <div className="body">
       <div className="relative">
-        <p className="text-center">
+        <p className="text-center my-5">
           <strong>Image Name:</strong> {imageDetails.alt}
         </p>
-        <button
-          onClick={() =>
-            handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)
-          }
-          className="download-button absolute top-0 right-0 bg-gray-800 text-white px-2 py-1 rounded-md text-xs"
-        >
-          Download Image
-        </button>
+        <div className="flex justify-end space-x-2">
+          <button className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2 "> Like </button>
+          <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)}
+          className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
+        </div>
       </div>
       <div onClick={() => setIsImageFullscreen(!isImageFullscreen)} className="cursor-pointer">
         <img
@@ -155,6 +152,29 @@ const ImageDetail = () => {
           Dimensions: {imageDetails.width} x {imageDetails.height}
         </p>
       </div>
+      <div className="max-w-md mx-auto bg-white rounded-md overflow-hidden shadow-md ">
+          <div className="p-4">
+            <h2 className="text-xl font-semibold mb-2">Commentaires</h2>
+
+            <div className="mb-4">
+              <div className="flex items-center mb-2">
+                <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">A</div>
+                <div className="ml-2 font-semibold">Utilisateur 1</div>
+              </div>
+              <p className="text-gray-700">Ceci est le premier commentaire.</p>
+            </div>
+
+            <div className="mb-4">
+              <div className="flex items-center mb-2">
+                <div className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold">B</div>
+                <div className="ml-2 font-semibold">Utilisateur 2</div>
+              </div>
+              <p className="text-gray-700">Voici un autre commentaire.</p>
+            </div>
+
+          </div>
+        </div>
+
       {isImageFullscreen && (
         <div
           className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 flex justify-center items-center"
