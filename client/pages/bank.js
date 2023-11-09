@@ -89,6 +89,8 @@ function Bank() {
       </div>
     );
   };
+
+  
   
   
   const GridView = () => {

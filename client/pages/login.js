@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '../supabase';
 import { useRouter } from 'next/router';
-import { useAuth } from '../components/authcontex';
 
 const Login = () => {
   const router = useRouter();
-  const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -31,13 +29,16 @@ const Login = () => {
         const user = data[0];
         const userType = user.type_compte;
 
-        if (userType === 'admin') {
-          router.push(`/dashboard/${user.id}`); // Utiliser les backticks (`) pour la template string
-        } else if (userType === 'user') {
-          router.push(`/dashboard/${user.id}`); // Utiliser les backticks (`) pour la template string
-        } else {
-          setErrorMessage('Type de compte non reconnu.');
+        console.log('Avant la redirection');
+        if (userType === 'user') {
+          await  router.push(`/utilisateur/${user.id}`);
+          console.log('log user !');
         }
+        else if (userType === 'admin') {
+          await  router.push(`/admin/${user.id}`);
+          console.log('log admin!');
+        } 
+        console.log('Après la redirection');
       } else {
         setErrorMessage('Adresse e-mail ou mot de passe incorrect.');
       }
