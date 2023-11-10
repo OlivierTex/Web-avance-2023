@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getAPIKey, getAPIBaseURL } from '../../API/API_pexels';
 import supabase from '../../supabase';
+import Cookies from 'js-cookie';
 
 const ImageDetail = () => {
   const router = useRouter();
@@ -115,6 +116,57 @@ const ImageDetail = () => {
     return <div>Loading...</div>;
   }
 
+    const ajouter_favorie = async (e) => {
+      try {
+        const userIdCookie = Cookies.get('userId');
+        const IDimages=imageDetails.id;
+    
+        if (!userIdCookie) {
+          console.error('User not logged in');
+          return;
+        }
+    
+        const { data, error } = await supabase
+          .from('favoris')
+          .insert([
+            { like_boolean: true, id_user: userIdCookie, id_images: IDimages },
+          ]);
+    
+        if (error) {
+          throw error;
+        }
+    
+      } catch (error) {
+        console.error('Error adding favorite:', error.message);
+      }
+    };
+    
+  
+
+  const handleDislike = async () => {
+    try {
+      const userIdCookie = Cookies.get('userId');
+  
+      if (!userIdCookie) {
+        console.error('User not logged in');
+        return;
+      }
+  
+      const { data, error } = await supabase
+        .from('favoris')
+        .update([
+          { like_boolean: fasle },
+        ]);
+  
+      if (error) {
+        throw error;
+      }
+      console.log('Image disliked!',data);
+    } catch (error) {
+      console.error('Error disliking image:', error);
+    }
+  };
+
   return (
     <div className="body">
       <div className="relative">
@@ -122,9 +174,10 @@ const ImageDetail = () => {
           <strong>Image Name:</strong> {imageDetails.alt}
         </p>
         <div className="flex justify-end space-x-2">
-          <button className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2 "> Like </button>
+          <button onClick={ajouter_favorie} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2 ">Like</button> 
+          <button onClick={handleDislike} className="bg-red-500 text-white px-4 py-2 rounded-md ml-2">Dislike</button>  
           <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)}
-          className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
+            className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
         </div>
       </div>
       <div onClick={() => setIsImageFullscreen(!isImageFullscreen)} className="cursor-pointer">
@@ -174,7 +227,7 @@ const ImageDetail = () => {
 
           </div>
         </div>
-
+      
       {isImageFullscreen && (
         <div
           className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 flex justify-center items-center"
