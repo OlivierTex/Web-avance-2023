@@ -121,8 +121,7 @@ const ImageDetail = () => {
   const ajouter_favorie = async () => {
     try {
       const userIdCookie = Cookies.get('userId');
-      const IDimages = imageDetails.src.original; // Correction ici, remplacement de imageDetails.scr.original par imageDetails.src.original
-  
+      const IDimages = imageDetails.src.original; 
 
       if (!userIdCookie) {
         console.error('User not logged in');
@@ -182,6 +181,73 @@ const ImageDetail = () => {
       console.error('Error disliking image:', error);
     }
   };
+
+  const fetchComments = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('commentaire')
+        .select('*')
+        .eq('id_image', id);
+
+      if (error) {
+        console.error('Error fetching comments:', error);
+      } else {
+        setComments(data);
+      }
+    } catch (error) {
+      console.error('Error in fetchComments:', error);
+    }
+  };
+
+  const addComment = async (newComment) => {
+    try {
+      const userIdCookie = Cookies.get('userId');
+  
+      if (!userIdCookie) {
+        console.error('User not logged in');
+        return;
+      }
+  
+      const { error } = await supabase
+        .from('commentaire')
+        .insert([
+          {
+            id: supabase.auth.user().id, 
+            commentaire: newComment,
+            id_user: userIdCookie,
+            id_image: id,
+            url_image: imageDetails.src.original, 
+          },
+        ]);
+  
+      if (error) {
+        console.error('Error adding comment:', error);
+      } else {
+        console.log('Comment added successfully!');
+        fetchComments(); 
+      }
+    } catch (error) {
+      console.error('Error in addComment:', error);
+    }
+  };
+  
+  const deleteComment = async (commentId) => {
+    try {
+      const { error } = await supabase
+        .from('commentaire')
+        .delete()
+        .eq('id', commentId);
+  
+      if (error) {
+        console.error('Error deleting comment:', error);
+      } else {
+        console.log('Comment deleted successfully!');
+        fetchComments(); 
+      }
+    } catch (error) {
+      console.error('Error in deleteComment:', error);
+    }
+  };
   
   
 
@@ -223,28 +289,7 @@ const ImageDetail = () => {
           Dimensions: {imageDetails.width} x {imageDetails.height}
         </p>
       </div>
-      <div className="max-w-md mx-auto bg-white rounded-md overflow-hidden shadow-md ">
-          <div className="p-4">
-            <h2 className="text-xl font-semibold mb-2">Commentaires</h2>
 
-            <div className="mb-4">
-              <div className="flex items-center mb-2">
-                <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">A</div>
-                <div className="ml-2 font-semibold">Utilisateur 1</div>
-              </div>
-              <p className="text-gray-700">Ceci est le premier commentaire.</p>
-            </div>
-
-            <div className="mb-4">
-              <div className="flex items-center mb-2">
-                <div className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold">B</div>
-                <div className="ml-2 font-semibold">Utilisateur 2</div>
-              </div>
-              <p className="text-gray-700">Voici un autre commentaire.</p>
-            </div>
-
-          </div>
-        </div>
       
       {isImageFullscreen && (
         <div

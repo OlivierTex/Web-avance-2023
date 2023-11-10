@@ -8,6 +8,7 @@ const Utilisateur = () => {
   const router = useRouter();
   const [images, setImages] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
+  const itemsPerPage = 10;
 
   const userIdCookie = Cookies.get('userId');
 
@@ -16,17 +17,17 @@ const Utilisateur = () => {
       if (userIdCookie) {
         const { data: userFavorites, error } = await supabase
           .from('favoris')
-          .select('url_images')
-          .select('api_image_id')
+          .select('url_images, api_image_id') 
           .filter('id_user', 'eq', userIdCookie);
 
         if (!error) {
           const favoriteImages = userFavorites.map((favorite, index) => ({
-            api_image_id: favorite.api_image_id, // Utilisez le champ correct ici
+            id: index,
             src: favorite.url_images,
             alt: `Favorite Image ${index}`,
+            api_image_id: favorite.api_image_id, 
           }));
-  
+
           setImages(favoriteImages);
           setTotalPages(Math.ceil(favoriteImages.length / itemsPerPage));
         }
@@ -55,22 +56,26 @@ const Utilisateur = () => {
       <button onClick={deconnecterUtilisateur} className="text-blue-600 hover:text-blue-900 ml-4">
         Se déconnecter
       </button>
-      <div className="p">Compte utilisateur</div>
-      <div className="w-4/5 mx-auto">
-        <div className="flex flex-wrap justify-center mt-8 gap-y-4">
+      <div className="p">Compte utilisateur</div><br></br>
+      <div className="p">Image liké</div>
+      <div className="flex flex-wrap justify-center mt-8 gap-y-4">
+        <div className="w-1/5 mx-auto">
           {images.map((image) => (
-            <Link key={image.api_image_id} href={`../ID/${image.api_image_id}`} passHref>
+            <Link key={image.api_image_id} href={`/ID/${image.api_image_id}`} passHref>
               <img
+                key={image.id}
                 src={image.src}
-                className="rounded-md shadow-lg cursor-pointer transition-transform duration-500 transform hover:scale-105"
+                className="rounded-md shadow-lg cursor-pointer transition-transform duration-500 transform hover:scale-105 m-2"
                 alt={image.alt}
               />
             </Link>
           ))}
         </div>
       </div>
+      <div className="p">commentaire</div>
     </div>
   );
 };
+
 
 export default Utilisateur;
