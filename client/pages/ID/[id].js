@@ -11,7 +11,7 @@ const ImageDetail = () => {
   const [imageDetails, setImageDetails] = useState(null);
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
 
-  const addImageToDatabase = async (apiImageId) => {
+  const addImageToDatabase = async (apiImageId, imageUrl) => {
     try {
       const { data: selectData, error: selectError } = await supabase
         .from('images')
@@ -23,9 +23,9 @@ const ImageDetail = () => {
         console.log('ID non trouvé. Ajout d\'une nouvelle entrée dans la table.');
         const { error: insertError } = await supabase
           .from('images')
-          .insert([{ api_image_id: apiImageId, views: 1 }]);
+          .insert([{ api_image_id: apiImageId, views: 1, url: imageUrl}]);
   
-        if (insertError) {
+        if (insertError) { 
           console.error('Erreur lors de l’insertion de la nouvelle image :', insertError);
         } else {
           console.log('Nouvelle entrée ajoutée avec succès !');
@@ -48,28 +48,30 @@ const ImageDetail = () => {
     }
   };
   
-  useEffect(() => {
-    if (id) {
-      addImageToDatabase(id);
-    }
-  }, [id]);
+
 
   useEffect(() => {
     const fetchImageDetails = async () => {
       const apiKey = getAPIKey();
       const baseUrl = getAPIBaseURL();
       const url = `${baseUrl}/photos/${id}`;
-
+    
       try {
         const response = await axios.get(url, {
           headers: { Authorization: apiKey },
         });
+    
         setImageDetails(response.data);
 
+        console.log('test',response.data.src.original );
+
+        addImageToDatabase(id, response.data.src.original);
+    
       } catch (error) {
         console.error('Fetching image details failed:', error);
       }
     };
+    
 
     if (router.isReady && id) {
       fetchImageDetails();
@@ -116,33 +118,47 @@ const ImageDetail = () => {
     return <div>Loading...</div>;
   }
 
-    const ajouter_favorie = async (e) => {
-      try {
-        const userIdCookie = Cookies.get('userId');
-        const IDimages=imageDetails.id;
-    
-        if (!userIdCookie) {
-          console.error('User not logged in');
-          return;
-        }
-    
+  const ajouter_favorie = async () => {
+    try {
+      const userIdCookie = Cookies.get('userId');
+      const IDimages = imageDetails.src.original; // Correction ici, remplacement de imageDetails.scr.original par imageDetails.src.original
+  
+
+      if (!userIdCookie) {
+        console.error('User not logged in');
+        return;
+      }
+  
+      const { data: existingFavorites, error } = await supabase
+        .from('favoris')
+        .select('*')
+        .eq('id_user', userIdCookie)
+        .eq('')
+        .eq('url_images', IDimages);
+  
+      if (error) {
+        throw error;
+      }
+  
+      if (existingFavorites.length === 1) {
+        console.log('Cette combinaison userIdCookie et IDimages existe déjà dans la table favoris.');
+      } else {
         const { data, error } = await supabase
           .from('favoris')
           .insert([
-            { like_boolean: true, id_user: userIdCookie, id_images: IDimages },
+            { like_boolean: true, id_user: userIdCookie, url_images: IDimages , api_image_id : id},
           ]);
-    
+  
         if (error) {
           throw error;
         }
-    
-      } catch (error) {
-        console.error('Error adding favorite:', error.message);
       }
-    };
-    
+    } catch (error) {
+      console.error('Error adding favorite:', error.message);
+    }
+  };
   
-
+  
   const handleDislike = async () => {
     try {
       const userIdCookie = Cookies.get('userId');
@@ -154,18 +170,20 @@ const ImageDetail = () => {
   
       const { data, error } = await supabase
         .from('favoris')
-        .update([
-          { like_boolean: fasle },
-        ]);
+        .delete()
+        .eq('id_user', userIdCookie);
   
       if (error) {
         throw error;
       }
-      console.log('Image disliked!',data);
+  
+      console.log('Image disliked!', data);
     } catch (error) {
       console.error('Error disliking image:', error);
     }
   };
+  
+  
 
   return (
     <div className="body">
