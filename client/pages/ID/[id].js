@@ -10,6 +10,10 @@ const ImageDetail = () => {
   const { id } = router.query;
   const [imageDetails, setImageDetails] = useState(null);
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
+  const [comments, setComments] = useState([]); 
+  const [newComment, setNewComment] = useState(''); 
+  const [editingCommentId, setEditingCommentId] = useState(null);
+
 
   const addImageToDatabase = async (apiImageId, imageUrl) => {
     try {
@@ -79,6 +83,25 @@ const ImageDetail = () => {
   }, [id, router.isReady]);
 
   useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await supabase
+          .from('commentaire')
+          .select('*')
+          .eq('api_image_id', id);
+
+        setComments(response.data);
+      } catch (error) {
+        console.error('Error fetching comments:', error.message);
+      }
+    };
+
+    if (id) {
+      fetchComments();
+    }
+  }, [id]);
+
+  useEffect(() => {
     const handleOutsideClick = (e) => {
       if (isImageFullscreen && e.target.tagName !== 'IMG') {
         setIsImageFullscreen(false);
@@ -125,6 +148,7 @@ const ImageDetail = () => {
 
       if (!userIdCookie) {
         console.error('User not logged in');
+        router.push('/../login');
         return;
       }
   
@@ -182,74 +206,83 @@ const ImageDetail = () => {
     }
   };
 
-  const fetchComments = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('commentaire')
-        .select('*')
-        .eq('id_image', id);
-
-      if (error) {
-        console.error('Error fetching comments:', error);
-      } else {
-        setComments(data);
-      }
-    } catch (error) {
-      console.error('Error in fetchComments:', error);
-    }
-  };
-
-  const addComment = async (newComment) => {
+  const ajouter_commentaire = async (comment) => {
     try {
       const userIdCookie = Cookies.get('userId');
-  
+      const IDimages = imageDetails.src.original; 
+
       if (!userIdCookie) {
         console.error('User not logged in');
+        router.push('/../login');
         return;
       }
   
-      const { error } = await supabase
+      const { data: existingcommentaire, error } = await supabase
         .from('commentaire')
-        .insert([
-          {
-            id: supabase.auth.user().id, 
-            commentaire: newComment,
-            id_user: userIdCookie,
-            id_image: id,
-            url_image: imageDetails.src.original, 
-          },
-        ]);
+        .select('*')
+        .eq('id_user', userIdCookie)
+        .eq('')
+        .eq('url_image', IDimages);
   
       if (error) {
-        console.error('Error adding comment:', error);
+        throw error;
+      }
+  
+      if (existingcommentaire.length === 1) {
+        console.log('Cette combinaison userIdCookie et IDimages existe déjà dans la table favoris.');
       } else {
-        console.log('Comment added successfully!');
-        fetchComments(); 
+        const { data, error } = await supabase
+          .from('commentaire')
+          .insert([
+            { commentaire: comment, id_user: userIdCookie, url_image: IDimages , api_image_id : id},
+          ]);
+  
+        if (error) {
+          throw error;
+        }
       }
     } catch (error) {
-      console.error('Error in addComment:', error);
+      console.error('Error adding comment:', error.message);
+    }
+  };
+
+  const handleEditComment = async (commentId) => {
+    try {
+      const userIdCookie = Cookies.get('userId');
+      if (!userIdCookie) {
+        console.error('User not logged in');
+             return;
+      }
+      } catch (error) {
+      console.error('Error editing comment:', error.message);
     }
   };
   
-  const deleteComment = async (commentId) => {
+  const handleDeleteComment = async (commentId) => {
     try {
-      const { error } = await supabase
+       const userIdCookie = Cookies.get('userId');
+      if (!userIdCookie) {
+        console.error('User not logged in');
+          return;
+      }
+  
+      const { data, error } = await supabase
         .from('commentaire')
         .delete()
-        .eq('id', commentId);
+        .eq('id', commentId)
+        .eq('id_user', userIdCookie);
   
       if (error) {
-        console.error('Error deleting comment:', error);
-      } else {
-        console.log('Comment deleted successfully!');
-        fetchComments(); 
+        throw error;
       }
+  
+       setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
     } catch (error) {
-      console.error('Error in deleteComment:', error);
+      console.error('Error deleting comment:', error.message);
     }
   };
   
-  
+
 
   return (
     <div className="body">
@@ -289,8 +322,48 @@ const ImageDetail = () => {
           Dimensions: {imageDetails.width} x {imageDetails.height}
         </p>
       </div>
+     <div class="p-4">
+  <textarea
+    id="commentaireInput"
+    className="w-full border p-2 mb-2"
+    placeholder="Ajouter un commentaire..."
+    value={newComment}
+    onChange={(e) => setNewComment(e.target.value)}
+  ></textarea>
 
-      
+  <button
+    onClick={() => ajouter_commentaire(newComment)}
+    id="ajouterCommentaireBtn"
+    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+    Ajouter Commentaire
+  </button>
+</div>
+
+<div className="comments-container">
+  <h2 className="text-2xl font-bold mb-4">Commentaires:</h2>
+  <ul className="space-y-4">
+    {comments.map((comment) => (
+      <li key={comment.id} className="border p-4 rounded">
+        <p className="text-gray-800">{comment.commentaire}</p>
+        <div className="flex justify-end space-x-2 mt-2">
+          <button
+            onClick={() => handleEditComment(comment.id)}
+            className="text-blue-500 hover:underline focus:outline-none"
+          >
+            Modifier
+          </button>
+          <button
+            onClick={() => handleDeleteComment(comment.id)}
+            className="text-red-500 hover:underline focus:outline-none"
+          >
+            Supprimer
+          </button>
+        </div>
+      </li>
+    ))}
+  </ul>
+</div>
+
       {isImageFullscreen && (
         <div
           className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 flex justify-center items-center"
