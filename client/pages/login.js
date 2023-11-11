@@ -29,10 +29,12 @@ const Login = () => {
       if (data.length > 0) {
         const user = data[0];
         const userId = user.id;
+        const username = user.username;
         const userType = user.type_compte;
 
         Cookies.set('mon_cookie_auth', 'connecte', { path: '/' });
         Cookies.set('userId', userId, { path: '/' });
+        Cookies.set('username', username, { path: '/' });
         Cookies.set('userType', userType, { path: '/' });
 
         console.log('Avant la redirection');
