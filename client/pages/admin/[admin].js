@@ -71,6 +71,73 @@ export default function Admin() {
     router.push('/login');
   };
 
+  const retirerSignalement = async (commentId) => {
+    try {
+      const { data, error } = await supabase
+        .from('commentaire')
+        .update({ signaler: false })
+        .eq('id', commentId);
+  
+      if (error) {
+        throw error;
+      }
+  
+      console.log('Signalement retiré avec succès:', data);
+      window.location.reload();
+        } catch (error) {
+      console.error('Erreur lors du retrait du signalement:', error.message);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+       const userIdCookie = Cookies.get('userId');
+      if (!userIdCookie) {
+        console.error('User not logged in');
+          return;
+      }
+  
+      const { data, error } = await supabase
+        .from('commentaire')
+        .delete()
+        .eq('id', commentId)
+        .eq('id_user', userIdCookie);
+
+      window.location.reload();
+  
+      if (error) {
+        throw error;
+      }
+      setEditingCommentId(commentId);
+      setIsEditingComment(true);
+    } catch (error) {
+      console.error('Error deleting comment:', error.message);
+    }
+  };
+
+const [comments, setComments] = useState([]);
+
+useEffect(() => {
+  fetchUsers();
+  fetchComments();  
+}, []);
+
+const fetchComments = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('commentaire')
+      .select('*')
+      .filter('signaler', 'eq', true);
+
+    if (error) {
+      console.error('Error fetching comments:', error);
+    } else {
+      setComments(data);
+    }
+  } catch (error) {
+    console.error('An error occurred while fetching comments:', error.message);
+  }
+};
 
   
   return (
@@ -140,6 +207,18 @@ export default function Admin() {
           ))}
         </table>
       </div>
+
+      <div>
+      <p>Commentaire</p>
+      {comments.map(comment => (
+        <div key={comment.id}>
+          <p>{comment.commentaire}</p>
+          <p>{comment.username}</p>
+          <button onClick={() => handleDeleteComment(comment.id)}>Supprimer</button>
+          <button onClick={() => retirerSignalement(comment.id)}>Signaler</button>
+        </div>
+      ))}
+      </div>        
     </div>
   );
 }

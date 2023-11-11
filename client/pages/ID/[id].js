@@ -4,7 +4,6 @@ import axios from 'axios';
 import { getAPIKey, getAPIBaseURL } from '../../API/API_pexels';
 import supabase from '../../supabase';
 import Cookies from 'js-cookie';
-import EditCommentForm from '../EditCommentForm';  
 
 
 const ImageDetail = () => {
@@ -14,9 +13,9 @@ const ImageDetail = () => {
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
   const [comments, setComments] = useState([]); 
   const [newComment, setNewComment] = useState(''); 
-  const [isEditingComment, setIsEditingComment] = useState(false);
-  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedComments, setEditedComments] = useState({});
 
+  //Gestion des images 
 
   const addImageToDatabase = async (apiImageId, imageUrl) => {
     try {
@@ -121,6 +120,8 @@ const ImageDetail = () => {
       }
     };
   }, [isImageFullscreen]);
+
+  //Gestion du Download 
 
   const handleDownload = async (url, filename) => {
     try {
@@ -240,67 +241,116 @@ const ImageDetail = () => {
     }
   };
 
-  const handleEditComment = (commentId) => {
+  const editer_commentaire = async (commentId, newComment) => {
+    const userIdCookie = Cookies.get('userId');
+    
     try {
-      const userIdCookie = Cookies.get('userId');
-      if (!userIdCookie) {
-        console.error('User not logged in');
-        return;
-      }
+        const { data: commentData, error: commentError } = await supabase
+            .from('commentaire')
+            .select()
+            .eq('id', commentId)
+            .single();
 
-      const onEditComment = async (newCommentText) => {
-        const { data, error } = await supabase
-          .from('commentaire')
-          .update({ commentaire: newCommentText })
-          .eq('id', commentId)
-          .eq('id_user', userIdCookie);
-
-        if (error) {
-          throw error;
+        if (commentError) {
+            throw commentError;
         }
 
-        console.log('Commentaire modifié avec succès:', data);
-        setIsEditingComment(false);
-      };
+        const comment = commentData;
 
-      ReactDOM.render(
-        <EditCommentForm onEditComment={onEditComment} onCancel={() => setIsEditingComment(false)} />,
-        document.getElementById('modal-root')
-      );
-      
+        if (userIdCookie === comment.id_user) {
+            const { data, error } = await supabase
+                .from('commentaire')
+                .update({ commentaire: newComment })
+                .eq('id', commentId);
+
+            if (error) {
+                throw error;
+            }
+
+            console.log('Comment edited successfully:', data);
+            window.location.reload();
+        } else {
+            console.error('User does not have permission to edit this comment');
+        }
     } catch (error) {
-      console.error('Erreur lors de la modification du commentaire:', error.message);
+        console.error('Error editing comment:', error.message);
     }
+};
+
+
+  const handleEditComment = (commentId) => {
+      setEditedComments((prev) => ({
+          ...prev,
+          [commentId]: true,
+      }));
+  };
+
+  const handleCommentChange = (commentId, newText) => {
+      setEditedComments((prev) => ({
+          ...prev,
+          [commentId]: true,
+      }));
+      setComments((prevComments) =>
+          prevComments.map((comment) =>
+              comment.id === commentId ? { ...comment, newComment: newText } : comment
+          )
+      );
+  };
+
+  const handleSaveEdit = async (commentId) => {
+      const editedComment = comments.find((comment) => comment.id === commentId);
+
+      if (editedComment.newComment) {
+          await editer_commentaire(commentId, editedComment.newComment);
+      }
+
+      setEditedComments((prev) => ({
+          ...prev,
+          [commentId]: false,
+      }));
   };
   
   const handleDeleteComment = async (commentId) => {
+    const userIdCookie = Cookies.get('userId');
     try {
-       const userIdCookie = Cookies.get('userId');
-      if (!userIdCookie) {
-        console.error('User not logged in');
-          return;
-      }
-  
-      const { data, error } = await supabase
-        .from('commentaire')
-        .delete()
-        .eq('id', commentId)
-        .eq('id_user', userIdCookie);
-  
-      if (error) {
-        throw error;
-      }
-      setEditingCommentId(commentId);
-      setIsEditingComment(true);
-    } catch (error) {
-      console.error('Error deleting comment:', error.message);
-    }
-  };
+        if (!userIdCookie) {
+            console.error('User not logged in');
+            return;
+        }
 
-  const handleCancelEdit = () => {
-    setIsEditingComment(false);
-    setEditingCommentId(null);
-  };
+        const { data: commentData, error: commentError } = await supabase
+            .from('commentaire')
+            .select()
+            .eq('id', commentId)
+            .single();
+
+        if (commentError) {
+            throw commentError;
+        }
+
+        const comment = commentData;
+
+        if (userIdCookie === comment.id_user) {
+            const { data, error } = await supabase
+                .from('commentaire')
+                .delete()
+                .eq('id', commentId)
+                .eq('id_user', userIdCookie);
+
+            if (error) {
+                throw error;
+            }
+
+            setEditingCommentId(commentId);
+            setIsEditingComment(true);
+            console.log('Comment deleted successfully:', data);
+        } else {
+            console.error('User does not have permission to delete this comment');
+        }
+    } catch (error) {
+        console.error('Error deleting comment:', error.message);
+    }
+};
 
 
   const signalerCommentaire = async (commentaireId) => {
@@ -388,16 +438,17 @@ const ImageDetail = () => {
           {comments.map((comment) => (
             <li key={comment.id} className="border p-4 rounded">
               <p className="Username">{comment.username}</p>
-              {isEditingComment && editingCommentId === comment.id ? (
-      
-                <EditCommentForm
-                  initialText={comment.commentaire}
-                  onEditComment={(newCommentText) => handleEditCommentSubmit(comment.id, newCommentText)}
-                  onCancel={handleCancelEdit}
-                />
-              ) : (
-                <p className="text-gray-800">{comment.commentaire}</p>
-              )}
+              {editedComments[comment.id] ? (
+                        <div>
+                            <textarea
+                                value={comment.newComment || ''}
+                                onChange={(e) => handleCommentChange(comment.id, e.target.value)}
+                            />
+                            <button onClick={() => handleSaveEdit(comment.id)}>Enregistrer</button>
+                        </div>
+                    ) : (
+                        <p>{comment.commentaire}</p>
+                    )}
               <div className="flex justify-end space-x-2 mt-2">
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
