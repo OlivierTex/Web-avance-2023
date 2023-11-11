@@ -380,7 +380,7 @@ const ImageDetail = () => {
         <p className="text-center my-5">
           <strong>Image Name:</strong> {imageDetails.alt}
         </p>
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end space-x-2 my-5">
           <button onClick={ajouter_favorie} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2 ">Like</button> 
           <button onClick={handleDislike} className="bg-red-500 text-white px-4 py-2 rounded-md ml-2">Dislike</button>  
           <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)}
@@ -432,47 +432,56 @@ const ImageDetail = () => {
         </button>
       </div>
 
-      <div className="comments-container">
-        <h2 className="text-2xl font-bold mb-4">Commentaires:</h2>
-        <ul className="space-y-4">
-          {comments.map((comment) => (
-            <li key={comment.id} className="border p-4 rounded">
-              <p className="Username">{comment.username}</p>
-              {editedComments[comment.id] ? (
-                        <div>
-                            <textarea
-                                value={comment.newComment || ''}
-                                onChange={(e) => handleCommentChange(comment.id, e.target.value)}
-                            />
-                            <button onClick={() => handleSaveEdit(comment.id)}>Enregistrer</button>
+    <div className="comments-container  p-6 rounded-md shadow-md">
+    <h2 className="text-3xl  mb-6 text-gray-800">Commentaires:</h2>
+    <ul className="space-y-6">
+        {comments.map((comment) => (
+            <li key={comment.id} className="border p-6 rounded-md bg-white shadow-md">
+                <p className="text-xl font-semibold mb-2 text-blue-600">{comment.username}</p>
+                {editedComments[comment.id] ? (
+                    <div className="mb-4">
+                        <textarea
+                            value={comment.newComment || ''}
+                            onChange={(e) => handleCommentChange(comment.id, e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                        />
+                        <div className="flex justify-end space-x-2 mt-2">
+                            <button
+                                onClick={() => handleSaveEdit(comment.id)}
+                                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
+                            >
+                                Enregistrer
+                            </button>
                         </div>
-                    ) : (
-                        <p>{comment.commentaire}</p>
-                    )}
-              <div className="flex justify-end space-x-2 mt-2">
-                <button
-                  onClick={() => handleDeleteComment(comment.id)}
-                  className="text-red-500 hover:underline focus:outline-none"
-                >
-                  Supprimer
-                </button>
-                <button
-                  onClick={() => signalerCommentaire(comment.id)}
-                  className="text-red-500 hover:underline focus:outline-none"
-                >
-                  Signaler
-                </button>
-                <button
-                  onClick={() => handleEditComment(comment.id)}
-                  className="text-blue-500 hover:underline focus:outline-none"
-                >
-                  Modifier
-                </button>
-              </div>
+                    </div>
+                ) : (
+                    <p className="text-gray-700">{comment.commentaire}</p>
+                )}
+                <div className="flex justify-end space-x-4 mt-4">
+                    <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="text-red-500 hover:underline focus:outline-none"
+                    >
+                        Supprimer
+                    </button>
+                    <button
+                        onClick={() => signalerCommentaire(comment.id)}
+                        className="text-red-500 hover:underline focus:outline-none"
+                    >
+                        Signaler
+                    </button>
+                    <button
+                        onClick={() => handleEditComment(comment.id)}
+                        className="text-blue-500 hover:underline focus:outline-none"
+                    >
+                        Modifier
+                    </button>
+                </div>
             </li>
-          ))}
-        </ul>
-      </div>
+        ))}
+    </ul>
+</div>
+
 
 
 

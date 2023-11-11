@@ -72,7 +72,6 @@ const Utilisateur = () => {
           ))}
         </div>
       </div>
-      <div className="p">commentaire</div>
     </div>
   );
 };
