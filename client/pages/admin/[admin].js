@@ -11,8 +11,8 @@ export default function Admin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [accountType, setAccountType] = useState('user');
-  const [editedComments, setEditedComments] = useState({}); // Added state for editedComments
-  const [isEditingComment, setIsEditingComment] = useState(false); // Added state for isEditingComment
+  const [editedComments, setEditedComments] = useState({}); 
+  const [isEditingComment, setIsEditingComment] = useState(false); 
 
   useEffect(() => {
     fetchUsers();
@@ -28,6 +28,9 @@ export default function Admin() {
   };
 
   const deleteUser = async (userId) => {
+  try {
+    await supabase.from('commentaire').delete().eq('id_user', userId);
+
     const { data, error } = await supabase.from('users').delete().match({ id: userId });
 
     if (error) {
@@ -35,31 +38,38 @@ export default function Admin() {
     } else {
       setUsers(users.filter((user) => user.id !== userId));
       console.log('User deleted successfully:', data);
+      window.location.reload();
     }
-  };
+  } catch (error) {
+    console.error('Error deleting user and associated comments:', error.message);
+  }
+};
 
   const filteredUsers = users.filter((user) => filter === 'all' || user.type_compte === filter);
 
   const handleSignUp = async (e) => {
+    const userIdCookie = Cookies.get('userId');
     e.preventDefault();
-
+  
     try {
       const passwordHash = password;
-
+  
       const { data, error } = await supabase.from('users').insert([
         { email: email, username: username, password_hash: passwordHash, type_compte: accountType },
       ]);
-
+  
       if (error) {
         throw error;
       }
-
+  
       console.log('Inscription réussie:', data);
-      router.push('/dashboard/users');
+      router.push(`/admin/${userIdCookie}`); 
+      window.location.reload();
     } catch (error) {
       console.error("Une erreur s'est produite lors de l'inscription:", error.message);
     }
   };
+  
 
   const deconnecterUtilisateur = () => {
     Cookies.remove('mon_cookie_auth');
@@ -103,7 +113,7 @@ export default function Admin() {
       if (error) {
         throw error;
       }
-      // setEditingCommentId(commentId); // Commented out as setEditingCommentId is not defined
+  
       setIsEditingComment(true);
     } catch (error) {
       console.error('Error deleting comment:', error.message);
@@ -177,10 +187,6 @@ export default function Admin() {
           className="px-4 py-2 border rounded"
         />
         <button
-          onClick={() => {
-            if (window.confirm('Êtes-vous sûr de vouloir ajouter cet utilisateur ?'))
-              deleteUser(user.id);
-          }}
           type="submit"
           className="text-white bg-blue-600 hover:bg-blue-900 px-4 py-2 rounded"
         >
