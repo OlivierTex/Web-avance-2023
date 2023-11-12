@@ -38,10 +38,15 @@ At this point, we've integrated the first six labs and they're all up and runnin
   - The rest are on the client side and are still being developed.
 
 Our latest additions include : 
-- Adding styles with tailwind css.
-- Using SSG to generate article pages.
-- Using the state component.
-- Retrieving images from an image bank with an API.  
+- DarkMode.
+- Retrieving images from an image bank with an API.
+- Merging bank and article pages with two modes: default and gried view.
+- Dynamically generated image pages displaying all info, likes, dislikes and comments.
+- Adding and using supabase in the project (features below).
+- Create an account and log in as user or admin.
+- Account page after logging in.
+- Comment, report comments, like, dislike images.
+- Managing reported comments.
 
 You can check the latest deployment here : [ece-webtech-602.vercel.app](https://ece-webtech-602.vercel.app)
 
