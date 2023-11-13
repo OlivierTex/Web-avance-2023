@@ -1,5 +1,5 @@
-  const API_KEY = '2vzVSb3MiYTutC5TeAiwIn8rGEZBoyhbbBws2jTY4bZq34GJhY8vOz5U';
-  const API_BASE_URL = 'https://api.pexels.com/v1/';
+  const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   
   export const getAPIKey = () => {
     return API_KEY;
