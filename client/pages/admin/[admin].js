@@ -19,7 +19,7 @@ export default function Admin() {
   }, []);
 
   const fetchUsers = async () => {
-    const { data, error } = await supabase.from('users').select('*');
+    const { data, error } = await supabase.from('user').select('*');
     if (error) {
       console.error('Error fetching users:', error);
     } else {
@@ -31,7 +31,7 @@ export default function Admin() {
   try {
     await supabase.from('commentaire').delete().eq('id_user', userId);
 
-    const { data, error } = await supabase.from('users').delete().match({ id: userId });
+    const { data, error } = await supabase.from('user').delete().match({ id: userId });
 
     if (error) {
       console.error('Error deleting user:', error);

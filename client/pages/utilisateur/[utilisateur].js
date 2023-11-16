@@ -41,7 +41,7 @@ const Utilisateur = () => {
     if (userIdCookie) {
       loadImages();
     } else {
-      router.push('/login');
+      //router.push('/login');
     }
   }, [userIdCookie, router]);
 

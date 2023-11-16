@@ -3,66 +3,55 @@ import { useRouter } from 'next/router';
 import { supabase } from '../supabase'; 
 
 const Inscription = () => {
-  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const router = useRouter();
 
-  const userExists = async (field, value) => {
-    const { data, error } = await supabase
-      .from('users')
-      .select(field)
-      .eq(field, value);
+  async function signUpNewUser() {
+    const { user, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
 
-    if (error && error.message !== "The query returned no results") {
-      console.error('Une erreur s\'est produite lors de la vérification:', error.message);
+    if (error) {
+      console.error('Une erreur s\'est produite lors de l\'inscription:', error.message);
       throw error;
     }
+
+    if (user) {
+      const { error: updateError } = await supabase
+        .from('user')
+        .update({username: username})
+        .eq('id', user.id);
     
-    return data.length > 0; 
+      if (updateError) {
+        console.error('Une erreur s\'est produite lors de la mise à jour de l\'utilisateur:', updateError.message);
+        throw updateError;
+      }
+    }
+
+    console.log('Inscription réussie:', user);
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (password !== passwordConfirm) {
-      console.error("Les mots de passe ne correspondent pas.");
-      return;
-    }
-
-    const emailExists = await userExists('email', email);
-    if (emailExists) {
-      setMessage('Cette adresse e-mail est déjà utilisée.'); 
-      console.error("Cette adresse e-mail est déjà utilisée.");
-      return;
-    }
-
-    const usernameExists = await userExists('username', username);
-    if (usernameExists) {
-      console.error("Ce nom d'utilisateur est déjà pris.");
+      console.error('Les mots de passe ne correspondent pas');
       return;
     }
 
     try {
-      const passwordHash = password; 
-
-      const { data, error } = await supabase
-        .from('users')
-        .insert([
-          { email: email, username: username, password_hash: passwordHash, type_compte: 'user' },
-        ]);
-
-      if (error) {
-        throw error;
-      }
-
-      console.log('Inscription réussie:', data);
-      router.push('/dashboard/users');
+      await signUpNewUser();
+      router.push('/account');
     } catch (error) {
       console.error('Une erreur s\'est produite lors de l\'inscription:', error.message);
     }
   };
+
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-light dark:bg-dark">

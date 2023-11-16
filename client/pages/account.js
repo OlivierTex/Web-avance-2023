@@ -1,53 +1,58 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
+import { supabase } from '../supabase';
 
 const ComptePage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const obtenirInformationsUtilisateur = () => {
-      const cookieAuth = Cookies.get('mon_cookie_auth');
-
-      if (cookieAuth) {
-        const typeUtilisateurCookie = Cookies.get('userType');
-        const userIdCookie = Cookies.get('userId');
-
-        if (typeUtilisateurCookie && userIdCookie) {
-          const typeUtilisateur = typeUtilisateurCookie;
-          const userId = userIdCookie;
-
-          if (typeUtilisateur === 'user' || typeUtilisateur === 'admin') {
-            return { typeUtilisateur, userId };
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        console.log(session.user.id);
+        
+        const fetchUser = async () => {
+          const { data, error } = await supabase
+          .from('user')
+          .select('type_compte')
+          .eq('id', session.user.id)
+  
+          if (error) {
+            console.error('Erreur lors de la récupération des informations de l\'utilisateur:', error);
+            return;
           }
-        }
+
+          console.log(data);
+
+          if (data.length > 0) {
+            const user = data[0];
+            console.log(user);
+            if (user.type_compte === 'user') {
+              router.push(`/utilisateur/${session.user.id}`);
+              console.log('user');
+            } else if (user.type_compte === 'admin') {
+              router.push(`/admin/${session.user.id}`);
+              console.log('admin');
+            } else {
+              console.log('Role non reconnu');
+              router.push('/login');
+            }
+          } else {
+            router.push('/login');
+          }
+        };
+        
+        fetchUser();
+
       }
-      return null;
-    };
-
-    try {
-      const informationsUtilisateur = obtenirInformationsUtilisateur();
-
-      if (informationsUtilisateur && informationsUtilisateur.typeUtilisateur) {
-        const { typeUtilisateur, userId } = informationsUtilisateur;
-
-        if (typeUtilisateur === 'user') {
-          router.push(`/utilisateur/${userId}`);
-        } else if (typeUtilisateur === 'admin') {
-          router.push(`/admin/${userId}`);
-        } else {
-          router.push('/login');
-        }
-      } else {
-        router.push('/login');
-      }
-    } catch (error) {
-      console.error('Erreur lors de la redirection:', error);
-      router.push('/login');
-    }
+    });
   }, [router]);
 
-  return <div>Redirection...</div>;
-};
+  return (
+    <div>
+      <h1>Gestion du compte</h1>
+      
+    </div>
+  );
+}
 
 export default ComptePage;
