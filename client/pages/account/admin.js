@@ -13,6 +13,46 @@ export default function Admin() {
   const [accountType, setAccountType] = useState('user');
   const [editedComments, setEditedComments] = useState({}); 
   const [isEditingComment, setIsEditingComment] = useState(false); 
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        checkUserRole(session);
+      }
+    });
+  
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session) {
+        checkUserRole(session);
+      }
+    });
+  
+    const checkUserRole = async (session) => {
+      const { data, error } = await supabase
+        .from('user')
+        .select('type_compte')
+        .eq('id', session.user.id);
+  
+      if (error) {
+        console.error('Erreur lors de la récupération des informations de l\'utilisateur:', error);
+        return;
+      }
+  
+      if (data.length > 0) {
+        const user = data[0];
+        if (user.type_compte !== 'admin') {
+          router.push(`/account/login`);
+        } else {
+          setLoading(true);
+        }
+      }
+    };
+  
+    return () => subscription.unsubscribe();
+  }, []);
+  
+  
 
   useEffect(() => {
     fetchUsers();
@@ -71,9 +111,13 @@ export default function Admin() {
   };
   
 
-  const deconnecterUtilisateur = () => {
-    Cookies.remove('mon_cookie_auth');
-    router.push('/login');
+  const deconnecterUtilisateur = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+    } else {
+      router.push('/account/login'); 
+    }
   };
 
   const retirerSignalement = async (commentId) => {
@@ -143,7 +187,7 @@ export default function Admin() {
     }
   };
 
-  
+  if (loading)
   return (
   <div className={`bg-light dark:bg-dark p-8`}>
     <div className="content-center mb-4">

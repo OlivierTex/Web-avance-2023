@@ -2,13 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../supabase';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 
 const Utilisateur = () => {
   const router = useRouter();
   const [images, setImages] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 10;
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) {
+        router.push('/account/login');
+      }
+      else {
+        setLoading(true);
+      }
+    });
+  }, []);
 
   const userIdCookie = Cookies.get('userId');
 
@@ -45,30 +56,32 @@ const Utilisateur = () => {
     }
   }, [userIdCookie, router]);
 
-  const deconnecterUtilisateur = () => {
-    Cookies.remove('mon_cookie_auth');
-    router.push('/login');
+  const deconnecterUtilisateur = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+    } else {
+      router.push('/account/login'); 
+    }
   };
 
+  if (loading)
   return (
-    <div className={`bg-light dark:bg-dark`}>
-      <h1 className="h1">Utilisateur</h1>
-      <button onClick={deconnecterUtilisateur} className="text-blue-600 hover:text-blue-900 ml-4">
-        Se déconnecter
-      </button>
-      <div className="p">Compte utilisateur</div><br></br>
-      <div className="p">Image liké</div>
-      <div className="flex flex-wrap justify-center mt-8 gap-y-4">
-        <div className="w-1/5 mx-auto">
+    <div className={`bg-light dark:bg-dark p-8`}>
+      <div className="content-center mb-4">
+        <h1 className="text-3xl text-center font-bold ">Compte Utilisateur</h1>
+        <button onClick={deconnecterUtilisateur} className="bg-gray-800 text-white px-4 py-2 rounded-md">
+          Se déconnecter
+        </button>
+      </div>
+  
+      <div className="mb-4">
+        <h2 className="h2">Images Likées</h2>
+        <div className="flex flex-wrap justify-center mt-8 gap-y-4">
           {images.map((image) => (
-            <Link key={image.api_image_id} href={`/ID/${image.api_image_id}`} passHref>
-              <img
-                key={image.id}
-                src={image.src}
-                className="rounded-md shadow-lg cursor-pointer transition-transform duration-500 transform hover:scale-105 m-2"
-                alt={image.alt}
-              />
-            </Link>
+            <div key={image.id} className="w-1/5 mx-auto">
+              <img src={image.url} alt="" className="rounded-lg shadow-lg" />
+            </div>
           ))}
         </div>
       </div>
