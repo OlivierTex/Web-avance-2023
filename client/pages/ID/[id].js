@@ -59,28 +59,31 @@ const ImageDetail = () => {
       const apiKey = getAPIKey();
       const baseUrl = getAPIBaseURL();
       const url = `${baseUrl}/photos/${id}`;
-    
+  
       try {
         const response = await axios.get(url, {
           headers: { Authorization: apiKey },
         });
-    
+  
         setImageDetails(response.data);
-
-        console.log('test',response.data.src.original );
-
+  
+        console.log('test', response.data.src.original);
+  
         addImageToDatabase(id, response.data.src.original);
-    
       } catch (error) {
         console.error('Fetching image details failed:', error);
       }
     };
-    
-
-    if (router.isReady && id) {
-      fetchImageDetails();
-    }
+  
+    const fetchData = async () => {
+      if (router.isReady && id) {
+        await fetchImageDetails();
+      }
+    };
+  
+    fetchData();
   }, [id, router.isReady]);
+  
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -107,19 +110,27 @@ const ImageDetail = () => {
         setIsImageFullscreen(false);
       }
     };
-
-    if (isImageFullscreen) {
-      document.addEventListener('click', handleOutsideClick);
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-      if (!isImageFullscreen) {
-        document.body.style.overflow = 'auto';
+  
+    const handleEscapeKey = (e) => {
+      if (isImageFullscreen && e.key === 'Escape') {
+        setIsImageFullscreen(false);
       }
     };
+  
+    if (isImageFullscreen) {
+      document.addEventListener('click', handleOutsideClick);
+      document.addEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'hidden';
+    }
+  
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'auto';
+    };
   }, [isImageFullscreen]);
+  
+  
 
   //Gestion du Download 
 
