@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../../supabase';
+import { supabase, supabaseAdmin } from '../../supabase';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 
@@ -71,7 +71,7 @@ export default function Admin() {
   try {
     await supabase.from('commentaire').delete().eq('id_user', userId);
 
-    const { data, error } = await supabase.from('user').delete().match({ id: userId });
+    const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userId);
 
     if (error) {
       console.error('Error deleting user:', error);
@@ -87,26 +87,34 @@ export default function Admin() {
 
   const filteredUsers = users.filter((user) => filter === 'all' || user.type_compte === filter);
 
-  const handleSignUp = async (e) => {
-    const userIdCookie = Cookies.get('userId');
-    e.preventDefault();
+  const handleSignUp = async (event) => {
+    event.preventDefault();
   
     try {
       const passwordHash = password;
-  
-      const { data, error } = await supabase.from('users').insert([
-        { email: email, username: username, password_hash: passwordHash, type_compte: accountType },
-      ]);
-  
-      if (error) {
-        throw error;
+    
+      const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
+        email: email,
+        password: passwordHash,
+        email_confirm: true
+      })
+    
+      if (userError) {
+        throw userError;
       }
-  
-      console.log('Inscription réussie:', data);
-      router.push(`/admin/${userIdCookie}`); 
-      window.location.reload();
+
+      const { data: updateData, error: updateError } = await supabaseAdmin
+        .from('user')
+        .update({ username: username, type_compte: accountType })
+        .eq('email', email)
+    
+      if (updateError) {
+        throw updateError;
+      }
+    
+      console.log('Inscription réussie:', updateData);
     } catch (error) {
-      console.error("Une erreur s'est produite lors de l'inscription:", error.message);
+      console.error('Error:', error.message);
     }
   };
   
