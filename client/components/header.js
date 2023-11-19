@@ -16,7 +16,8 @@ const Header = () => {
         <br></br>
         <nav className="flex items-center justify-center h-full">
           <Link href="/" className="nav-link">Accueil</Link>
-          <Link href="/bank" className="nav-link">Banque</Link>
+          <Link href="/bank" className="nav-link">Image</Link>
+          <Link href="/video" className="nav-link">Video</Link>
           <Link href="/articles" className="nav-link">Articles</Link>
           <Link href="/about" className="nav-link">À propos</Link>
           <Link href="/contacts" className="nav-link">Contacts</Link>
@@ -29,3 +30,4 @@ const Header = () => {
 };
 
 export default Header;
+
