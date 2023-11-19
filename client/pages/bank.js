@@ -69,7 +69,7 @@ function Bank() {
   const handleImagesPerRowChange = (num) => {
     setImagesPerRow(num);
   };
-  const DefaultView = () => {
+  const GridView= () => {
     return (
       <div className="w-4/5 mx-auto">
         <br></br><br></br>
@@ -93,7 +93,7 @@ function Bank() {
   
   
   
-  const GridView = () => {
+  const DefaultView  = () => {
     return (
       <div className="w-4/5 mx-auto">
         <div className="flex flex-wrap justify-center mt-8 gap-y-4">
