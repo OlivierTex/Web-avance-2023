@@ -14,6 +14,7 @@ const ImageDetail = () => {
   const [comments, setComments] = useState([]); 
   const [newComment, setNewComment] = useState(''); 
   const [editedComments, setEditedComments] = useState({});
+  const [isLiked, setIsLiked] = useState(false);
 
   //Gestion des images 
 
@@ -154,72 +155,60 @@ const ImageDetail = () => {
     return <div>Loading...</div>;
   }
 
-  //Gestion des likes
-
-  const ajouter_favorie = async () => {
+  const toggleLikeDislike = async () => {
     try {
       const userIdCookie = Cookies.get('userId');
-      const IDimages = imageDetails.src.original; 
+      const IDimages = imageDetails.src.original;
 
       if (!userIdCookie) {
         console.error('User not logged in');
         router.push('/../login');
         return;
       }
-  
-      const { data: existingFavorites, error } = await supabase
-        .from('favoris')
-        .select('*')
-        .eq('id_user', userIdCookie)
-        .eq('')
-        .eq('url_images', IDimages);
-  
-      if (error) {
-        throw error;
-      }
-  
-      if (existingFavorites.length === 1) {
-        console.log('Cette combinaison userIdCookie et IDimages existe déjà dans la table favoris.');
-      } else {
+
+      setIsLiked((prevIsLiked) => !prevIsLiked);
+      if (isLiked) {
         const { data, error } = await supabase
           .from('favoris')
-          .insert([
-            { like_boolean: true, id_user: userIdCookie, url_images: IDimages , api_image_id : id},
-          ]);
-  
+          .delete()
+          .eq('id_user', userIdCookie)
+          .eq('url_images', IDimages);
+
         if (error) {
           throw error;
         }
+
+        console.log('Image disliked!', data);
+      } else {
+        const { data: existingFavorites, error } = await supabase
+          .from('favoris')
+          .select('*')
+          .eq('id_user', userIdCookie)
+          .eq('url_images', IDimages);
+
+        if (error) {
+          throw error;
+        }
+
+        if (existingFavorites.length === 0) {
+          const { data, error } = await supabase
+            .from('favoris')
+            .insert([
+              { like_boolean: true, id_user: userIdCookie, url_images: IDimages, api_image_id: id },
+            ]);
+
+          if (error) {
+            throw error;
+          }
+        } else {
+          console.log('Cette combinaison userIdCookie et IDimages existe déjà dans la table favoris.');
+        }
       }
     } catch (error) {
-      console.error('Error adding favorite:', error.message);
+      console.error('Error toggling like/dislike:', error.message);
     }
   };
-  
-  
-  const handleDislike = async () => {
-    try {
-      const userIdCookie = Cookies.get('userId');
-  
-      if (!userIdCookie) {
-        console.error('User not logged in');
-        return;
-      }
-  
-      const { data, error } = await supabase
-        .from('favoris')
-        .delete()
-        .eq('id_user', userIdCookie);
-  
-      if (error) {
-        throw error;
-      }
-  
-      console.log('Image disliked!', data);
-    } catch (error) {
-      console.error('Error disliking image:', error);
-    }
-  };
+
 
   //Gestion des commentaires
 
@@ -388,14 +377,22 @@ const ImageDetail = () => {
   return (
     <div className="body">
       <div className="relative">
-        <p className="text-center my-5">
+        <p className="dark:text-white text-center my-5">
           <strong>Image Name:</strong> {imageDetails.alt}
         </p>
         <div className="flex justify-end space-x-2 my-5">
-          <button onClick={ajouter_favorie} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2 ">Like</button> 
-          <button onClick={handleDislike} className="bg-red-500 text-white px-4 py-2 rounded-md ml-2">Dislike</button>  
+          <button
+            onClick={toggleLikeDislike}
+            className={`bg-${isLiked ? 'gray' : 'gray'}-800 text-white px-4 py-2 rounded-md ml-2`}
+          >
+            {isLiked ? (
+              <img src="/images/heart.svg" alt="Dislike" className="w-8 h-8" />
+            ) : (
+              <img src="/images/hearth.svg" alt="Like" className="w-8 h-8" />
+            )}
+          </button>
           <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)}
-            className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
+          className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
         </div>
       </div>
 
@@ -406,9 +403,7 @@ const ImageDetail = () => {
           alt={imageDetails.alt}
           className="image-preview w-auto h-auto object-cover mx-auto max-h-screen mb-4 cursor-pointer border-4 border-custom1"/>
       </div>
-
-
-      <div className="space-y-2 text-center">
+      <div className="dark:text-white space-y-2 text-center">
         <p>Photographer: {imageDetails.photographer}</p>
         <p>
           Photographer URL:{' '}
@@ -438,7 +433,7 @@ const ImageDetail = () => {
         <button
           onClick={() => ajouter_commentaire(newComment)}
           id="ajouterCommentaireBtn"
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+          className="bg-gray-800 text-white p-2 rounded hover:bg-blue-600">
           Ajouter Commentaire
         </button>
       </div>
@@ -459,7 +454,7 @@ const ImageDetail = () => {
                         <div className="flex justify-end space-x-2 mt-2">
                             <button
                                 onClick={() => handleSaveEdit(comment.id)}
-                                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
+                                className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
                             >
                                 Enregistrer
                             </button>
@@ -471,19 +466,19 @@ const ImageDetail = () => {
                 <div className="flex justify-end space-x-4 mt-4">
                     <button
                         onClick={() => handleDeleteComment(comment.id)}
-                        className="text-red-500 hover:underline focus:outline-none"
+                        className="bg-gray-800 text-white hover:underline focus:outline-none"
                     >
                         Supprimer
                     </button>
                     <button
                         onClick={() => signalerCommentaire(comment.id)}
-                        className="text-red-500 hover:underline focus:outline-none"
+                        className="bg-gray-800 text-white hover:underline focus:outline-none"
                     >
                         Signaler
                     </button>
                     <button
                         onClick={() => handleEditComment(comment.id)}
-                        className="text-blue-500 hover:underline focus:outline-none"
+                        className="bg-gray-800 text-white hover:underline focus:outline-none"
                     >
                         Modifier
                     </button>

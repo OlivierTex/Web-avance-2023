@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navigation from '../components/navigation';
 import { getAPIKey, getAPIBaseURL } from '../API/API_pexels';
 
 import { useRouter } from 'next/router';
@@ -53,8 +52,6 @@ function Home() {
             onClick={handleImageClick}
           />
         </div>
-        <br />
-        <Navigation />
       </div>
     </div>
   );

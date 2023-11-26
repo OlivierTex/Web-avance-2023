@@ -1,39 +1,49 @@
+import React from 'react';
+
 export default function Contacts() {
   return (
-    <div className={`bg-light dark:bg-dark`}>
-      <h1 className="h1">Contacts</h1>
+    <div className="bg-light dark:bg-dark p-8">
+      <h1 className="text-3xl font-bold mb-6 dark:text-white">Contacts</h1>
 
-      <form className="mt-8">
-        <label htmlFor="name" className="block text-custom5 text-sm font-bold mb-2">
-          Nom :
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Saisissez votre nom"
-          className="form-input mt-1 p-2 w-full bg-custom2 border-2 border-custom3 rounded-md"
-        />
+      <form className="mb-8">
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-custom5 text-sm dark:text-white mb-2">
+            Message :
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Saisissez votre message"
+            className="form-input p-2 w-full bg-custom2 border-2 border-custom3 rounded-md"
+          />
+        </div>
 
-        <button
-          type="submit"bg
-          className="bouton-sumbit "
-        >
+        <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-md">
           Envoyer
         </button>
       </form>
 
-      <div className="paragraph">
-        <p className="paragraph">Contacts :</p>
-        <br />
-        greg.demirdjian@edu.ece.fr <a href="https://www.linkedin.com/in/olivier-texier-898828222/" className="nav-link">linkedin</a>
-        <br />
-        marc.hamchouchong@edu.ece.fr <a href="https://www.linkedin.com/in/olivier-texier-898828222/" className="nav-link">linkedin</a>
-        <br />
-        olivier.texier@edu.ece.fr  <a href="https://www.linkedin.com/in/olivier-texier-898828222/" className="nav-link">linkedin</a>
+      <div className="dark:text-white">
+        <p className="text-lg font-semibold mb-2">Contacts :</p>
+        <div className="mb-4">
+          <p>Greg Demirdjian</p>
+          <p>Email: greg.demirdjian@edu.ece.fr</p>
+          <a href="https://www.linkedin.com/in/greg-demirdjian/" className="text-custom5 font-bold">LinkedIn</a>
+        </div>
+
+        <div className="mb-4">
+          <p>Marc Hamchouchong</p>
+          <p>Email: marc.hamchouchong@edu.ece.fr</p>
+          <a href="https://www.linkedin.com/in/marc-hamchouchong/" className="text-custom5 font-bold">LinkedIn</a>
+        </div>
+
+        <div>
+          <p>Olivier Texier</p>
+          <p>Email: olivier.texier@edu.ece.fr</p>
+          <a href="https://www.linkedin.com/in/olivier-texier-898828222/" className="text-custom5 font-bold">LinkedIn</a>
+        </div>
       </div>
-
-
     </div>
   );
 }
