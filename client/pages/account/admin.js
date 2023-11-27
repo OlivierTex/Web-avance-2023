@@ -103,9 +103,17 @@ export default function Admin() {
         throw userError;
       }
 
+      let usernameTemp;
+      usernameTemp = username;
+      
+      /// si le champ username est vide, on utilise l'email pour définir l'username
+      if (username.length === 0) {
+        usernameTemp = email;
+      }
+
       const { data: updateData, error: updateError } = await supabaseAdmin
         .from('user')
-        .update({ username: username, type_compte: accountType })
+        .update({ username: usernameTemp, type_compte: accountType })
         .eq('email', email)
     
       if (updateError) {
