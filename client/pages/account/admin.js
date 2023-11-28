@@ -329,7 +329,7 @@ export default function Admin() {
                         onClick={() => retirerSignalement(comment.id)}
                         className="text-green-500 hover:underline focus:outline-none"
                     >
-                        Signaler
+                        Retirer le signalement
                     </button>
                 </div>
             </li>

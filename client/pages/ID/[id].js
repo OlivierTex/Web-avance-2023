@@ -193,7 +193,7 @@ const ImageDetail = () => {
           const { data, error } = await supabase
             .from('favoris')
             .insert([
-              { like_boolean: true, id_user: userIdCookie, url_images: IDimages, api_image_id: id },
+              { like_boolean: true, id_user:  user_session.id, url_images: IDimages, api_image_id: id },
             ]);
 
           if (error) {
@@ -202,7 +202,7 @@ const ImageDetail = () => {
 
           console.log('Image aimée!', data);
         } else {
-          console.log('Cette combinaison userIdCookie et IDimages existe déjà dans la table favoris.');
+          console.log('Cette combinaison  user_session.id et IDimages existe déjà dans la table favoris.');
         }
       }
     } catch (error) {
@@ -215,20 +215,37 @@ const ImageDetail = () => {
 
   const ajouter_commentaire = async (comment) => {
     try {
-      const userIdCookie = Cookies.get('userId');
-      const usernameCookie = Cookies.get('username');
       const IDimages = imageDetails.src.original;
   
-      if (!userIdCookie) {
+      if (!user_session) {
         console.error('User not logged in');
         router.push('/../login');
         return;
       }
   
+       const { data: userData, error: userError } = await supabase
+        .from('user')
+        .select('username')
+        .eq('id', user_session.id)
+        .single();
+  
+      if (userError) {
+        throw userError;
+      }
+  
+      const username = userData?.username;
+  
       const { data, error } = await supabase
         .from('commentaire')
         .insert([
-          { commentaire: comment, id_user: userIdCookie, url_image: IDimages, api_image_id: id, username: usernameCookie, signaler : false },
+          { 
+            commentaire: comment,
+            id_user: user_session.id,
+            url_image: IDimages,
+            api_image_id: id,
+            username: username, 
+            signaler: false,
+          },
         ]);
   
       if (error) {
@@ -241,9 +258,9 @@ const ImageDetail = () => {
       console.error('Error adding comment:', error.message);
     }
   };
+  
 
   const editer_commentaire = async (commentId, newComment) => {
-    const userIdCookie = Cookies.get('userId');
     
     try {
         const { data: commentData, error: commentError } = await supabase
@@ -258,7 +275,7 @@ const ImageDetail = () => {
 
         const comment = commentData;
 
-        if (userIdCookie === comment.id_user) {
+        if (user_session.id === comment.id_user) {
             const { data, error } = await supabase
                 .from('commentaire')
                 .update({ commentaire: newComment })
@@ -312,9 +329,8 @@ const ImageDetail = () => {
   };
   
   const handleDeleteComment = async (commentId) => {
-    const userIdCookie = Cookies.get('userId');
     try {
-        if (!userIdCookie) {
+        if (!user_session.id) {
             console.error('User not logged in');
             return;
         }
@@ -331,12 +347,12 @@ const ImageDetail = () => {
 
         const comment = commentData;
 
-        if (userIdCookie === comment.id_user) {
+        if (user_session.id === comment.id_user) {
             const { data, error } = await supabase
                 .from('commentaire')
                 .delete()
                 .eq('id', commentId)
-                .eq('id_user', userIdCookie);
+                .eq('id_user', user_session.id);
 
             if (error) {
                 throw error;
@@ -439,11 +455,11 @@ const ImageDetail = () => {
         </button>
       </div>
 
-    <div className="comments-container  p-6 rounded-md shadow-md">
+    <div className="comments-container  p-6 rounded-md ">
     <h2 className="text-3xl  mb-6 text-gray-800">Commentaires:</h2>
     <ul className="space-y-6">
         {comments.map((comment) => (
-            <li key={comment.id} className="border p-6 rounded-md bg-white shadow-md">
+            <li key={comment.id} className="border p-6 rounded-md bg-white ">
                 <p className="text-xl font-semibold mb-2 text-blue-600">{comment.username}</p>
                 {editedComments[comment.id] ? (
                     <div className="mb-4">
@@ -455,7 +471,7 @@ const ImageDetail = () => {
                         <div className="flex justify-end space-x-2 mt-2">
                             <button
                                 onClick={() => handleSaveEdit(comment.id)}
-                                className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
+                                className="text-blue-500 hover:underline focus:outline-none"
                             >
                                 Enregistrer
                             </button>
@@ -467,19 +483,19 @@ const ImageDetail = () => {
                 <div className="flex justify-end space-x-4 mt-4">
                     <button
                         onClick={() => handleDeleteComment(comment.id)}
-                        className="bg-gray-800 text-white hover:underline focus:outline-none"
+                        className="text-red-500 hover:underline focus:outline-none"
                     >
                         Supprimer
                     </button>
                     <button
                         onClick={() => signalerCommentaire(comment.id)}
-                        className="bg-gray-800 text-white hover:underline focus:outline-none"
+                        className="text-red-500 hover:underline focus:outline-none"
                     >
                         Signaler
                     </button>
                     <button
                         onClick={() => handleEditComment(comment.id)}
-                        className="bg-gray-800 text-white hover:underline focus:outline-none"
+                        className="text-blue-500 hover:underline focus:outline-none"
                     >
                         Modifier
                     </button>
