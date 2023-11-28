@@ -15,6 +15,7 @@ const ImageDetail = () => {
   const [newComment, setNewComment] = useState(''); 
   const [editedComments, setEditedComments] = useState({});
   const [isLiked, setIsLiked] = useState(false);
+  const [session, setSession] = useState(null);
 
   //Gestion des images 
 
@@ -56,34 +57,31 @@ const ImageDetail = () => {
   };
   
   useEffect(() => {
-    const fetchImageDetails = async () => {
-      const apiKey = getAPIKey();
-      const baseUrl = getAPIBaseURL();
-      const url = `${baseUrl}/photos/${id}`;
-  
-      try {
-        const response = await axios.get(url, {
-          headers: { Authorization: apiKey },
-        });
-  
-        setImageDetails(response.data);
-  
-        console.log('test', response.data.src.original);
-  
-        addImageToDatabase(id, response.data.src.original);
-      } catch (error) {
-        console.error('Fetching image details failed:', error);
-      }
-    };
-  
     const fetchData = async () => {
       if (router.isReady && id) {
-        await fetchImageDetails();
+        try {
+          const apiKey = getAPIKey();
+          const baseUrl = getAPIBaseURL();
+          const url = `${baseUrl}/photos/${id}`;
+  
+          const response = await axios.get(url, {
+            headers: { Authorization: apiKey },
+          });
+  
+          setImageDetails(response.data);
+  
+          console.log('test', response.data.src.original);
+  
+          addImageToDatabase(id, response.data.src.original);
+        } catch (error) {
+          console.error('Fetching image details failed:', error);
+        }
       }
     };
   
     fetchData();
   }, [id, router.isReady]);
+  
   
 
   useEffect(() => {
@@ -137,19 +135,20 @@ const ImageDetail = () => {
 
   const handleDownload = async (url, filename) => {
     try {
-      const response = await axios.get(url, { responseType: 'blob' });
-      const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
+        const response = await axios.get(url, { responseType: 'blob' });
+        const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
+        const defaultFilename = filename || `image_${new Date().toISOString()}.png`;
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.setAttribute('download', defaultFilename);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
-      console.error('Error during image download:', error);
+        console.error('Error during image download:', error);
     }
-  };
+};
 
   if (!imageDetails) {
     return <div>Loading...</div>;
@@ -157,33 +156,37 @@ const ImageDetail = () => {
 
   const toggleLikeDislike = async () => {
     try {
-      const userIdCookie = Cookies.get('userId');
-      const IDimages = imageDetails.src.original;
+      const IDimages = imageDetails.src.original; 
 
-      if (!userIdCookie) {
-        console.error('User not logged in');
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+      });
+
+      if (!session) {
+        console.error('Utilisateur non connecté');
         router.push('/../login');
         return;
       }
 
       setIsLiked((prevIsLiked) => !prevIsLiked);
+
       if (isLiked) {
         const { data, error } = await supabase
           .from('favoris')
           .delete()
-          .eq('id_user', userIdCookie)
+          .eq('id_user', session.user.id)
           .eq('url_images', IDimages);
 
         if (error) {
           throw error;
         }
 
-        console.log('Image disliked!', data);
+        console.log('Image n\'est plus aimée!', data);
       } else {
         const { data: existingFavorites, error } = await supabase
           .from('favoris')
           .select('*')
-          .eq('id_user', userIdCookie)
+          .eq('id_user', session.user.id)
           .eq('url_images', IDimages);
 
         if (error) {
@@ -200,12 +203,14 @@ const ImageDetail = () => {
           if (error) {
             throw error;
           }
+
+          console.log('Image aimée!', data);
         } else {
           console.log('Cette combinaison userIdCookie et IDimages existe déjà dans la table favoris.');
         }
       }
     } catch (error) {
-      console.error('Error toggling like/dislike:', error.message);
+      console.error('Erreur lors du basculement like/dislike:', error.message);
     }
   };
 
