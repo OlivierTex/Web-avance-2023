@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getAPIKey, getAPIBaseURL } from '../../API/API_pexels';
 import supabase from '../../supabase';
-import Cookies from 'js-cookie';
-
+import { useAuth } from '../../components/AuthContext';
 
 const ImageDetail = () => {
   const router = useRouter();
@@ -15,7 +14,7 @@ const ImageDetail = () => {
   const [newComment, setNewComment] = useState(''); 
   const [editedComments, setEditedComments] = useState({});
   const [isLiked, setIsLiked] = useState(false);
-  const [session, setSession] = useState(null);
+  const { user_session } = useAuth();
 
   //Gestion des images 
 
@@ -158,13 +157,10 @@ const ImageDetail = () => {
     try {
       const IDimages = imageDetails.src.original; 
 
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-      });
-
-      if (!session) {
+      if (!user_session) {
         console.error('Utilisateur non connecté');
-        router.push('/../login');
+        console.log(user_session);
+        router.push('/../account/login');
         return;
       }
 
@@ -174,7 +170,7 @@ const ImageDetail = () => {
         const { data, error } = await supabase
           .from('favoris')
           .delete()
-          .eq('id_user', session.user.id)
+          .eq('id_user', user_session.id)
           .eq('url_images', IDimages);
 
         if (error) {
@@ -186,7 +182,7 @@ const ImageDetail = () => {
         const { data: existingFavorites, error } = await supabase
           .from('favoris')
           .select('*')
-          .eq('id_user', session.user.id)
+          .eq('id_user', user_session.id)
           .eq('url_images', IDimages);
 
         if (error) {

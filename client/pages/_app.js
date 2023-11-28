@@ -1,4 +1,5 @@
 import Layout from '../components/layout';
+import { UserContext } from '../components/AuthContext';
 import '../styles/globals.css';
 
 
@@ -7,7 +8,9 @@ function App({ Component, pageProps }) {
       <div className={`bg-light dark:bg-dark`}>
         <div className="body">
           <Layout>
-            <Component {...pageProps} />
+            <UserContext>
+              <Component {...pageProps} />
+            </UserContext>
           </Layout>
         </div>
       </div>
