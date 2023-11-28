@@ -445,69 +445,69 @@ const ImageDetail = () => {
         <p className="dark:text-white text-center my-5">
           <strong>Image Name:</strong> {imageDetails.alt}
         </p>
-        <div className="flex justify-end space-x-2 my-5">
-          <button
-            onClick={toggleLikeDislike}
-            className={`bg-${isLiked ? 'gray' : 'gray'}-800 text-white px-4 py-2 rounded-md ml-2`}
-          >
-            {isLiked ? (
-              <img src="/images/heart.svg" alt="Dislike" className="w-8 h-8" />
-            ) : (
-              <img src="/images/hearth.svg" alt="Like" className="w-8 h-8" />
-            )}
-          </button>
+        <div className="flex justify-between items-center" >
+          <div className="flex justify-end space-x-1000 my-5">
+            <button
+              onClick={toggleLikeDislike}
+              className={`bg-${isLiked ? 'gray' : 'gray'}-800 text-white px-4 py-2 rounded-md ml-2`}
+            >
+              {isLiked ? (
+                <img src="/images/heart.svg" alt="Dislike" className="w-8 h-8" />
+              ) : (
+                <img src="/images/hearth.svg" alt="Like" className="w-8 h-8" />
+              )}
+            </button>
 
-          <button
-            className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
-          >
-            Ajouter a un album
-          </button>
+            <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
+          </div>
+          <div className="flex justify space-x-2 my-5">
+            <button
+              className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+            >
+              Ajouter l'image a un album 
+            </button>
 
-          <button
-            className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
-            onClick={handleButtonClick}
-          >
-            Créer un album
-          </button>
-          {showOptions && (
-            <div className="absolute top-10 right-0 bg-white border border-gray-300 p-2 rounded">
-              <div className="mb-2">
-                <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
-                  Nom de l'album:
-                </label>
-                <input
-                  type="text"
-                  id="albumName"
-                  name="albumName"
-                  value={albumName}
-                  onChange={(e) => setAlbumName(e.target.value)}
-                  className="mt-1 p-2 border rounded"
-                />
-              </div>
-              <div className="mb-2">
-                <label htmlFor="albumDescription" className="block text-sm font-medium text-gray-700">
-                  Description de l'album:
-                </label>
-                <textarea
-                  id="albumDescription"
-                  name="albumDescription"
-                  value={albumDescription}
-                  onChange={(e) => setAlbumDescription(e.target.value)}
-                  className="mt-1 p-2 border rounded"
-                />
-              </div>
-              <button className="block" onClick={handleCreateAlbum}>
-                Créer un nouvel album
+            <div className="relative inline-block">
+              <button
+                className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+                onClick={handleButtonClick}
+              >
+                Créer un album
               </button>
+              {showOptions && (
+                <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded`}>
+                  <div className="mb-2">
+                    <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                      Nom de l'album:
+                    </label>
+                    <input
+                      type="text"
+                      id="albumName"
+                      name="albumName"
+                      value={albumName}
+                      onChange={(e) => setAlbumName(e.target.value)}
+                      className="mt-1 p-2 border rounded"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label htmlFor="albumDescription" className="block text-sm font-medium text-gray-700">
+                      Description de l'album:
+                    </label>
+                    <textarea
+                      id="albumDescription"
+                      name="albumDescription"
+                      value={albumDescription}
+                      onChange={(e) => setAlbumDescription(e.target.value)}
+                      className="mt-1 p-2 border rounded"
+                    />
+                  </div>
+                  <button className="block" onClick={handleCreateAlbum}>
+                    Créer un nouvel album
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-
-
-
-
-
-
-          <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
+          </div>
         </div>
       </div>
 
