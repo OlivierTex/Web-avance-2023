@@ -16,6 +16,88 @@ const ImageDetail = () => {
   const [isLiked, setIsLiked] = useState(false);
   const { user_session } = useAuth();
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (router.isReady && id) {
+          const apiKey = getAPIKey();
+          const baseUrl = getAPIBaseURL();
+          const url = `${baseUrl}/photos/${id}`;
+
+          const response = await axios.get(url, {
+            headers: { Authorization: apiKey },
+          });
+
+          setImageDetails(response.data);
+
+          addImageToDatabase(id, response.data.src.original);
+
+          const commentsResponse = await supabase
+            .from('commentaire')
+            .select('*')
+            .eq('api_image_id', id);
+
+          setComments(commentsResponse.data);
+        }
+      } catch (error) {
+        console.error('Fetching image details failed:', error);
+      }
+    };
+
+    fetchData();
+  }, [router.isReady, id]);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (isImageFullscreen && e.target.tagName !== 'IMG') {
+        setIsImageFullscreen(false);
+      }
+    };
+
+    const handleEscapeKey = (e) => {
+      if (isImageFullscreen && e.key === 'Escape') {
+        setIsImageFullscreen(false);
+      }
+    };
+
+    if (isImageFullscreen) {
+      document.addEventListener('click', handleOutsideClick);
+      document.addEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'auto';
+    };
+  }, [isImageFullscreen]);
+
+  useEffect(() => {
+    const fetchLikeStatus = async () => {
+      try {
+        const IDimages = imageDetails?.src?.original;
+  
+        const { data, error } = await supabase
+          .from('favoris')
+          .select('*')
+          .eq('id_user', user_session.id)
+          .eq('url_images', IDimages);
+  
+        if (error) {
+          throw error;
+        }
+  
+        setIsLiked(data.length > 0);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du statut de like:', error.message);
+      }
+    };
+  
+    fetchLikeStatus();
+  }, [imageDetails?.src?.original, user_session?.id]);
+  
+
   //Gestion des images 
 
   const addImageToDatabase = async (apiImageId, imageUrl) => {
@@ -55,79 +137,6 @@ const ImageDetail = () => {
     }
   };
   
-  useEffect(() => {
-    const fetchData = async () => {
-      if (router.isReady && id) {
-        try {
-          const apiKey = getAPIKey();
-          const baseUrl = getAPIBaseURL();
-          const url = `${baseUrl}/photos/${id}`;
-  
-          const response = await axios.get(url, {
-            headers: { Authorization: apiKey },
-          });
-  
-          setImageDetails(response.data);
-  
-          console.log('test', response.data.src.original);
-  
-          addImageToDatabase(id, response.data.src.original);
-        } catch (error) {
-          console.error('Fetching image details failed:', error);
-        }
-      }
-    };
-  
-    fetchData();
-  }, [id, router.isReady]);
-  
-  
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await supabase
-          .from('commentaire')
-          .select('*')
-          .eq('api_image_id', id);
-
-        setComments(response.data);
-      } catch (error) {
-        console.error('Error fetching comments:', error.message);
-      }
-    };
-
-    if (id) {
-      fetchComments();
-    }
-  }, [id]);
-
-  useEffect(() => {
-    const handleOutsideClick = (e) => {
-      if (isImageFullscreen && e.target.tagName !== 'IMG') {
-        setIsImageFullscreen(false);
-      }
-    };
-  
-    const handleEscapeKey = (e) => {
-      if (isImageFullscreen && e.key === 'Escape') {
-        setIsImageFullscreen(false);
-      }
-    };
-  
-    if (isImageFullscreen) {
-      document.addEventListener('click', handleOutsideClick);
-      document.addEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = 'hidden';
-    }
-  
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = 'auto';
-    };
-  }, [isImageFullscreen]);
-  
   
 
   //Gestion du Download 
@@ -155,16 +164,20 @@ const ImageDetail = () => {
 
   const toggleLikeDislike = async () => {
     try {
-      const IDimages = imageDetails.src.original; 
-
+      const IDimages = imageDetails.src.original;
+  
       if (!user_session) {
         console.error('Utilisateur non connecté');
         console.log(user_session);
         router.push('/../account/login');
         return;
       }
-
+  
       setIsLiked((prevIsLiked) => !prevIsLiked);
+  
+      const likeKey = `like_${user_session?.id}_${IDimages}`;
+      localStorage.setItem(likeKey, isLiked ? 'false' : 'true');
+  
 
       if (isLiked) {
         const { data, error } = await supabase
@@ -209,6 +222,7 @@ const ImageDetail = () => {
       console.error('Erreur lors du basculement like/dislike:', error.message);
     }
   };
+
 
 
   //Gestion des commentaires
@@ -357,10 +371,9 @@ const ImageDetail = () => {
             if (error) {
                 throw error;
             }
-
-            setEditingCommentId(commentId);
-            setIsEditingComment(true);
             console.log('Comment deleted successfully:', data);
+            window.location.reload();
+            setEditingCommentId(commentId);
         } else {
             console.error('User does not have permission to delete this comment');
         }

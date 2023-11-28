@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { supabase, supabaseAdmin } from '../../supabase';
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 
 export default function Admin() {
@@ -106,7 +105,6 @@ export default function Admin() {
       let usernameTemp;
       usernameTemp = username;
       
-      /// si le champ username est vide, on utilise l'email pour définir l'username
       if (username.length === 0) {
         usernameTemp = email;
       }
@@ -156,8 +154,7 @@ export default function Admin() {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      const userIdCookie = Cookies.get('userId');
-      if (!userIdCookie) {
+      if (!session.user.id) {
         console.error('User not logged in');
         return;
       }
@@ -166,7 +163,7 @@ export default function Admin() {
         .from('commentaire')
         .delete()
         .eq('id', commentId)
-        .eq('id_user', userIdCookie);
+        .eq('id_user', session.user.id);
 
       window.location.reload();
 
