@@ -16,8 +16,12 @@ const ImageDetail = () => {
   const [isLiked, setIsLiked] = useState(false);
   const { user_session } = useAuth();
   const [showOptions, setShowOptions] = useState(false);
+  const [showOptions2, setShowOptions2] = useState(false);
   const [albumName, setAlbumName] = useState('');
   const [albumDescription, setAlbumDescription] = useState('');
+  const [userAlbums, setUserAlbums] = useState([]);
+  const [selectedAlbum, setSelectedAlbum] = useState(undefined);
+
  
 
   useEffect(() => {
@@ -100,6 +104,30 @@ const ImageDetail = () => {
   
     fetchLikeStatus();
   }, [imageDetails?.src?.original, user_session?.id]);
+
+  useEffect(() => {
+    fetchUserAlbums();
+  }, []);
+
+  const fetchUserAlbums = async () => {
+    try {
+      
+      if (user_session) {
+        const { data, error } = await supabase
+          .from('album')
+          .select('id, name_liste')
+          .filter('id_user', 'eq', user_session.id);
+  
+        if (!error) {
+          setUserAlbums(data);
+        } else {
+          console.error('Erreur lors de la récupération des albums de l\'utilisateur:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur dans fetchUserAlbums:', error);
+    }
+  };
   
 
   //Gestion des images 
@@ -408,6 +436,41 @@ const ImageDetail = () => {
     setShowOptions(!showOptions);
   };
 
+  const handleButtonClicks = () => {
+    setShowOptions2(!showOptions2);
+  };
+
+  const handleAddToExistingAlbum = async () => {
+    try {
+      if (selectedAlbum) {
+        const imageId = id;
+        const imageUrl = imageDetails.src.original;
+
+        const { data, error } = await supabase
+          .from('link_image_album')
+          .insert([
+            {
+              id_album: selectedAlbum,
+              id_image: imageId,
+              url: imageUrl,
+            },
+          ]);
+
+        if (!error) {
+          console.log('Image added to existing album successfully:', data);
+          setShowOptions2(false);
+          fetchUserAlbums();
+        } else {
+          console.error('Error adding image to existing album:', error);
+        }
+      } else {
+        console.warn('No album selected.');
+      }
+    } catch (error) {
+      console.error('Error in handleAddToExistingAlbum:', error);
+    }
+  };
+  
 
   const handleCreateAlbum = async () => {
     try {
@@ -460,23 +523,58 @@ const ImageDetail = () => {
 
             <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
           </div>
+
+
+
           <div className="flex justify space-x-2 my-5">
             <button
               className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+              onClick={handleButtonClicks}
             >
-              Ajouter l'image a un album 
+              Ajouter l'image à un album
             </button>
+            {showOptions2 && (
+              <div className="absolute botom-10 right-29 bg-white border border-gray-300 p-2 rounded">
+                <div className="mb-2">
+                  <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                    Vos albums
+                  </label>
+                  <div className="w-full border-b-2 border-black mb-2"></div>
+                  <select
+                    id="selectAlbum"
+                    name="selectAlbum"
+                    value={selectedAlbum || ''}
+                    onChange={(e) => setSelectedAlbum(e.target.value)}
+                    className="mt-1 p-2 border rounded"
+                  >
+                    <option value="" disabled>Sélectionnez un album</option>
+                    {userAlbums.map((album) => (
+  <option key={album.id} value={album.id}>{album.name_liste}</option>
+))}
+                  </select>
+                </div>
+                <div className="w-full border-b-2 border-black mb-2"></div>
+                <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleAddToExistingAlbum}>
+                  Ajouter à l'album existant
+                </button>
+              </div>
+            )}
+            
 
             <div className="relative inline-block">
               <button
-                className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+                className="bg-gray-800 text-white px-4 py-2 rounded-md ml-1 mr-1"
                 onClick={handleButtonClick}
               >
                 Créer un album
               </button>
               {showOptions && (
-                <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded`}>
+                <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded mr-3`}>
                   <div className="mb-2">
+                  <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                    Création d'album
+                  </label>
+                  <div className="w-full border-b-2 border-black mb-2"></div>
                     <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
                       Nom de l'album:
                     </label>
@@ -501,7 +599,8 @@ const ImageDetail = () => {
                       className="mt-1 p-2 border rounded"
                     />
                   </div>
-                  <button className="block" onClick={handleCreateAlbum}>
+                  <div className="w-full border-b-2 border-black mb-2"></div>
+                  <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleCreateAlbum}>
                     Créer un nouvel album
                   </button>
                 </div>
