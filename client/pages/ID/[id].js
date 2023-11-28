@@ -15,6 +15,10 @@ const ImageDetail = () => {
   const [editedComments, setEditedComments] = useState({});
   const [isLiked, setIsLiked] = useState(false);
   const { user_session } = useAuth();
+  const [showOptions, setShowOptions] = useState(false);
+  const [albumName, setAlbumName] = useState('');
+  const [albumDescription, setAlbumDescription] = useState('');
+ 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -399,6 +403,37 @@ const ImageDetail = () => {
       console.error('Erreur lors du signalement du commentaire:', error.message);
     }
   };
+
+  const handleButtonClick = () => {
+    setShowOptions(!showOptions);
+  };
+
+
+  const handleCreateAlbum = async () => {
+    try {
+      if (user_session.id) {
+        const { data, error } = await supabase
+          .from('album')
+          .insert([
+            {
+              id_user: user_session.id,
+              name_liste: albumName,
+              description_liste: albumDescription,
+            },
+          ]);
+  
+        if (!error) {
+          console.log('Nouvel album créé avec succès:', data);
+          setShowOptions(false);
+        } else {
+          console.error('Erreur lors de la création de l\'album:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur dans handleCreateAlbum:', error);
+    }
+  };
+  
   
 
 
@@ -421,8 +456,58 @@ const ImageDetail = () => {
               <img src="/images/hearth.svg" alt="Like" className="w-8 h-8" />
             )}
           </button>
-          <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)}
-          className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
+
+          <button
+            className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+          >
+            Ajouter a un album
+          </button>
+
+          <button
+            className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+            onClick={handleButtonClick}
+          >
+            Créer un album
+          </button>
+          {showOptions && (
+            <div className="absolute top-10 right-0 bg-white border border-gray-300 p-2 rounded">
+              <div className="mb-2">
+                <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                  Nom de l'album:
+                </label>
+                <input
+                  type="text"
+                  id="albumName"
+                  name="albumName"
+                  value={albumName}
+                  onChange={(e) => setAlbumName(e.target.value)}
+                  className="mt-1 p-2 border rounded"
+                />
+              </div>
+              <div className="mb-2">
+                <label htmlFor="albumDescription" className="block text-sm font-medium text-gray-700">
+                  Description de l'album:
+                </label>
+                <textarea
+                  id="albumDescription"
+                  name="albumDescription"
+                  value={albumDescription}
+                  onChange={(e) => setAlbumDescription(e.target.value)}
+                  className="mt-1 p-2 border rounded"
+                />
+              </div>
+              <button className="block" onClick={handleCreateAlbum}>
+                Créer un nouvel album
+              </button>
+            </div>
+          )}
+
+
+
+
+
+
+          <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
         </div>
       </div>
 
