@@ -527,86 +527,88 @@ const ImageDetail = () => {
 
 
           <div className="flex justify space-x-2 my-5">
-            <button
-              className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
-              onClick={handleButtonClicks}
-            >
-              Ajouter l'image à un album
-            </button>
-            {showOptions2 && (
-              <div className="absolute botom-10 right-29 bg-white border border-gray-300 p-2 rounded">
-                <div className="mb-2">
-                  <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
-                    Vos albums
-                  </label>
-                  <div className="w-full border-b-2 border-black mb-2"></div>
-                  <select
-                    id="selectAlbum"
-                    name="selectAlbum"
-                    value={selectedAlbum || ''}
-                    onChange={(e) => setSelectedAlbum(e.target.value)}
-                    className="mt-1 p-2 border rounded"
-                  >
-                    <option value="" disabled>Sélectionnez un album</option>
-                    {userAlbums.map((album) => (
-  <option key={album.id} value={album.id}>{album.name_liste}</option>
-))}
-                  </select>
-                </div>
-                <div className="w-full border-b-2 border-black mb-2"></div>
-                <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleAddToExistingAlbum}>
-                  Ajouter à l'album existant
-                </button>
-              </div>
-            )}
-            
+  <div className="relative inline-block">
+    <button
+      className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+      onClick={handleButtonClicks}
+    >
+      Ajouter l'image à un album
+    </button>
+    {showOptions2 && (
+      <div className="absolute botom-10 right-29 bg-white border border-gray-300 p-2 rounded">
+        <div className="mb-2">
+          <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+            Vos albums
+          </label>
+          <div className="w-full border-b-2 border-black mb-2"></div>
+          <select
+            id="selectAlbum"
+            name="selectAlbum"
+            value={selectedAlbum || ''}
+            onChange={(e) => setSelectedAlbum(e.target.value)}
+            className="mt-1 p-2 border rounded"
+          >
+            <option value="" disabled>Sélectionnez un album</option>
+            {userAlbums.map((album) => (
+              <option key={album.id} value={album.id}>{album.name_liste}</option>
+            ))}
+          </select>
+        </div>
+        <div className="w-full border-b-2 border-black mb-2"></div>
+        <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleAddToExistingAlbum}>
+          Ajouter à l'album existant
+        </button>
+      </div>
+    )}
+  </div>
 
-            <div className="relative inline-block">
-              <button
-                className="bg-gray-800 text-white px-4 py-2 rounded-md ml-1 mr-1"
-                onClick={handleButtonClick}
-              >
-                Créer un album
-              </button>
-              {showOptions && (
-                <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded mr-3`}>
-                  <div className="mb-2">
-                  <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
-                    Création d'album
-                  </label>
-                  <div className="w-full border-b-2 border-black mb-2"></div>
-                    <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
-                      Nom de l'album:
-                    </label>
-                    <input
-                      type="text"
-                      id="albumName"
-                      name="albumName"
-                      value={albumName}
-                      onChange={(e) => setAlbumName(e.target.value)}
-                      className="mt-1 p-2 border rounded"
-                    />
-                  </div>
-                  <div className="mb-2">
-                    <label htmlFor="albumDescription" className="block text-sm font-medium text-gray-700">
-                      Description de l'album:
-                    </label>
-                    <textarea
-                      id="albumDescription"
-                      name="albumDescription"
-                      value={albumDescription}
-                      onChange={(e) => setAlbumDescription(e.target.value)}
-                      className="mt-1 p-2 border rounded"
-                    />
-                  </div>
-                  <div className="w-full border-b-2 border-black mb-2"></div>
-                  <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleCreateAlbum}>
-                    Créer un nouvel album
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+  <div className="relative inline-block">
+    <button
+      className="bg-gray-800 text-white px-4 py-2 rounded-md ml-1 mr-1"
+      onClick={handleButtonClick}
+    >
+      Créer un album
+    </button>
+    {showOptions && (
+      <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded mr-3`}>
+        <div className="mb-2">
+          <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+            Création d'album
+          </label>
+          <div className="w-full border-b-2 border-black mb-2"></div>
+          <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+            Nom de l'album:
+          </label>
+          <input
+            type="text"
+            id="albumName"
+            name="albumName"
+            value={albumName}
+            onChange={(e) => setAlbumName(e.target.value)}
+            className="mt-1 p-2 border rounded"
+          />
+        </div>
+        <div className="mb-2">
+          <label htmlFor="albumDescription" className="block text-sm font-medium text-gray-700">
+            Description de l'album:
+          </label>
+          <textarea
+            id="albumDescription"
+            name="albumDescription"
+            value={albumDescription}
+            onChange={(e) => setAlbumDescription(e.target.value)}
+            className="mt-1 p-2 border rounded"
+          />
+        </div>
+        <div className="w-full border-b-2 border-black mb-2"></div>
+        <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleCreateAlbum}>
+          Créer un nouvel album
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
         </div>
       </div>
 
