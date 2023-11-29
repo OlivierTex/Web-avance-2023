@@ -22,8 +22,6 @@ const ImageDetail = () => {
   const [userAlbums, setUserAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(undefined);
 
- 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -86,6 +84,13 @@ const ImageDetail = () => {
       try {
         const IDimages = imageDetails?.src?.original;
   
+        if (!user_session?.id || IDimages === undefined) {
+          console.error('User ID or image ID is missing');
+          console.log('user_session.id:', user_session?.id);
+          console.log('IDimages:', IDimages);
+          return;
+        }
+  
         const { data, error } = await supabase
           .from('favoris')
           .select('*')
@@ -104,10 +109,11 @@ const ImageDetail = () => {
   
     fetchLikeStatus();
   }, [imageDetails?.src?.original, user_session?.id]);
+  
 
   useEffect(() => {
     fetchUserAlbums();
-  }, []);
+  }, [user_session]);
 
   const fetchUserAlbums = async () => {
     try {
@@ -120,6 +126,11 @@ const ImageDetail = () => {
   
         if (!error) {
           setUserAlbums(data);
+  
+            if (data.length > 0) {
+              setSelectedAlbum(data[0].id);
+            }
+          
         } else {
           console.error('Erreur lors de la récupération des albums de l\'utilisateur:', error);
         }
@@ -458,6 +469,7 @@ const ImageDetail = () => {
 
         if (!error) {
           console.log('Image added to existing album successfully:', data);
+          fetchUserAlbums();
           setShowOptions2(false);
           fetchUserAlbums();
         } else {
@@ -488,6 +500,7 @@ const ImageDetail = () => {
         if (!error) {
           console.log('Nouvel album créé avec succès:', data);
           setShowOptions(false);
+          fetchUserAlbums();
         } else {
           console.error('Erreur lors de la création de l\'album:', error);
         }
@@ -524,91 +537,88 @@ const ImageDetail = () => {
             <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
           </div>
 
-
-
           <div className="flex justify space-x-2 my-5">
-  <div className="relative inline-block">
-    <button
-      className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
-      onClick={handleButtonClicks}
-    >
-      Ajouter l'image à un album
-    </button>
-    {showOptions2 && (
-      <div className="absolute botom-10 right-29 bg-white border border-gray-300 p-2 rounded">
-        <div className="mb-2">
-          <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
-            Vos albums
-          </label>
-          <div className="w-full border-b-2 border-black mb-2"></div>
-          <select
-            id="selectAlbum"
-            name="selectAlbum"
-            value={selectedAlbum || ''}
-            onChange={(e) => setSelectedAlbum(e.target.value)}
-            className="mt-1 p-2 border rounded"
-          >
-            <option value="" disabled>Sélectionnez un album</option>
-            {userAlbums.map((album) => (
-              <option key={album.id} value={album.id}>{album.name_liste}</option>
-            ))}
-          </select>
-        </div>
-        <div className="w-full border-b-2 border-black mb-2"></div>
-        <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleAddToExistingAlbum}>
-          Ajouter à l'album existant
-        </button>
-      </div>
-    )}
-  </div>
+            <div className="relative inline-block">
+              <button
+                className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+                onClick={handleButtonClicks}
+              >
+                Ajouter l'image à un album
+              </button>
+              {showOptions2 && (
+                <div className="absolute botom-10 right-29 bg-white border border-gray-300 p-2 rounded">
+                  <div className="mb-2">
+                    <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                      Vos albums
+                    </label>
+                    <div className="w-full border-b-2 border-black mb-2"></div>
+                    <select
+                      id="selectAlbum"
+                      name="selectAlbum"
+                      value={selectedAlbum || ''}
+                      onChange={(e) => setSelectedAlbum(e.target.value)}
+                      className="mt-1 p-2 border rounded"
+                    >
+                      <option value="" disabled>Sélectionnez un album</option>
+                      {userAlbums.map((album) => (
+                        <option key={album.id} value={album.id}>{album.name_liste}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="w-full border-b-2 border-black mb-2"></div>
+                  <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleAddToExistingAlbum}>
+                    Ajouter à l'album existant
+                  </button>
+                </div>
+              )}
+            </div>
 
-  <div className="relative inline-block">
-    <button
-      className="bg-gray-800 text-white px-4 py-2 rounded-md ml-1 mr-1"
-      onClick={handleButtonClick}
-    >
-      Créer un album
-    </button>
-    {showOptions && (
-      <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded mr-3`}>
-        <div className="mb-2">
-          <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
-            Création d'album
-          </label>
-          <div className="w-full border-b-2 border-black mb-2"></div>
-          <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
-            Nom de l'album:
-          </label>
-          <input
-            type="text"
-            id="albumName"
-            name="albumName"
-            value={albumName}
-            onChange={(e) => setAlbumName(e.target.value)}
-            className="mt-1 p-2 border rounded"
-          />
-        </div>
-        <div className="mb-2">
-          <label htmlFor="albumDescription" className="block text-sm font-medium text-gray-700">
-            Description de l'album:
-          </label>
-          <textarea
-            id="albumDescription"
-            name="albumDescription"
-            value={albumDescription}
-            onChange={(e) => setAlbumDescription(e.target.value)}
-            className="mt-1 p-2 border rounded"
-          />
-        </div>
-        <div className="w-full border-b-2 border-black mb-2"></div>
-        <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleCreateAlbum}>
-          Créer un nouvel album
-        </button>
-      </div>
-    )}
-  </div>
-</div>
-
+            <div className="relative inline-block">
+              <button
+                className="bg-gray-800 text-white px-4 py-2 rounded-md ml-1 mr-1"
+                onClick={handleButtonClick}
+              >
+                Créer un album
+              </button>
+              {showOptions && (
+                <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded mr-3`}>
+                  <div className="mb-2">
+                    <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                      Création d'album
+                    </label>
+                    <div className="w-full border-b-2 border-black mb-2"></div>
+                    <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                      Nom de l'album:
+                    </label>
+                    <input
+                      type="text"
+                      id="albumName"
+                      name="albumName"
+                      value={albumName}
+                      onChange={(e) => setAlbumName(e.target.value)}
+                      className="mt-1 p-2 border rounded"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label htmlFor="albumDescription" className="block text-sm font-medium text-gray-700">
+                      Description de l'album:
+                    </label>
+                    <textarea
+                      id="albumDescription"
+                      name="albumDescription"
+                      value={albumDescription}
+                      onChange={(e) => setAlbumDescription(e.target.value)}
+                      className="mt-1 p-2 border rounded"
+                    />
+                  </div>
+                  <div className="w-full border-b-2 border-black mb-2"></div>
+                  <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleCreateAlbum}>
+                    Créer un nouvel album
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -619,6 +629,8 @@ const ImageDetail = () => {
           alt={imageDetails.alt}
           className="image-preview w-auto h-auto object-cover mx-auto max-h-screen mb-4 cursor-pointer border-4 border-custom1"/>
       </div>
+      
+      <h2 className="text-3xl  m-6 text-gray-800">Infomartions:</h2>
       <div className="dark:text-white space-y-2 text-center">
         <p>Photographer: {imageDetails.photographer}</p>
         <p>
@@ -638,7 +650,7 @@ const ImageDetail = () => {
         </p>
       </div>
 
-      
+      <h2 className="text-3xl  m-6 text-gray-800">Commentaires:</h2>
       <div className="p-4">
         <textarea
           id="commentaireInput"
@@ -653,59 +665,54 @@ const ImageDetail = () => {
           Ajouter Commentaire
         </button>
       </div>
-
-    <div className="comments-container  p-6 rounded-md ">
-    <h2 className="text-3xl  mb-6 text-gray-800">Commentaires:</h2>
-    <ul className="space-y-6">
-        {comments.map((comment) => (
-            <li key={comment.id} className="border p-6 rounded-md bg-white ">
-                <p className="text-xl font-semibold mb-2 text-blue-600">{comment.username}</p>
-                {editedComments[comment.id] ? (
-                    <div className="mb-4">
-                        <textarea
-                            value={comment.newComment || ''}
-                            onChange={(e) => handleCommentChange(comment.id, e.target.value)}
-                            className="w-full p-2 border rounded-md"
-                        />
-                        <div className="flex justify-end space-x-2 mt-2">
-                            <button
-                                onClick={() => handleSaveEdit(comment.id)}
-                                className="text-blue-500 hover:underline focus:outline-none"
-                            >
-                                Enregistrer
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <p className="text-gray-700">{comment.commentaire}</p>
-                )}
-                <div className="flex justify-end space-x-4 mt-4">
-                    <button
-                        onClick={() => handleDeleteComment(comment.id)}
-                        className="text-red-500 hover:underline focus:outline-none"
-                    >
-                        Supprimer
-                    </button>
-                    <button
-                        onClick={() => signalerCommentaire(comment.id)}
-                        className="text-red-500 hover:underline focus:outline-none"
-                    >
-                        Signaler
-                    </button>
-                    <button
-                        onClick={() => handleEditComment(comment.id)}
-                        className="text-blue-500 hover:underline focus:outline-none"
-                    >
-                        Modifier
-                    </button>
-                </div>
-            </li>
-        ))}
-    </ul>
-</div>
-
-
-
+      <div className="comments-container  p-6 rounded-md ">
+          <ul className="space-y-6">
+              {comments.map((comment) => (
+                  <li key={comment.id} className="border p-6 rounded-md bg-white ">
+                      <p className="text-xl font-semibold mb-2 text-blue-600">{comment.username}</p>
+                      {editedComments[comment.id] ? (
+                          <div className="mb-4">
+                              <textarea
+                                  value={comment.newComment || ''}
+                                  onChange={(e) => handleCommentChange(comment.id, e.target.value)}
+                                  className="w-full p-2 border rounded-md"
+                              />
+                              <div className="flex justify-end space-x-2 mt-2">
+                                  <button
+                                      onClick={() => handleSaveEdit(comment.id)}
+                                      className="text-blue-500 hover:underline focus:outline-none"
+                                  >
+                                      Enregistrer
+                                  </button>
+                              </div>
+                          </div>
+                      ) : (
+                          <p className="text-gray-700">{comment.commentaire}</p>
+                      )}
+                      <div className="flex justify-end space-x-4 mt-4">
+                          <button
+                              onClick={() => handleDeleteComment(comment.id)}
+                              className="text-red-500 hover:underline focus:outline-none"
+                          >
+                              Supprimer
+                          </button>
+                          <button
+                              onClick={() => signalerCommentaire(comment.id)}
+                              className="text-red-500 hover:underline focus:outline-none"
+                          >
+                              Signaler
+                          </button>
+                          <button
+                              onClick={() => handleEditComment(comment.id)}
+                              className="text-blue-500 hover:underline focus:outline-none"
+                          >
+                              Modifier
+                          </button>
+                      </div>
+                  </li>
+              ))}
+          </ul>
+      </div>
 
       {isImageFullscreen && (
         <div
