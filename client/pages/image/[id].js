@@ -22,6 +22,7 @@ const ImageDetail = () => {
   const [userAlbums, setUserAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(undefined);
 
+ 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,11 +81,11 @@ const ImageDetail = () => {
     };
   }, [isImageFullscreen]);
 
-  const fetchLikeStatus = async () => {
-    try {
-      const IDimages = imageDetails?.src?.original;
+  useEffect(() => {
+    const fetchLikeStatus = async () => {
+      try {
+        const IDimages = imageDetails?.src?.original;
   
-      if (user_session && user_session.id) { 
         const { data, error } = await supabase
           .from('favoris')
           .select('*')
@@ -96,21 +97,17 @@ const ImageDetail = () => {
         }
   
         setIsLiked(data.length > 0);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du statut de like:', error.message);
       }
-    } catch (error) {
-      console.error('Erreur lors de la récupération du statut de like:', error.message);
-    }
-  };
+    };
   
-  useEffect(() => {
     fetchLikeStatus();
   }, [imageDetails?.src?.original, user_session?.id]);
-  
 
   useEffect(() => {
     fetchUserAlbums();
-  }, [selectedAlbum]);
-  
+  }, []);
 
   const fetchUserAlbums = async () => {
     try {
@@ -131,26 +128,6 @@ const ImageDetail = () => {
       console.error('Erreur dans fetchUserAlbums:', error);
     }
   };
-
-  const refreshUserAlbums = async () => {
-    try {
-      if (user_session) {
-        const { data, error } = await supabase
-          .from('album')
-          .select('id, name_liste')
-          .filter('id_user', 'eq', user_session.id);
-  
-        if (!error) {
-          setUserAlbums(data);
-        } else {
-          console.error('Erreur lors de la récupération des albums de l\'utilisateur:', error);
-        }
-      }
-    } catch (error) {
-      console.error('Erreur dans refreshUserAlbums:', error);
-    }
-  };
-  
   
 
   //Gestion des images 
@@ -465,13 +442,10 @@ const ImageDetail = () => {
 
   const handleAddToExistingAlbum = async () => {
     try {
-      console.log('handleAddToExistingAlbum called');
-        
       if (selectedAlbum) {
-        console.log('Selected Album:', selectedAlbum);
         const imageId = id;
         const imageUrl = imageDetails.src.original;
-  
+
         const { data, error } = await supabase
           .from('link_image_album')
           .insert([
@@ -481,13 +455,11 @@ const ImageDetail = () => {
               url: imageUrl,
             },
           ]);
-  
+
         if (!error) {
           console.log('Image added to existing album successfully:', data);
-  
-          setUserAlbums((prevAlbums) => [...prevAlbums, { id: selectedAlbum, name_liste: '' }]);
-  
           setShowOptions2(false);
+          fetchUserAlbums();
         } else {
           console.error('Error adding image to existing album:', error);
         }
@@ -499,22 +471,9 @@ const ImageDetail = () => {
     }
   };
   
-  
 
   const handleCreateAlbum = async () => {
     try {
-      const { data: userData, error: userError } = await supabase
-        .from('user')
-        .select('username')
-        .eq('id', user_session.id)
-        .single();
-  
-      if (userError) {
-        throw userError;
-      }
-  
-      const username = userData?.username;
-
       if (user_session.id) {
         const { data, error } = await supabase
           .from('album')
@@ -523,7 +482,6 @@ const ImageDetail = () => {
               id_user: user_session.id,
               name_liste: albumName,
               description_liste: albumDescription,
-              username: username,
             },
           ]);
   
@@ -554,7 +512,7 @@ const ImageDetail = () => {
           <div className="flex justify-end space-x-1000 my-5">
             <button
               onClick={toggleLikeDislike}
-              className={`bg-${isLiked ? 'gray' : 'gray'}-800 text-white px-4 py-2 rounded-md ml-2 mr-1`}
+              className={`bg-${isLiked ? 'gray' : 'gray'}-800 text-white px-4 py-2 rounded-md ml-2`}
             >
               {isLiked ? (
                 <img src="/images/heart.svg" alt="Dislike" className="w-8 h-8" />
@@ -571,7 +529,7 @@ const ImageDetail = () => {
           <div className="flex justify space-x-2 my-5">
   <div className="relative inline-block">
     <button
-      className="bg-gray-800 text-white px-4 py-2 rounded-md mr-4"
+      className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
       onClick={handleButtonClicks}
     >
       Ajouter l'image à un album
@@ -597,10 +555,7 @@ const ImageDetail = () => {
           </select>
         </div>
         <div className="w-full border-b-2 border-black mb-2"></div>
-        <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={() => {
-            fetchUserAlbums(); 
-            handleButtonClicks();
-          }}>
+        <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleAddToExistingAlbum}>
           Ajouter à l'album existant
         </button>
       </div>
@@ -615,7 +570,7 @@ const ImageDetail = () => {
       Créer un album
     </button>
     {showOptions && (
-      <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded `}>
+      <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded mr-3`}>
         <div className="mb-2">
           <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
             Création d'album

@@ -7,13 +7,16 @@ function AlbumPage() {
   const router = useRouter();
   const { album } = router.query;
   const [albumData, setAlbumData] = useState(null);
+  const [albumImages, setAlbumImages] = useState([]);
+  const [newTitle, setNewTitle] = useState(''); 
+  const [newDescription, setNewDescription] = useState(''); 
 
   useEffect(() => {
     const fetchAlbumData = async () => {
       try {
         const { data: albumData, error } = await supabase
           .from('album')
-          .select('id, name_liste, description_liste, username, link_image_album(id_album, url)')
+          .select('id, name_liste, description_liste, username')
           .eq('id', album)
           .single();
 
@@ -22,8 +25,19 @@ function AlbumPage() {
         }
 
         setAlbumData(albumData);
+
+        const { data: linkImageData, error: linkImageError } = await supabase
+          .from('link_image_album')
+          .select('id, id_image, url') 
+          .eq('id_album', album);
+
+        if (linkImageError) {
+          throw linkImageError;
+        }
+
+        setAlbumImages(linkImageData);
       } catch (error) {
-        console.error('Erreur lors de la récupération des données de l\'album:', error);
+        console.error("Erreur lors de la récupération des données de l'album:", error);
       }
     };
 
@@ -32,21 +46,70 @@ function AlbumPage() {
     }
   }, [album]);
 
-  const handleDeleteMedia = async (mediaId) => {
+  const handleDeleteImage = async (imageId) => {
     try {
-      // Ajoutez ici le code pour supprimer le média de la base de données
-      // Utilisez supabase.from('votreTable').delete().eq('id', mediaId);
-      // Assurez-vous de mettre à jour l'état local pour refléter les changements
+      const { data: linkImageData, error: linkImageError } = await supabase
+        .from('link_image_album')
+        .delete()
+        .eq('id', imageId);
+
+      if (linkImageError) {
+        throw linkImageError;
+      }
+
+      setAlbumImages((prevImages) => prevImages.filter((image) => image.id !== imageId));
     } catch (error) {
-      console.error('Erreur lors de la suppression du média:', error);
+      console.error("Erreur lors de la suppression de l'image:", error);
     }
   };
 
-  const handleEditMedia = async (mediaId) => {
-    // Ajoutez ici le code pour la fonction d'édition du média si nécessaire
+  const handleDeleteAlbum = async () => {
+    try {
+      await supabase
+        .from('link_image_album')
+        .delete()
+        .eq('id_album', album);
+  
+      const { data, error } = await supabase
+        .from('album')
+        .delete()
+        .eq('id', album);
+  
+      if (error) {
+        throw error;
+      }
+  
+      router.push('/album');
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'album:", error);
+    }
   };
 
-  if (!albumData) {
+  const handleEditAlbum = async (newTitle, newDescription) => {
+    try {
+      const { data, error } = await supabase
+        .from('album')
+        .update({
+          name_liste: newTitle,
+          description_liste: newDescription,
+        })
+        .eq('id', album);
+
+      if (error) {
+        throw error;
+      }
+
+      setAlbumData((prevData) => ({
+        ...prevData,
+        name_liste: newTitle,
+        description_liste: newDescription,
+      }));
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'album:", error);
+    }
+  };
+
+  if (!albumData || !albumImages) {
     return <p>Chargement en cours...</p>;
   }
 
@@ -57,21 +120,55 @@ function AlbumPage() {
       <p className="text-gray-500 mb-4">Créé par : {albumData.username}</p>
 
       <div className="flex flex-wrap">
-  {albumData.media && albumData.media.map((media) => (
-    <div key={media.id} className="m-2">
-      <img
-        src={media.url}
-        alt={`Media ${media.id}`}
-        className="rounded-md"
-      />
-    </div>
-  ))}
-</div>
-
+        {albumImages.map((image) => (
+          <div key={image.id} className="m-2">
+            <Link href={`/image/${image.id_image}`} passHref>
+              <img
+                src={image.url}
+                alt={`Image ${image.id}`}
+                className="rounded-md max-w-xs"
+              />
+            </Link>
+            <button
+              onClick={() => handleDeleteImage(image.id)}
+              className="text-red-500 block mt-2"
+            >
+              Supprimer
+            </button>
+          </div>
+        ))}
+      </div>
 
       <Link href="/album">
         <button className="text-blue-500 mt-4 block">Retour à la liste des albums</button>
       </Link>
+
+      <div className="mt-4">
+        <button onClick={handleDeleteAlbum} className="text-red-500">
+          Supprimer l'album
+        </button>
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-lg font-semibold mb-2">Éditer l'album</h2>
+        <input
+          type="text"
+          placeholder="Nouveau titre"
+          value={newTitle}
+          onChange={(e) => setNewTitle(e.target.value)}
+          className="border rounded-md p-2 mr-2"
+        />
+        <input
+          type="text"
+          placeholder="Nouvelle description"
+          value={newDescription}
+          onChange={(e) => setNewDescription(e.target.value)}
+          className="border rounded-md p-2 mr-2"
+        />
+        <button onClick={() => handleEditAlbum(newTitle, newDescription)} className="text-blue-500">
+          Enregistrer les modifications
+        </button>
+      </div>
     </div>
   );
 }
