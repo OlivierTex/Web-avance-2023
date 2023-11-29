@@ -74,25 +74,25 @@ function Album() {
       </div>
       {filteredAlbums.map((album) => (
         <div key={album.id} className="comments-container p-6 rounded-md ">
-            <div className="border p-6 rounded-md bg-white">
             <Link href={`/albums/${album.id}`}>
+            <div className="border p-6 rounded-md bg-white">
+            
                 <h2 className="text-xl font-bold">{album.name_liste}</h2>
                 <p className="text-gray-600">Description : {album.description_liste}</p>
                 <p className="text-gray-500">Créé par : {album.username}</p>
-            </Link>
             
-            <div className="flex space-x-4">
-                {album.media.map((media) => (
-                <img
-                    key={media.id}
-                    src={media.url}
-                    alt={`Media ${media.id}`}
-                    className="w-24 h-24"
-                />
-                ))}
+                <div className="flex space-x-4">
+                    {album.media.map((media) => (
+                    <img
+                        key={media.id}
+                        src={media.url}
+                        alt={`Media ${media.id}`}
+                        className="w-24 h-24"
+                    />
+                    ))}
+                </div>
             </div>
-
-            </div>
+            </Link>
         </div>
         ))}
     </div>
