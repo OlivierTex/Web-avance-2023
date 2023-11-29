@@ -74,7 +74,7 @@ function Album() {
       </div>
       {filteredAlbums.map((album) => (
         <div key={album.id} className="comments-container p-6 rounded-md ">
-            <Link href={`/albums/${album.id}`}>
+            <Link href={`/album/${album.id}`}>
             <div className="border p-6 rounded-md bg-white">
             
                 <h2 className="text-xl font-bold">{album.name_liste}</h2>

@@ -80,11 +80,11 @@ const ImageDetail = () => {
     };
   }, [isImageFullscreen]);
 
-  useEffect(() => {
-    const fetchLikeStatus = async () => {
-      try {
-        const IDimages = imageDetails?.src?.original;
+  const fetchLikeStatus = async () => {
+    try {
+      const IDimages = imageDetails?.src?.original;
   
+      if (user_session && user_session.id) { 
         const { data, error } = await supabase
           .from('favoris')
           .select('*')
@@ -96,17 +96,21 @@ const ImageDetail = () => {
         }
   
         setIsLiked(data.length > 0);
-      } catch (error) {
-        console.error('Erreur lors de la récupération du statut de like:', error.message);
       }
-    };
+    } catch (error) {
+      console.error('Erreur lors de la récupération du statut de like:', error.message);
+    }
+  };
   
+  useEffect(() => {
     fetchLikeStatus();
   }, [imageDetails?.src?.original, user_session?.id]);
+  
 
   useEffect(() => {
     fetchUserAlbums();
-  }, []);
+  }, [selectedAlbum]);
+  
 
   const fetchUserAlbums = async () => {
     try {
@@ -127,6 +131,26 @@ const ImageDetail = () => {
       console.error('Erreur dans fetchUserAlbums:', error);
     }
   };
+
+  const refreshUserAlbums = async () => {
+    try {
+      if (user_session) {
+        const { data, error } = await supabase
+          .from('album')
+          .select('id, name_liste')
+          .filter('id_user', 'eq', user_session.id);
+  
+        if (!error) {
+          setUserAlbums(data);
+        } else {
+          console.error('Erreur lors de la récupération des albums de l\'utilisateur:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur dans refreshUserAlbums:', error);
+    }
+  };
+  
   
 
   //Gestion des images 
@@ -441,10 +465,13 @@ const ImageDetail = () => {
 
   const handleAddToExistingAlbum = async () => {
     try {
+      console.log('handleAddToExistingAlbum called');
+        
       if (selectedAlbum) {
+        console.log('Selected Album:', selectedAlbum);
         const imageId = id;
         const imageUrl = imageDetails.src.original;
-
+  
         const { data, error } = await supabase
           .from('link_image_album')
           .insert([
@@ -454,11 +481,13 @@ const ImageDetail = () => {
               url: imageUrl,
             },
           ]);
-
+  
         if (!error) {
           console.log('Image added to existing album successfully:', data);
+  
+          setUserAlbums((prevAlbums) => [...prevAlbums, { id: selectedAlbum, name_liste: '' }]);
+  
           setShowOptions2(false);
-          fetchUserAlbums();
         } else {
           console.error('Error adding image to existing album:', error);
         }
@@ -469,6 +498,7 @@ const ImageDetail = () => {
       console.error('Error in handleAddToExistingAlbum:', error);
     }
   };
+  
   
 
   const handleCreateAlbum = async () => {
@@ -567,7 +597,10 @@ const ImageDetail = () => {
           </select>
         </div>
         <div className="w-full border-b-2 border-black mb-2"></div>
-        <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleAddToExistingAlbum}>
+        <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={() => {
+            fetchUserAlbums(); 
+            handleButtonClicks();
+          }}>
           Ajouter à l'album existant
         </button>
       </div>
