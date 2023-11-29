@@ -22,7 +22,6 @@ const ImageDetail = () => {
   const [userAlbums, setUserAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(undefined);
 
- 
 
   useEffect(() => {
     const fetchData = async () => {
