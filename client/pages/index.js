@@ -36,7 +36,7 @@ function Home() {
   }
 
   const handleImageClick = () => {
-    router.push(`/ID/${randomImage.id}`);
+    router.push(`/id/${randomImage.id}`);
   };
 
   return (

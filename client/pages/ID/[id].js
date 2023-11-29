@@ -474,6 +474,18 @@ const ImageDetail = () => {
 
   const handleCreateAlbum = async () => {
     try {
+      const { data: userData, error: userError } = await supabase
+        .from('user')
+        .select('username')
+        .eq('id', user_session.id)
+        .single();
+  
+      if (userError) {
+        throw userError;
+      }
+  
+      const username = userData?.username;
+
       if (user_session.id) {
         const { data, error } = await supabase
           .from('album')
@@ -482,6 +494,7 @@ const ImageDetail = () => {
               id_user: user_session.id,
               name_liste: albumName,
               description_liste: albumDescription,
+              username: username,
             },
           ]);
   
@@ -512,7 +525,7 @@ const ImageDetail = () => {
           <div className="flex justify-end space-x-1000 my-5">
             <button
               onClick={toggleLikeDislike}
-              className={`bg-${isLiked ? 'gray' : 'gray'}-800 text-white px-4 py-2 rounded-md ml-2`}
+              className={`bg-${isLiked ? 'gray' : 'gray'}-800 text-white px-4 py-2 rounded-md ml-2 mr-1`}
             >
               {isLiked ? (
                 <img src="/images/heart.svg" alt="Dislike" className="w-8 h-8" />
@@ -529,7 +542,7 @@ const ImageDetail = () => {
           <div className="flex justify space-x-2 my-5">
   <div className="relative inline-block">
     <button
-      className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+      className="bg-gray-800 text-white px-4 py-2 rounded-md mr-4"
       onClick={handleButtonClicks}
     >
       Ajouter l'image à un album
@@ -570,7 +583,7 @@ const ImageDetail = () => {
       Créer un album
     </button>
     {showOptions && (
-      <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded mr-3`}>
+      <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded `}>
         <div className="mb-2">
           <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
             Création d'album

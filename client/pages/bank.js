@@ -75,7 +75,7 @@ function Bank() {
         <br></br><br></br>
         <div className={`grid grid-cols-1 ${imagesPerRow === 2 ? 'sm:grid-cols-2' : ''} ${imagesPerRow === 4 ? 'md:grid-cols-4' : ''} ${imagesPerRow === 6 ? 'grid-cols-6' : ''} gap-4 place-items-center`}>
           {(searchTerm === '' ? randomImages : images).map((image) => (
-            <Link key={image.id} href={`/ID/${image.id}`} passHref>
+            <Link key={image.id} href={`/id/${image.id}`} passHref>
               <img 
                 src={image.src.medium} 
                 srcSet={`${image.src.small} 640w, ${image.src.medium} 1280w, ${image.src.large} 1920w`}
@@ -98,7 +98,7 @@ function Bank() {
         <div className="flex flex-wrap justify-center mt-8 gap-y-4">
           {(searchTerm === '' ? randomImages : images).map((image) => (
             <div key={image.id} className={`${getClassName(imagesPerRow)} px-2 aspect-[1]`}>
-              <Link href={`/ID/${image.id}`} passHref>
+              <Link href={`/id/${image.id}`} passHref>
                 <div className="block h-full relative group bg-custom4 border border-custom1 p-1 overflow-hidden cursor-pointer">
                   <img 
                     src={image.src.medium} 
