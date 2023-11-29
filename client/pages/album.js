@@ -47,9 +47,12 @@ function Album() {
 
   const filteredAlbums = albums.filter((album) => {
     const searchFields = [album.username, album.name_liste];
-    return searchFields.some((field) =>
-      field.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  
+    return searchFields.some((field) => {
+      // Vérifier si le champ est null ou undefined avant d'appeler toLowerCase()
+      const fieldValue = field ? field.toLowerCase() : '';
+      return fieldValue.includes(searchTerm.toLowerCase());
+    });
   });
 
   return (

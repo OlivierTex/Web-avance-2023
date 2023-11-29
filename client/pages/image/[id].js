@@ -540,7 +540,7 @@ const ImageDetail = () => {
           <div className="flex justify space-x-2 my-5">
             <div className="relative inline-block">
               <button
-                className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"
+                className="bg-gray-800 text-white px-4 py-2 rounded-md mr-2"
                 onClick={handleButtonClicks}
               >
                 Ajouter l'image à un album
