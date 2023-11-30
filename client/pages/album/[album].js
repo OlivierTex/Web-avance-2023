@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import supabase from '../../supabase';
@@ -7,78 +7,102 @@ function AlbumPage() {
   const router = useRouter();
   const { album } = router.query;
   const [albumData, setAlbumData] = useState(null);
+  const [albumMedia, setAlbumMedia] = useState([]);
+  const [newTitle, setNewTitle] = useState('');
+  const [newDescription, setNewDescription] = useState('');
   const [albumImages, setAlbumImages] = useState([]);
-  const [newTitle, setNewTitle] = useState(''); 
-  const [newDescription, setNewDescription] = useState(''); 
+  const [albumVideos, setAlbumVideos] = useState([]);
+
 
   useEffect(() => {
     const fetchAlbumData = async () => {
+        try {
+          const { data: albumData, error } = await supabase
+            .from('album')
+            .select('id, name_liste, description_liste, username')
+            .eq('id', album)
+            .single();
+  
+          if (error) {
+            throw error;
+          }
+  
+          setAlbumData(albumData);
+  
+          const { data: linkImageData, error: linkImageError } = await supabase
+            .from('link_image_album')
+            .select('id, id_image, url')
+            .eq('id_album', album);
+  
+          if (linkImageError) {
+            throw linkImageError;
+          }
+  
+          const { data: linkVideoData, error: linkVideoError } = await supabase
+            .from('link_video_album')
+            .select('id, id_video, url')
+            .eq('id_album', album);
+  
+          if (linkVideoError) {
+            throw linkVideoError;
+          }
+  
+          setAlbumImages(linkImageData);
+          setAlbumVideos(linkVideoData);
+        } catch (error) {
+          console.error("Erreur lors de la récupération des données de l'album:", error);
+        }
+      };
+  
+      if (album) {
+        fetchAlbumData();
+      }
+    }, [album]);
+  
+    const handleDeleteMedia = async (mediaId, isVideo) => {
       try {
-        const { data: albumData, error } = await supabase
-          .from('album')
-          .select('id, name_liste, description_liste, username')
-          .eq('id', album)
-          .single();
-
-        if (error) {
-          throw error;
+        const mediaTable = isVideo ? 'link_video_album' : 'link_image_album';
+  
+        const { data: linkMediaData, error: linkMediaError } = await supabase
+          .from(mediaTable)
+          .delete()
+          .eq('id', mediaId);
+  
+        if (linkMediaError) {
+          throw linkMediaError;
         }
-
-        setAlbumData(albumData);
-
-        const { data: linkImageData, error: linkImageError } = await supabase
-          .from('link_image_album')
-          .select('id, id_image, url') 
-          .eq('id_album', album);
-
-        if (linkImageError) {
-          throw linkImageError;
+  
+        if (isVideo) {
+          setAlbumVideos((prevVideos) => prevVideos.filter((video) => video.id !== mediaId));
+        } else {
+          setAlbumImages((prevImages) => prevImages.filter((image) => image.id !== mediaId));
         }
-
-        setAlbumImages(linkImageData);
       } catch (error) {
-        console.error("Erreur lors de la récupération des données de l'album:", error);
+        console.error("Erreur lors de la suppression de l'image/vidéo:", error);
       }
     };
-
-    if (album) {
-      fetchAlbumData();
-    }
-  }, [album]);
-
-  const handleDeleteImage = async (imageId) => {
-    try {
-      const { data: linkImageData, error: linkImageError } = await supabase
-        .from('link_image_album')
-        .delete()
-        .eq('id', imageId);
-
-      if (linkImageError) {
-        throw linkImageError;
-      }
-
-      setAlbumImages((prevImages) => prevImages.filter((image) => image.id !== imageId));
-    } catch (error) {
-      console.error("Erreur lors de la suppression de l'image:", error);
-    }
-  };
-
+  
   const handleDeleteAlbum = async () => {
     try {
       await supabase
         .from('link_image_album')
         .delete()
         .eq('id_album', album);
-  
+
+      await supabase
+        .from('link_video_album')
+        .delete()
+        .eq('id_album', album);
+
       const { data, error } = await supabase
         .from('album')
         .delete()
         .eq('id', album);
-  
+
       if (error) {
         throw error;
       }
-  
+
       router.push('/album');
     } catch (error) {
       console.error("Erreur lors de la suppression de l'album:", error);
@@ -109,7 +133,7 @@ function AlbumPage() {
     }
   };
 
-  if (!albumData || !albumImages) {
+  if (!albumData || !albumMedia) {
     return <p>Chargement en cours...</p>;
   }
 
@@ -120,34 +144,48 @@ function AlbumPage() {
       <p className="text-gray-500 mb-4">Créé par : {albumData.username}</p>
 
       <div className="flex flex-wrap">
-        {albumImages.map((image) => (
+      {albumImages.map((image) => (
           <div key={image.id} className="m-2">
             <Link href={`/image/${image.id_image}`} passHref>
               <img
                 src={image.url}
                 alt={`Image ${image.id}`}
-                className="rounded-md max-w-xs"
+                className="rounded-md max-w-xs cursor-pointer"
               />
             </Link>
             <button
-              onClick={() => handleDeleteImage(image.id)}
-              className="text-red-500 block mt-2"
+              onClick={() => handleDeleteMedia(image.id, false)}
+              className="text-red-500 block mt-2 cursor-pointer"
             >
               Supprimer
             </button>
           </div>
         ))}
+
+{albumMedia.map((media) => (
+  <div key={media.id} className="m-2">
+    <Link href={media.boolean ? `/video/${media.id_image}` : `/image/${media.id_image}`} passHref>
+      <div className="block h-full relative group bg-custom4 border border-custom1 p-1 overflow-hidden cursor-pointer">
+        <img
+          src={media.url}
+          className="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110"
+          alt={media.boolean ? "Video Thumbnail" : `Image ${media.id}`}
+        />
+      </div>
+    </Link>
+    <button
+      onClick={() => handleDeleteMedia(media.id)}
+      className="text-red-500 block mt-2 cursor-pointer"
+    >
+      Supprimer
+    </button>
+  </div>
+))}
       </div>
 
       <Link href="/album">
         <button className="text-blue-500 mt-4 block">Retour à la liste des albums</button>
       </Link>
-
-      <div className="mt-4">
-        <button onClick={handleDeleteAlbum} className="text-red-500">
-          Supprimer l'album
-        </button>
-      </div>
 
       <div className="mt-4">
         <h2 className="text-lg font-semibold mb-2">Éditer l'album</h2>

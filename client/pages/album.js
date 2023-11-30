@@ -3,6 +3,7 @@ import Link from 'next/link';
 import supabase from '../supabase';
 import { useAuth } from '../components/AuthContext';
 
+
 function Album() {
   const [albums, setAlbums] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,38 +19,46 @@ function Album() {
         const { data: albumsData, error } = await supabase
           .from('album')
           .select('id, name_liste, description_liste, username');
-
+  
         if (error) {
           throw error;
         }
-
+  
         const albumsWithMedia = await Promise.all(
           albumsData.map(async (album) => {
-            const { data: mediaData, error: mediaError } = await supabase
+            const { data: imageMedia, error: imageError } = await supabase
               .from('link_image_album')
-              .select('id, id_album, url, boolean')
+              .select('id_image, id_album, url')
               .eq('id_album', album.id)
               .limit(5);
-
-            if (mediaError) {
-              throw mediaError;
+  
+            const { data: videoMedia, error: videoError } = await supabase
+              .from('link_video_album')
+              .select('id_video, id_album, url')
+              .eq('id_album', album.id)
+              .limit(5);
+  
+            if (imageError || videoError) {
+              throw imageError || videoError;
             }
-
+  
             return {
               ...album,
-              media: mediaData || [],
+              images: imageMedia || [],
+              videos: videoMedia || [],
             };
           })
         );
-
+  
         setAlbums(albumsWithMedia);
       } catch (error) {
         console.error('Erreur lors de la récupération des albums:', error);
       }
     };
-
+  
     fetchAlbums();
   }, []);
+  
 
 
   const filteredAlbums = albums.filter((album) => {
@@ -169,26 +178,28 @@ function Album() {
 
 
       {filteredAlbums.map((album) => (
-        <div key={album.id} className="comments-container p-6 rounded-md ">
-          <Link href={`/album/${album.id}`}>
-            <div className="border p-6 rounded-md bg-white">
-              <h2 className="text-xl font-bold">{album.name_liste}</h2>
-              <p className="text-gray-600">Description : {album.description_liste}</p>
-              <p className="text-gray-500">Créé par : {album.username}</p>
+      <div key={album.id} className="comments-container p-6 rounded-md">
+        <Link href={`/album/${album.id}`}>
+          <div className="border p-6 rounded-md bg-white">
+            <h2 className="text-xl font-bold">{album.name_liste}</h2>
+            <p className="text-gray-600">Description : {album.description_liste}</p>
+            <p className="text-gray-500">Créé par : {album.username}</p>
 
-              <div className="flex space-x-4">
-                {album.media.map((media) => (
-                  media.boolean ? (
-                    <img key={media.id} src={media.image} alt={`Video Placeholder`} className="w-24 h-24" />
-                  ):(
-                    <img key={media.id} src={media.url} alt={`Media ${media.id}`} className="w-24 h-24" />
-                  )
-                ))}
-              </div>
+            <div className="flex space-x-4">
+              {album.images.map((image) => (
+                <img key={image.id} src={image.url} alt={`Image ${image.id}`} className="w-24 h-24" />
+              ))}
             </div>
-          </Link>
-        </div>
-      ))}
+
+            <div className="flex space-x-4">
+              {album.videos.map((video) => (
+                <video key={video.id} src={video.url} controls className="w-24 h-24" />
+              ))}
+            </div>
+          </div>
+        </Link>
+      </div>
+    ))}
     </div>
   );
 }

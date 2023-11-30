@@ -100,10 +100,10 @@ const VideoPage = () => {
       localStorage.setItem(likeKey, isLiked ? 'false' : 'true');
   
       const { data: existingFavorites, error: existingError } = await supabase
-        .from('favoris')
-        .select('url_images')
+        .from('favoris_video')
+        .select('url_video')
         .eq('id_user', user_session.id)
-        .eq('url_images', IDivideo);
+        .eq('url_video', IDivideo);
   
       if (existingError) {
         throw existingError;
@@ -112,10 +112,10 @@ const VideoPage = () => {
       if (isLiked) {
         if (existingFavorites.length > 0) {
           const { data, error } = await supabase
-            .from('favoris')
+            .from('favoris_video')
             .delete()
             .eq('id_user', user_session.id)
-            .eq('url_images', IDivideo);
+            .eq('url_video', IDivideo);
   
           if (error) {
             throw error;
@@ -126,9 +126,9 @@ const VideoPage = () => {
       } else {
         if (existingFavorites.length === 0) {
           const { data, error } = await supabase
-            .from('favoris')
+            .from('favoris_video')
             .insert([
-              { like_boolean: false, id_user: user_session.id, url_images: IDivideo, api_image_id: video },
+              { id_user: user_session.id, url_video: IDivideo, id_video: video },
             ]);
   
           if (error) {
@@ -338,13 +338,12 @@ const VideoPage = () => {
           const imageUrl = videoData.url;
   
           const { data, error } = await supabase
-            .from('link_image_album')
+            .from('link_video_album')
             .insert([
               {
                 id_album: selectedAlbum,
-                id_image: imageId,
+                id_video: imageId,
                 url: imageUrl,
-                boolean: true,
               },
             ]);
   

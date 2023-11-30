@@ -92,10 +92,10 @@ const ImageDetail = () => {
         }
   
         const { data, error } = await supabase
-          .from('favoris')
+          .from('favoris_image')
           .select('*')
           .eq('id_user', user_session.id)
-          .eq('url_images', IDimages);
+          .eq('url_image', IDimages);
   
         if (error) {
           throw error;
@@ -224,10 +224,10 @@ const ImageDetail = () => {
 
       if (isLiked) {
         const { data, error } = await supabase
-          .from('favoris')
+          .from('favoris_image')
           .delete()
           .eq('id_user', user_session.id)
-          .eq('url_images', IDimages);
+          .eq('url_image', IDimages);
 
         if (error) {
           throw error;
@@ -236,10 +236,10 @@ const ImageDetail = () => {
         console.log('Image n\'est plus aimée!', data);
       } else {
         const { data: existingFavorites, error } = await supabase
-          .from('favoris')
+          .from('favoris_image')
           .select('*')
           .eq('id_user', user_session.id)
-          .eq('url_images', IDimages);
+          .eq('url_image', IDimages);
 
         if (error) {
           throw error;
@@ -247,9 +247,9 @@ const ImageDetail = () => {
 
         if (existingFavorites.length === 0) {
           const { data, error } = await supabase
-            .from('favoris')
+            .from('favoris_image')
             .insert([
-              { like_boolean: true, id_user:  user_session.id, url_images: IDimages, api_image_id: id },
+              { id_user:  user_session.id, url_image: IDimages, id_image: id },
             ]);
 
           if (error) {
@@ -464,7 +464,6 @@ const ImageDetail = () => {
               id_album: selectedAlbum,
               id_image: imageId,
               url: imageUrl,
-              boolean: false,
             },
           ]);
 
