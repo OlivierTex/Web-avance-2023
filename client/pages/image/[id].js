@@ -485,6 +485,13 @@ const ImageDetail = () => {
   
 
   const handleCreateAlbum = async () => {
+    const { data: userData, error: userError } = await supabase
+    .from('user')
+    .select('username')
+    .eq('id', user_session.id)
+    .single();
+
+    const username = userData?.username;
     try {
       if (user_session.id) {
         const { data, error } = await supabase
@@ -494,6 +501,7 @@ const ImageDetail = () => {
               id_user: user_session.id,
               name_liste: albumName,
               description_liste: albumDescription,
+              username: username,
             },
           ]);
   
@@ -518,7 +526,7 @@ const ImageDetail = () => {
   return (
     <div className="body">
       <div className="relative">
-        <p className="dark:text-white text-center my-5">
+        <p className="h1 dark:text-white text-center my-5">
           <strong>Image Name:</strong> {imageDetails.alt}
         </p>
         <div className="flex justify-between items-center" >

@@ -1,20 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
+import supabase from '../supabase';
+
 
 export default function Contacts() {
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { data, error } = await supabase.from('commentaire_admin').upsert([
+      { commentaire: message },
+    ]);
+
+    if (error) {
+      console.error('Erreur lors de l\'envoi du commentaire à Supabase:', error);
+    } else {
+      console.log('Commentaire envoyé avec succès:', data);
+    }
+  };
+
   return (
     <div className="bg-light dark:bg-dark p-8">
       <h1 className="text-3xl font-bold mb-6 dark:text-white">Contacts</h1>
-
-      <form className="mb-8">
+      <form className="mb-8" onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="name" className="block text-custom5 text-sm dark:text-white mb-2">
-            Message :
+            Commentaire :
           </label>
           <input
             type="text"
             id="name"
             name="name"
-            placeholder="Saisissez votre message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Saisissez votre commentaire"
             className="form-input p-2 w-full bg-custom2 border-2 border-custom3 rounded-md"
           />
         </div>
