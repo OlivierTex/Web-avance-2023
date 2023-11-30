@@ -122,16 +122,6 @@ function Bank() {
       <br></br>
       <div className="w-4/5 mx-auto">
         <form onSubmit={handleSearch} className="flex justify-center mb-2 dropdown rounded-md">
-          <select 
-            id="infoSelect" 
-            name="infos" 
-            className="rounded-md" 
-          >
-            <option value="info1">Recommandé </option>
-            <option value="info2">Mise en avant</option>
-            <option value="info3">Like : Odre croissant</option>
-            <option value="info4">Commentaire : Odre croissant</option>
-          </select>
           <input
             type="search"
             id="default-search"

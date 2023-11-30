@@ -464,6 +464,7 @@ const ImageDetail = () => {
               id_album: selectedAlbum,
               id_image: imageId,
               url: imageUrl,
+              boolean: false,
             },
           ]);
 
@@ -529,7 +530,16 @@ const ImageDetail = () => {
         <p className="h1 dark:text-white text-center my-5">
           <strong>Image Name:</strong> {imageDetails.alt}
         </p>
-        <div className="flex justify-between items-center" >
+
+
+      <div onClick={() => setIsImageFullscreen(!isImageFullscreen)} className="cursor-pointer">
+        <img
+          src={imageDetails.src.original}
+          alt={imageDetails.alt}
+          className="image-preview w-auto h-auto object-cover mx-auto max-h-screen mb-4 cursor-pointer border-4 border-custom1"/>
+      </div>
+
+      <div className="flex justify-between items-center" >
           <div className="flex justify-end space-x-1000 my-5">
             <button
               onClick={toggleLikeDislike}
@@ -630,13 +640,6 @@ const ImageDetail = () => {
         </div>
       </div>
 
-
-      <div onClick={() => setIsImageFullscreen(!isImageFullscreen)} className="cursor-pointer">
-        <img
-          src={imageDetails.src.original}
-          alt={imageDetails.alt}
-          className="image-preview w-auto h-auto object-cover mx-auto max-h-screen mb-4 cursor-pointer border-4 border-custom1"/>
-      </div>
       
       <h2 className="text-3xl  m-6 text-gray-800">Infomartions:</h2>
       <div className="dark:text-white space-y-2 text-center">

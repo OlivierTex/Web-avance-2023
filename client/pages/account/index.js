@@ -26,25 +26,29 @@ const Utilisateur = () => {
       if (user) {
         const { data: userFavorites, error } = await supabase
           .from('favoris')
-          .select('url_images, api_image_id')
+          .select('url_images, api_image_id, boolean_column') 
           .filter('id_user', 'eq', session.user.id);
-
+  
+        console.log('userFavorites:', userFavorites); 
+  
         if (!error) {
-          const favoriteImages = userFavorites.map((favorite, index) => ({
-            id: index,
+          const favoriteMedia = userFavorites.map((favorite, index) => ({
             src: favorite.url_images,
-            alt: `Favorite Image ${index}`,
+            isVideo: favorite.like_boolean,
             api_image_id: favorite.api_image_id,
           }));
-
-          setImages(favoriteImages);
-          setTotalPages(Math.ceil(favoriteImages.length / itemsPerPage));
+  
+          console.log('favoriteMedia:', favoriteMedia); 
+  
+          setImages(favoriteMedia);
+          setTotalPages(Math.ceil(favoriteMedia.length / itemsPerPage));
         }
       }
     } catch (error) {
       console.error(error);
     }
   };
+  
 
   const deconnecterUtilisateur = async () => {
     const { error } = await supabase.auth.signOut();
@@ -66,15 +70,22 @@ const Utilisateur = () => {
         </div>
 
         <div className="mb-4">
-          <h2 className="h2">Images Likées</h2>
-          <div className="flex flex-wrap justify-center mt-8 gap-y-4">
-            {images.map((image) => (
-              <div key={image.id} className="w-1/5 mx-auto">
-                <img src={image.src} alt={image.alt} className="rounded-lg shadow-lg" />
-              </div>
-            ))}
-          </div>
+        <h2 className="h2">Médias Likés</h2>
+        <div className="flex flex-wrap justify-center mt-8 gap-y-4">
+          {images.map((media) => (
+            <div key={media.id} className="w-1/5 mx-auto">
+              {media.isVideo ? (
+                <video controls width="100%" className="rounded-lg shadow-lg">
+                  <source src={media.src} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <img src={media.src} alt={media.alt} className="rounded-lg shadow-lg" />
+              )}
+            </div>
+          ))}
         </div>
+      </div>
       </div>
     );
 };

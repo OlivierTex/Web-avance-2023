@@ -344,6 +344,7 @@ const VideoPage = () => {
                 id_album: selectedAlbum,
                 id_image: imageId,
                 url: imageUrl,
+                boolean: true,
               },
             ]);
   
@@ -403,7 +404,14 @@ const VideoPage = () => {
   return (
     <div>
       <p className="h1 dark:text-white text-center my-5"><strong>Video:</strong> </p>
-        <div className="flex justify-between items-center" >
+        
+        
+      <video className="image-preview w-auto h-auto object-cover mx-auto max-h-screen m-4 cursor-pointer border-4 border-custom1" width="640" height="360" controls>
+        <source src={videoData.video_files[0].link} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      <div className="flex justify-between items-center" >
           <div className="flex justify-end space-x-1000 my-5">
             <button
               onClick={toggleLikeDislike}
@@ -416,17 +424,9 @@ const VideoPage = () => {
               )}
             </button>
 
-            <button onClick={() => handleDownload(imageDetails.src.original, `${imageDetails.alt}.jpeg`)} className="bg-gray-800 text-white px-4 py-2 rounded-md ml-2"> Download Image </button>
-          </div>
-        </div>
+            </div>
 
-        
-      <video className="image-preview w-auto h-auto object-cover mx-auto max-h-screen m-4 cursor-pointer border-4 border-custom1" width="640" height="360" controls>
-        <source src={videoData.video_files[0].link} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      <div className="flex justify space-x-2 my-5">
+          <div className="flex justify space-x-2 my-5">
             <div className="relative inline-block">
               <button
                 className="bg-gray-800 text-white px-4 py-2 rounded-md mr-2"
@@ -508,7 +508,7 @@ const VideoPage = () => {
               )}
             </div>
           </div>
-
+        </div>
         
       <h2 className="text-3xl  m-6 text-gray-800">Infomartions:</h2>
       <div className="dark:text-white space-y-2 text-center">

@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import supabase from '../supabase';
+import { useAuth } from '../components/AuthContext';
 
 function Album() {
   const [albums, setAlbums] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showOptions, setShowOptions] = useState(false);
+  const [albumName, setAlbumName] = useState('');
+  const [albumDescription, setAlbumDescription] = useState('');
+  const { user_session } = useAuth();
 
+  
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
@@ -21,7 +27,7 @@ function Album() {
           albumsData.map(async (album) => {
             const { data: mediaData, error: mediaError } = await supabase
               .from('link_image_album')
-              .select('id, id_album, url')
+              .select('id, id_album, url, boolean')
               .eq('id_album', album.id)
               .limit(5);
 
@@ -45,19 +51,59 @@ function Album() {
     fetchAlbums();
   }, []);
 
+
   const filteredAlbums = albums.filter((album) => {
     const searchFields = [album.username, album.name_liste];
   
     return searchFields.some((field) => {
-      // Vérifier si le champ est null ou undefined avant d'appeler toLowerCase()
       const fieldValue = field ? field.toLowerCase() : '';
       return fieldValue.includes(searchTerm.toLowerCase());
     });
   });
 
+  const handleButtonClick = () => {
+    setShowOptions(!showOptions);
+  };
+
+  const handleCreateAlbum = async () => {
+    const { data: userData, error: userError } = await supabase
+    .from('user')
+    .select('username')
+    .eq('id', user_session.id)
+    .single();
+
+    const username = userData?.username;
+    try {
+      if (user_session.id) {
+        const { data, error } = await supabase
+          .from('album')
+          .insert([
+            {
+              id_user: user_session.id,
+              name_liste: albumName,
+              description_liste: albumDescription,
+              username: username,
+            },
+          ]);
+  
+        if (!error) {
+          console.log('Nouvel album créé avec succès:', data);
+          setShowOptions(false);
+          fetchUserAlbums();
+        } else {
+          console.error('Erreur lors de la création de l\'album:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur dans handleCreateAlbum:', error);
+    }
+  };
+  
+
   return (
     <div className={`bg-light dark:bg-dark`}>
       <h1 className="h1 mb-3">Albums</h1>
+      <p className="paragraphe mb-4">Créer vos propres albums avec notre large selection d'image et de vidéo</p>
       <div className="w-4/5 mx-auto flex justify-center mb-2 dropdown rounded-md">
         <input
           type="search"
@@ -74,30 +120,75 @@ function Album() {
         >
           Réinitialiser
         </button>
+        <div className="relative inline-block ">
+              <button
+                className="bg-gray-800 text-white px-4 py-2 rounded-md ml-1 mr-1"
+                onClick={handleButtonClick}
+              >
+                Créer un album
+              </button>
+              {showOptions && (
+                <div className={`absolute ${showOptions ? 'top-10' : 'hidden'} right-0 bg-white border border-gray-300 p-2 rounded mr-3`}>
+                  <div className="mb-2">
+                    <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                      Création d'album
+                    </label>
+                    <div className="w-full border-b-2 border-black mb-2"></div>
+                    <label htmlFor="albumName" className="block text-sm font-medium text-gray-700">
+                      Nom de l'album:
+                    </label>
+                    <input
+                      type="text"
+                      id="albumName"
+                      name="albumName"
+                      value={albumName}
+                      onChange={(e) => setAlbumName(e.target.value)}
+                      className="mt-1 p-2 border rounded"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label htmlFor="albumDescription" className="block text-sm font-medium text-gray-700">
+                      Description de l'album:
+                    </label>
+                    <textarea
+                      id="albumDescription"
+                      name="albumDescription"
+                      value={albumDescription}
+                      onChange={(e) => setAlbumDescription(e.target.value)}
+                      className="mt-1 p-2 border rounded"
+                    />
+                  </div>
+                  <div className="w-full border-b-2 border-black mb-2"></div>
+                  <button className="bg-gray-800 text-white px-1 py-1 rounded-md ml-2 " onClick={handleCreateAlbum}>
+                    Créer un nouvel album
+                  </button>
+                </div>
+              )}
+            </div>
       </div>
+
+
       {filteredAlbums.map((album) => (
         <div key={album.id} className="comments-container p-6 rounded-md ">
-            <Link href={`/album/${album.id}`}>
+          <Link href={`/album/${album.id}`}>
             <div className="border p-6 rounded-md bg-white">
-            
-                <h2 className="text-xl font-bold">{album.name_liste}</h2>
-                <p className="text-gray-600">Description : {album.description_liste}</p>
-                <p className="text-gray-500">Créé par : {album.username}</p>
-            
-                <div className="flex space-x-4">
-                    {album.media.map((media) => (
-                    <img
-                        key={media.id}
-                        src={media.url}
-                        alt={`Media ${media.id}`}
-                        className="w-24 h-24"
-                    />
-                    ))}
-                </div>
+              <h2 className="text-xl font-bold">{album.name_liste}</h2>
+              <p className="text-gray-600">Description : {album.description_liste}</p>
+              <p className="text-gray-500">Créé par : {album.username}</p>
+
+              <div className="flex space-x-4">
+                {album.media.map((media) => (
+                  media.boolean ? (
+                    <img key={media.id} src={media.image} alt={`Video Placeholder`} className="w-24 h-24" />
+                  ):(
+                    <img key={media.id} src={media.url} alt={`Media ${media.id}`} className="w-24 h-24" />
+                  )
+                ))}
+              </div>
             </div>
-            </Link>
+          </Link>
         </div>
-        ))}
+      ))}
     </div>
   );
 }

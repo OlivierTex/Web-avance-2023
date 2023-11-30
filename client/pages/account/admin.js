@@ -333,6 +333,7 @@ export default function Admin() {
         ))}
     </ul>
   </div>
+  <h2 className="h2">Message pour un contact</h2>
 </div>
 
   );
