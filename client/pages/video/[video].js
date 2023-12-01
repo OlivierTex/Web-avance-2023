@@ -132,15 +132,13 @@ const VideoPage = () => {
         }
       } else {
         if (existingFavorites.length === 0) {
-          const { data, error } = await supabase
-            .from("favoris_video")
-            .insert([
-              {
-                id_user: user_session.id,
-                url_video: IDivideo,
-                id_video: video,
-              },
-            ]);
+          const { data, error } = await supabase.from("favoris_video").insert([
+            {
+              id_user: user_session.id,
+              url_video: IDivideo,
+              id_video: video,
+            },
+          ]);
 
           if (error) {
             throw error;

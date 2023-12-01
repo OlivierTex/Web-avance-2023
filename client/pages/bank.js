@@ -147,9 +147,13 @@ function Bank() {
           />
           <button
             type="submit"
-            className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4"
+            className="text-white bg-gray-100 px-4 py-2 rounded-md ml-4 overflow-hidden"
           >
-            Rechercher
+            <img
+              src="/images/magnifying-glass-solid.svg"
+              alt="Rechercher"
+              className="w-6 h-6 mr-2"
+            />
           </button>
           <div className=" ml-4">
             <button

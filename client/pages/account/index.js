@@ -60,38 +60,44 @@ const Utilisateur = () => {
 
   if (loading)
     return (
-      <div className={`bg-light dark:bg-dark p-8`}>
-        <div className="content-center mb-4">
-          <h1 className="text-3xl text-center font-bold ">
-            Compte Utilisateur
-          </h1>
-          <button
-            onClick={deconnecterUtilisateur}
-            className="bg-gray-800 text-white px-4 py-2 rounded-md"
-          >
-            Se déconnecter
-          </button>
-        </div>
+      <div className="mx-auto w-4/5">
+        <div className={`bg-light dark:bg-dark p-8`}>
+          <div className="content-center mb-4">
+            <h1 className="text-3xl text-center font-bold ">
+              Compte Utilisateur
+            </h1>
+            <button
+              onClick={deconnecterUtilisateur}
+              className="bg-gray-800 text-white px-4 py-2 rounded-md"
+            >
+              Se déconnecter
+            </button>
+          </div>
 
-        <div className="mb-4">
-          <h2 className="h2">Médias Likés</h2>
-          <div className="flex flex-wrap justify-center mt-8 gap-y-4">
-            {images.map((media) => (
-              <div key={media.id} className="w-1/5 mx-auto">
-                {media.isVideo ? (
-                  <video controls width="100%" className="rounded-lg shadow-lg">
-                    <source src={media.src} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                ) : (
-                  <img
-                    src={media.src}
-                    alt={media.alt}
-                    className="rounded-lg shadow-lg"
-                  />
-                )}
-              </div>
-            ))}
+          <div className="mb-4">
+            <h2 className="h2">Médias Likés</h2>
+            <div className="flex flex-wrap justify-center mt-8 gap-y-4">
+              {images.map((media) => (
+                <div key={media.id} className="w-1/5 mx-auto">
+                  {media.isVideo ? (
+                    <video
+                      controls
+                      width="100%"
+                      className="rounded-lg shadow-lg"
+                    >
+                      <source src={media.src} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img
+                      src={media.src}
+                      alt={media.alt}
+                      className="rounded-lg shadow-lg"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
