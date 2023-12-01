@@ -7,11 +7,11 @@ function App({ Component, pageProps }) {
   return (
       <div className={`bg-light dark:bg-dark`}>
         <div className="body">
-          <Layout>
-            <UserContext>
+          <UserContext>
+            <Layout>
               <Component {...pageProps} />
-            </UserContext>
-          </Layout>
+            </Layout>
+          </UserContext>
         </div>
       </div>
 
