@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import supabase from "../supabase";
-import { useAuth } from "../components/AuthContext";
+import supabase from "../../supabase";
+import { useAuth } from "../../components/AuthContext";
 
 function Album() {
   const [albums, setAlbums] = useState([]);

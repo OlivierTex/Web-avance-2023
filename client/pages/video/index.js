@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { getAPIKey } from "../API/API_pexels";
+import { getAPIKey } from "../../API/API_pexels";
 
 const Video = () => {
   const [videos, setVideos] = useState([]);
