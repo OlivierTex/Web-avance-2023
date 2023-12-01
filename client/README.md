@@ -9,7 +9,7 @@ This App requires to have installed Node.js
 
 ## Installing dependencies
 
-Once the project is cloned or downloaded, you can run the following command to install all dependencies : 
+Once the project is cloned or downloaded, you can run the following command to install all dependencies :
 
 ```bash
 npm install

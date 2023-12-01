@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const fetchImageDetails = async (id, setImageDetails, supabase) => {
   const apiKey = getAPIKey();
@@ -7,12 +7,11 @@ export const fetchImageDetails = async (id, setImageDetails, supabase) => {
 
   try {
     const response = await axios.get(url, {
-      headers: { Authorization: apiKey }
+      headers: { Authorization: apiKey },
     });
     setImageDetails(response.data);
     await checkAndUpdateViews(id, supabase);
   } catch (error) {
-    console.error('Fetching image details failed:', error);
+    console.error("Fetching image details failed:", error);
   }
 };
-

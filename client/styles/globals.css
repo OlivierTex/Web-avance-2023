@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +9,7 @@
   }
 }
 
-.body{
+.body {
   @apply flex flex-col justify-between;
 }
 
@@ -17,19 +17,19 @@
   @apply bg-blue-500 text-white px-4 py-2 rounded;
 }
 
-.h1{
+.h1 {
   @apply text-3xl text-center mt-8 dark:text-white;
 }
 
-.h2{
+.h2 {
   @apply text-3xl font-bold mb-6 text-gray-800;
 }
 
-.h2{
+.h2 {
   @apply mt-6 text-3xl font-bold text-gray-900 dark:text-white;
 }
 
-.paragraphe{
+.paragraphe {
   @apply text-lg text-center mt-4 dark:text-white;
 }
 
@@ -37,18 +37,18 @@
   @apply bg-gray-800 text-white px-4 py-2 rounded-md;
 }
 
-.barre-de-recherche{
-  @apply  max-w-md mx-auto bg-white rounded-lg shadow-md;
+.barre-de-recherche {
+  @apply max-w-md mx-auto bg-white rounded-lg shadow-md;
 }
 
-.nav-link{
+.nav-link {
   @apply w-32 text-center text-lg font-medium px-3 py-2 rounded-md dark:text-white;
 }
 
-.name-site{
+.name-site {
   @apply w-32 text-center text-3xl font-medium px-3 py-2 rounded-md dark:text-white;
 }
 
-.footer-link{
+.footer-link {
   @apply mx-2 dark:text-white;
 }

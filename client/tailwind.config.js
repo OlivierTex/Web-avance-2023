@@ -8,19 +8,18 @@ module.exports = {
     // Or if using `src` directory:
     //"./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: 'class',
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        light: '#f1f1f1',
-        dark: '#243447',
-        'custom-blue': '#243c5a',
+        light: "#f1f1f1",
+        dark: "#243447",
+        "custom-blue": "#243c5a",
       },
       fontFamily: {
-        'custom': ['Inter', 'sans-serif'],
+        custom: ["Inter", "sans-serif"],
       },
-
     },
   },
   plugins: [],
-}
+};
