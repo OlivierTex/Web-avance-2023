@@ -205,10 +205,10 @@ function Album() {
                 <p className="text-gray-600 mb-1">
                   Description : {album.description_liste}
                 </p>
-                <p className="text-gray-500 mb-1">Créé par : {album.username}</p>
-                <p className="text-gray-600 ">
-                  Image :
+                <p className="text-gray-500 mb-1">
+                  Créé par : {album.username}
                 </p>
+                <p className="text-gray-600 ">Image :</p>
                 <div className="flex space-x-4 mb-4">
                   {album.images.map((image) => (
                     <img
@@ -219,18 +219,17 @@ function Album() {
                     />
                   ))}
                 </div>
-                <p className="text-gray-600">
-                  Video :</p>
+                <p className="text-gray-600">Video :</p>
                 <div className="flex space-x-4">
-                {album.videos.map((video) => (
-                  <img
-                    key={video.id}
-                    src={video.imagevideo}
-                    alt={`Video ${video.id}`}
-                    className="w-24 h-24"
-                  />
-                ))}
-              </div>
+                  {album.videos.map((video) => (
+                    <img
+                      key={video.id}
+                      src={video.imagevideo}
+                      alt={`Video ${video.id}`}
+                      className="w-24 h-24"
+                    />
+                  ))}
+                </div>
               </div>
             </Link>
           </div>

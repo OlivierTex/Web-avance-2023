@@ -73,7 +73,7 @@ const Utilisateur = () => {
             >
               Se déconnecter
             </button>
-            <Dashboard/>
+            <Dashboard />
           </div>
 
           <div className="mb-4">

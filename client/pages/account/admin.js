@@ -129,10 +129,10 @@ export default function Admin() {
       }
       setReloadUsers(true);
       console.log("Inscription réussie:", updateData);
-      setEmail('');
-      setUsername('');
-      setPassword('');
-      setAccountType('');
+      setEmail("");
+      setUsername("");
+      setPassword("");
+      setAccountType("");
     } catch (error) {
       console.error("Error:", error.message);
     }
@@ -284,38 +284,38 @@ export default function Admin() {
               <option value="user">User</option>
             </select>
             <div className="mt-4 overflow-hidden shadow-md rounded">
-            <table className="min-w-full divide-y divide-gray-200">
-              <tbody>
-                {filteredUsers.map((user) => (
-                  <tr key={user.id} className="bg-white">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {user.type_compte}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {user.username}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {user.email}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+              <table className="min-w-full divide-y divide-gray-200">
+                <tbody>
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id} className="bg-white">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {user.type_compte}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {user.username}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {user.email}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+                              )
                             )
-                          )
-                            deleteUser(user.id);
-                        }}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Supprimer
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                              deleteUser(user.id);
+                          }}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Supprimer
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
 

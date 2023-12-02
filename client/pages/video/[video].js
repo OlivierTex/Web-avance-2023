@@ -353,7 +353,7 @@ const VideoPage = () => {
             id_album: selectedAlbum,
             id_video: imageId,
             url: imageUrl,
-            imagevideo : imagevideo,
+            imagevideo: imagevideo,
           },
         ]);
 

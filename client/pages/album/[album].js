@@ -62,7 +62,7 @@ function AlbumPage() {
       const commentsResponse = await supabase
         .from("commentaire")
         .select("*")
-        .eq("api_image_id",album);
+        .eq("api_image_id", album);
 
       setComments(commentsResponse.data);
     };
@@ -150,7 +150,6 @@ function AlbumPage() {
 
   const ajouter_commentaire = async (comment) => {
     try {
-
       if (!user_session) {
         console.error("User not logged in");
         router.push("/../login");
@@ -325,82 +324,84 @@ function AlbumPage() {
       <p className="text-gray-600  ml-20 mb-4">
         Description : {albumData.description_liste}
       </p>
-      <p className="text-gray-500  ml-20 mb-4">Créé par : {albumData.username}</p>
+      <p className="text-gray-500  ml-20 mb-4">
+        Créé par : {albumData.username}
+      </p>
 
       <div className="w-4/5 mx-auto">
-      <div className="grid grid-cols-3 justify-items-center gap-y-4 mt-8">
-        {albumImages.map((image) => (
-          <div key={image.id} className="m-2">
-            <Link href={`/image/${image.id_image}`} passHref>
-              <img
-                src={image.url}
-                alt={`Image ${image.id}`}
-                className="rounded-md max-w-xs cursor-pointer"
-              />
-            </Link>
-            <button
-              onClick={() => handleDeleteMedia(image.id, false)}
-              className="text-red-500 block mt-2 cursor-pointer"
-            >
-              Supprimer l'image
-            </button>
-          </div>
-        ))}
-       
-        {albumVideos.map((video) => (
-          <div key={video.id} className="m-2">
-            <Link href={`/video/${video.id_video}`} passHref>
-              <img
-                src={video.imagevideo}
-                alt={`Video ${video.id}`}
-                className="rounded-md max-w-xs cursor-pointer"
-              />
-            </Link>
-            <button
-              onClick={() => handleDeleteMedia(video.id, true)}
-              className="text-red-500 block mt-2 cursor-pointer"
-            >
-              Supprimer la video 
-            </button>
-          </div>
-        ))}
-      </div>
+        <div className="grid grid-cols-3 justify-items-center gap-y-4 mt-8">
+          {albumImages.map((image) => (
+            <div key={image.id} className="m-2">
+              <Link href={`/image/${image.id_image}`} passHref>
+                <img
+                  src={image.url}
+                  alt={`Image ${image.id}`}
+                  className="rounded-md max-w-xs cursor-pointer"
+                />
+              </Link>
+              <button
+                onClick={() => handleDeleteMedia(image.id, false)}
+                className="text-red-500 block mt-2 cursor-pointer"
+              >
+                Supprimer l'image
+              </button>
+            </div>
+          ))}
+
+          {albumVideos.map((video) => (
+            <div key={video.id} className="m-2">
+              <Link href={`/video/${video.id_video}`} passHref>
+                <img
+                  src={video.imagevideo}
+                  alt={`Video ${video.id}`}
+                  className="rounded-md max-w-xs cursor-pointer"
+                />
+              </Link>
+              <button
+                onClick={() => handleDeleteMedia(video.id, true)}
+                className="text-red-500 block mt-2 cursor-pointer"
+              >
+                Supprimer la video
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <h2 className="text-3xl  m-6 text-gray-800">Gestion album:</h2>    
+      <h2 className="text-3xl  m-6 text-gray-800">Gestion album:</h2>
       <div className="border p-6 rounded-md m-6 bg-white mb-1">
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold mb-2">Éditer l'album</h2>
-        <input
-          type="text"
-          placeholder="Nouveau titre"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          className="border rounded-md p-2 mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Nouvelle description"
-          value={newDescription}
-          onChange={(e) => setNewDescription(e.target.value)}
-          className="border rounded-md  p-2 mr-2"
-        />
-        <button
-          onClick={() => handleEditAlbum(newTitle, newDescription)}
-          className="text-blue-500 "
-        >
-          Enregistrer les modifications
-        </button>
-        <button
-          onClick={() => handleDeleteAlbum(album.id)}
-          className="text-red-500 ml-10"
-        >
-          Supprimer l'album
-        </button>
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold mb-2">Éditer l'album</h2>
+          <input
+            type="text"
+            placeholder="Nouveau titre"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            className="border rounded-md p-2 mr-2"
+          />
+          <input
+            type="text"
+            placeholder="Nouvelle description"
+            value={newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
+            className="border rounded-md  p-2 mr-2"
+          />
+          <button
+            onClick={() => handleEditAlbum(newTitle, newDescription)}
+            className="text-blue-500 "
+          >
+            Enregistrer les modifications
+          </button>
+          <button
+            onClick={() => handleDeleteAlbum(album.id)}
+            className="text-red-500 ml-10"
+          >
+            Supprimer l'album
+          </button>
+        </div>
       </div>
-    </div>
 
-    <h2 className="text-3xl  m-6 text-gray-800">Commentaires:</h2>
+      <h2 className="text-3xl  m-6 text-gray-800">Commentaires:</h2>
       <div className="p-4">
         <textarea
           id="commentaireInput"
@@ -471,7 +472,6 @@ function AlbumPage() {
           ))}
         </ul>
       </div>
-
     </div>
   );
 }
