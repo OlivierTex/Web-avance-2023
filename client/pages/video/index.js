@@ -178,7 +178,7 @@ const Video = () => {
     <div className="bg-light dark:bg-dark">
       <h1 className="h1">Video Gallery</h1>
       <p className="paragraphe">
-        Découvrez notre sélection de vidéo de haute qualité.
+        Découvrez notre sélection de vidéos de haute qualité.
       </p>
       <br />
       <div className="w-4/5 mx-auto">

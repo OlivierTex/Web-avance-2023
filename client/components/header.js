@@ -1,10 +1,22 @@
 import Link from "next/link";
 import DarkModeToggle from "../components/DarkModeToggle";
 import { useAuth } from "./AuthContext";
+import { supabase } from "../supabase";
+import { useRouter } from 'next/router';
 
 const Header = () => {
+  const router = useRouter();
   const { user_session, isAdmin } = useAuth();
   const isAuthenticated = user_session !== null;
+
+  const deconnecterUtilisateur = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error signing out:", error);
+    } else if (router.pathname === '/account' || router.pathname === '/account/admin') {
+      router.push('/account/login');
+    }
+  };
 
   return (
     <div className={`bg-light dark:bg-dark`}>
@@ -16,7 +28,7 @@ const Header = () => {
             {/* Méthode ci-dessous nécessaire pour afficher correctement les images de comptes après déconnexion ou connexion.*/}
             <Link
               href={isAuthenticated ? "/account" : "/account/login"}
-              className="bg-gray-300 text-white px-4 py-2 rounded-md"
+              className="bg-gray-300 text-black px-4 py-2 rounded-md"
             >
               <img
                 className="w-8 h-8"
@@ -34,7 +46,7 @@ const Header = () => {
             {isAdmin && (
               <Link
                 href="/account/admin"
-                className="bg-gray-300 text-white px-4 py-2 rounded-md"
+                className="bg-gray-300 text-black px-4 py-2 rounded-md"
               >
                 <img
                   className="w-8 h-8"
@@ -42,6 +54,15 @@ const Header = () => {
                   alt="Admin"
                 />
               </Link>
+            )}
+            {isAuthenticated && (
+              <button onClick={deconnecterUtilisateur} className="bg-gray-300 text-black px-4 py-2 rounded-md">
+                <img
+                  className="w-8 h-8"
+                  src="/images/arrow-right-from-bracket-solid.svg"
+                  alt="Logout"
+                />
+              </button>
             )}
           </div>
         </div>
