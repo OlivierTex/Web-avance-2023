@@ -32,7 +32,7 @@ function Album() {
 
             const { data: videoMedia, error: videoError } = await supabase
               .from("link_video_album")
-              .select("id_video, id_album, url")
+              .select("id_video, id_album, url,imagevideo")
               .eq("id_album", album.id)
               .limit(5);
 
@@ -200,14 +200,16 @@ function Album() {
         {filteredAlbums.map((album) => (
           <div key={album.id} className="comments-container p-6 rounded-md">
             <Link href={`/album/${album.id}`}>
-              <div className="border p-6 rounded-md bg-white">
-                <h2 className="text-xl font-bold">{album.name_liste}</h2>
-                <p className="text-gray-600">
+              <div className="border p-6 rounded-md bg-white mb-1">
+                <h2 className="text-xl font-bold mb-1">{album.name_liste}</h2>
+                <p className="text-gray-600 mb-1">
                   Description : {album.description_liste}
                 </p>
-                <p className="text-gray-500">Créé par : {album.username}</p>
-
-                <div className="flex space-x-4">
+                <p className="text-gray-500 mb-1">Créé par : {album.username}</p>
+                <p className="text-gray-600 ">
+                  Image :
+                </p>
+                <div className="flex space-x-4 mb-4">
                   {album.images.map((image) => (
                     <img
                       key={image.id}
@@ -217,17 +219,18 @@ function Album() {
                     />
                   ))}
                 </div>
-
+                <p className="text-gray-600">
+                  Video :</p>
                 <div className="flex space-x-4">
-                  {album.videos.map((video) => (
-                    <video
-                      key={video.id}
-                      src={video.url}
-                      controls
-                      className="w-24 h-24"
-                    />
-                  ))}
-                </div>
+                {album.videos.map((video) => (
+                  <img
+                    key={video.id}
+                    src={video.imagevideo}
+                    alt={`Video ${video.id}`}
+                    className="w-24 h-24"
+                  />
+                ))}
+              </div>
               </div>
             </Link>
           </div>

@@ -52,3 +52,9 @@
 .footer-link {
   @apply mx-2 dark:text-white;
 }
+
+.w-24.h-24 {
+  width: 6rem; 
+  height: 6rem; 
+  object-fit: cover;
+}

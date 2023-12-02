@@ -346,12 +346,14 @@ const VideoPage = () => {
       if (selectedAlbum) {
         const imageId = video;
         const imageUrl = videoData.url;
+        const imagevideo = videoData.image;
 
         const { data, error } = await supabase.from("link_video_album").insert([
           {
             id_album: selectedAlbum,
             id_video: imageId,
             url: imageUrl,
+            imagevideo : imagevideo,
           },
         ]);
 
