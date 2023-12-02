@@ -13,6 +13,7 @@ export default function Admin() {
   const [editedComments, setEditedComments] = useState({});
   const [isEditingComment, setIsEditingComment] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [reloadUsers, setReloadUsers] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -58,7 +59,7 @@ export default function Admin() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [reloadUsers]);
 
   const fetchUsers = async () => {
     const { data, error } = await supabase.from("user").select("*");
@@ -66,6 +67,7 @@ export default function Admin() {
       console.error("Error fetching users:", error);
     } else {
       setUsers(data);
+      setReloadUsers(false);
     }
   };
 
@@ -80,7 +82,6 @@ export default function Admin() {
       } else {
         setUsers(users.filter((user) => user.id !== userId));
         console.log("User deleted successfully:", data);
-        window.location.reload();
       }
     } catch (error) {
       console.error(
@@ -126,8 +127,12 @@ export default function Admin() {
       if (updateError) {
         throw updateError;
       }
-
+      setReloadUsers(true);
       console.log("Inscription réussie:", updateData);
+      setEmail('');
+      setUsername('');
+      setPassword('');
+      setAccountType('');
     } catch (error) {
       console.error("Error:", error.message);
     }

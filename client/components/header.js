@@ -15,6 +15,8 @@ const Header = () => {
       console.error("Error signing out:", error);
     } else if (router.pathname === '/account' || router.pathname === '/account/admin') {
       router.push('/account/login');
+    } else {
+      router.reload();
     }
   };
 
