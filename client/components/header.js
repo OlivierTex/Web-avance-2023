@@ -1,11 +1,13 @@
 import Link from "next/link";
 import DarkModeToggle from "../components/DarkModeToggle";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { supabase } from "../supabase";
 import { useRouter } from 'next/router';
 
 const Header = () => {
   const router = useRouter();
+  const [username, setUsername] = useState('');
   const { user_session, isAdmin } = useAuth();
   const isAuthenticated = user_session !== null;
 
@@ -20,31 +22,55 @@ const Header = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchUsername = async () => {
+      if (user_session) {
+        const { data: users, error } = await supabase
+          .from('user')
+          .select('username')
+          .eq('id', user_session.id);
+  
+        if (error) {
+          console.error(error);
+        } else if (users.length > 0) {
+          setUsername(users[0].username);
+        }
+      }
+    };
+  
+    fetchUsername();
+  }, [user_session]);
+
   return (
     <div className={`bg-light dark:bg-dark`}>
       <header className="header">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-4">
           <DarkModeToggle />
           <a className="name-site">ImageHive</a>
-          <div className="flex justify-end space-x-2">
+          <div className="flex items-center justify-end space-x-2">
             {/* Méthode ci-dessous nécessaire pour afficher correctement les images de comptes après déconnexion ou connexion.*/}
             <Link
-              href={isAuthenticated ? "/account" : "/account/login"}
-              className="bg-gray-300 text-black px-4 py-2 rounded-md"
-            >
-              <img
-                className="w-8 h-8"
-                src="/images/user-check-solid.svg"
-                alt="Compte"
-                style={{ display: isAuthenticated ? "block" : "none" }}
-              />
-              <img
-                className="w-8 h-8"
-                src="/images/user-solid.svg"
-                alt="Compte"
-                style={{ display: isAuthenticated ? "none" : "block" }}
-              />
-            </Link>
+                href={isAuthenticated ? "/account" : "/account/login"}
+                className="bg-gray-300 text-black px-4 py-2 rounded-md flex items-center"
+              >
+                {isAuthenticated && (
+                  <div className="bg-gray-300 p-2 rounded h-8 flex items-center">
+                    <span className="mr-2">{username}</span>
+                    <img
+                      className="w-8 h-8"
+                      src="/images/user-check-solid.svg"
+                      alt="Compte"
+                      style={{ display: isAuthenticated ? "block" : "none" }}
+                    />
+                  </div>
+                )}
+                <img
+                  className="w-8 h-8"
+                  src="/images/user-solid.svg"
+                  alt="Compte"
+                  style={{ display: isAuthenticated ? "none" : "block" }}
+                />
+              </Link>
             {isAdmin && (
               <Link
                 href="/account/admin"
@@ -68,7 +94,6 @@ const Header = () => {
             )}
           </div>
         </div>
-        <br></br>
         <nav className="flex items-center justify-center h-full">
           <Link href="/" className="nav-link">
             Accueil

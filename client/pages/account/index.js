@@ -68,7 +68,7 @@ const Utilisateur = () => {
             </h1>
             <button
               onClick={deconnecterUtilisateur}
-              className="bg-gray-800 text-white px-4 py-2 rounded-md"
+              className="bg-gray-800 text-white px-4 py-2"
             >
               Se déconnecter
             </button>
