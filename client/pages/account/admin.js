@@ -284,7 +284,8 @@ export default function Admin() {
               <option value="user">User</option>
             </select>
             <div className="mt-4 overflow-hidden shadow-md rounded">
-              <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full divide-y divide-gray-200">
+              <tbody>
                 {filteredUsers.map((user) => (
                   <tr key={user.id} className="bg-white">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -313,7 +314,8 @@ export default function Admin() {
                     </td>
                   </tr>
                 ))}
-              </table>
+              </tbody>
+            </table>
             </div>
           </div>
 

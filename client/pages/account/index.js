@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useRouter } from "next/router";
+import Dashboard from "../../components/UserDashboard";
 
 const Utilisateur = () => {
   const router = useRouter();
@@ -72,6 +73,7 @@ const Utilisateur = () => {
             >
               Se déconnecter
             </button>
+            <Dashboard/>
           </div>
 
           <div className="mb-4">
