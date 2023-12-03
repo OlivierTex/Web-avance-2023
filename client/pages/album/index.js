@@ -16,7 +16,7 @@ function Album() {
       try {
         const { data: albumsData, error } = await supabase
           .from("album")
-          .select("id, name_liste, description_liste, username");
+          .select("id, name_liste, description_liste, username, created_at");
 
         if (error) {
           throw error;
@@ -207,6 +207,9 @@ function Album() {
                 </p>
                 <p className="text-gray-500 mb-1">
                   Créé par : {album.username}
+                </p>
+                <p className="text-gray-500 mb-1">
+                 Date de création : {album.created_at}
                 </p>
                 <p className="text-gray-600 ">Image :</p>
                 <div className="flex space-x-4 mb-4">

@@ -2,64 +2,83 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useRouter } from "next/router";
 import Dashboard from "../../components/UserDashboard";
+import Link from "next/link";
+import { useAuth } from "../../components/AuthContext";
 
 const Utilisateur = () => {
   const router = useRouter();
-  const [images, setImages] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
+  const { user_session } = useAuth();
   const [loading, setLoading] = useState(false);
-  const itemsPerPage = 10;
+  const [favorisImageData, setFavorisImageData] = useState([]);
+  const [favorisVideoData, setFavorisVideoData] = useState([]);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) {
-        router.push("/account/login");
-      } else {
-        setLoading(true);
-        loadImages();
-      }
-    });
-  }, []);
+    const fetchData = async () => {
+      try {
+        const { data: user } = await supabase.auth.getUser();
 
-  const loadImages = async () => {
-    try {
-      const { user, session } = supabase.auth;
-      if (user) {
-        const { data: userFavorites, error } = await supabase
-          .from("favoris")
-          .select("url_images, api_image_id, boolean_column")
-          .filter("id_user", "eq", session.user.id);
-
-        console.log("userFavorites:", userFavorites);
-
-        if (!error) {
-          const favoriteMedia = userFavorites.map((favorite, index) => ({
-            src: favorite.url_images,
-            isVideo: favorite.like_boolean,
-            api_image_id: favorite.api_image_id,
-          }));
-
-          console.log("favoriteMedia:", favoriteMedia);
-
-          setImages(favoriteMedia);
-          setTotalPages(Math.ceil(favoriteMedia.length / itemsPerPage));
+        if (!user) {
+          router.push("/account/login");
+        } else {
+          console.debug("User session:", user);
+          setLoading(true);
         }
+        if (user_session.id) {
+          fetchFavorisData(user_session.id);
+        } else {
+          console.error("User ID is undefined");
+        }
+      } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+    };
+
+    fetchData();
+  }, [router]);
+
+  const fetchFavorisData = async (userId) => {
+    try {
+
+      const { data: imageData, error: imageError } = await supabase
+        .from("favoris_image")
+        .select("*")
+        .eq("id_user", userId);
+
+      if (imageError) {
+        throw imageError;
       }
+
+      console.log("Favoris_album data:", albumData);
+
+      const { data: videoData, error: videoError } = await supabase
+        .from("favoris_video")
+        .select("*")
+        .eq("id_user", userId);
+
+      if (videoError) {
+        throw videoError;
+      }
+
+      setFavorisImageData(imageData);
+      setFavorisVideoData(videoData);
     } catch (error) {
-      console.error(error);
+      console.error("Erreur lors de la récupération des données des favoris:", error);
     }
   };
 
   const deconnecterUtilisateur = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Error signing out:", error);
-    } else {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
       router.push("/account/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="mx-auto w-4/5">
         <div className={`bg-light dark:bg-dark p-8`}>
@@ -77,33 +96,41 @@ const Utilisateur = () => {
           </div>
 
           <div className="mb-4">
-            <h2 className="h2">Médias Likés</h2>
+            <h2 className="h2 mb-2">Image Likés</h2>
+            {favorisImageData.map((image) => (
+              <div key={image.id} className="m-2">
+                <Link href={`/image/${image.id_image}`} passHref>
+                  <img
+                    src={image.url_image}
+                    alt={`Image ${image.id}`}
+                    className="rounded-md max-w-xs cursor-pointer"
+                  />
+                </Link>
+              </div>
+            ))}
+            <h2 className="h2 mb-2">Video likés</h2>
+            {favorisVideoData.map((video) => (
+              <div key={video.id} className="m-2">
+                <Link href={`/video/${video.id_video}`} passHref>
+                  <img
+                    src={video.imagevideo}
+                    alt={`Video ${video.id}`}
+                    className="rounded-md max-w-xs cursor-pointer"
+                  />
+                </Link>
+              </div>
+            ))}
+            <h2 className="h2 mb-2">Album Likés</h2>
+
             <div className="flex flex-wrap justify-center mt-8 gap-y-4">
-              {images.map((media) => (
-                <div key={media.id} className="w-1/5 mx-auto">
-                  {media.isVideo ? (
-                    <video
-                      controls
-                      width="100%"
-                      className="rounded-lg shadow-lg"
-                    >
-                      <source src={media.src} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  ) : (
-                    <img
-                      src={media.src}
-                      alt={media.alt}
-                      className="rounded-lg shadow-lg"
-                    />
-                  )}
-                </div>
-              ))}
             </div>
           </div>
         </div>
       </div>
     );
+  }
+
+  return <div>Chargement...</div>;
 };
 
 export default Utilisateur;

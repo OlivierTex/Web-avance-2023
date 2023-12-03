@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import supabase from "../../supabase";
 import { useAuth } from "../../components/AuthContext";
+import axios from "axios";
 
 function AlbumPage() {
   const router = useRouter();
@@ -17,6 +18,7 @@ function AlbumPage() {
   const [newComment, setNewComment] = useState("");
   const [editedComments, setEditedComments] = useState({});
   const { user_session } = useAuth();
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const fetchAlbumData = async () => {
@@ -71,6 +73,77 @@ function AlbumPage() {
       fetchAlbumData();
     }
   }, [album]);
+
+  const toggleLikeDislike = async () => {
+    try {
+
+      const { data: albumData, error } = await supabase
+          .from("album")
+          .select("id, name_liste, description_liste, username")
+          .single();
+      
+      const IDalbum = albumData.id;
+
+      if (!user_session) {
+        console.error("Utilisateur non connecté");
+        console.log(user_session);
+        router.push("/../account/login");
+        return;
+      }
+
+      setIsLiked((prevIsLiked) => !prevIsLiked);
+
+      const likeKey = `like_${user_session?.id}_${IDalbum}`;
+      localStorage.setItem(likeKey, isLiked ? "false" : "true");
+
+      const { data: existingFavorites, error: existingError } = await supabase
+        .from("favoris_album")
+        .select("*")
+        .eq("id_user", user_session.id)
+        .eq("id_album", IDalbum);
+
+      if (existingError) {
+        throw existingError;
+      }
+
+      if (isLiked) {
+        if (existingFavorites.length > 0) {
+          const { data, error } = await supabase
+            .from("favoris_album")
+            .delete()
+            .eq("id_user", user_session.id)
+            .eq("id_album", IDalbum);
+
+          if (error) {
+            throw error;
+          }
+
+          console.log("Album n'est plus aimée!", data);
+        }
+      } else {
+        if (existingFavorites.length === 0) {
+          const { data, error } = await supabase.from("favoris_album").insert([
+            {
+              id_user: user_session.id,
+              id_album: IDalbum,
+            },
+          ]);
+
+          if (error) {
+            throw error;
+          }
+
+          console.log("Album aimée!", data);
+        } else {
+          console.log(
+            "Cette combinaison user_session.id et IDalbum existe déjà dans la table favoris.",
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Erreur lors du basculement like/dislike:", error.message);
+    }
+  };
 
   const handleDeleteMedia = async (mediaId, isVideo) => {
     try {
@@ -365,6 +438,23 @@ function AlbumPage() {
               </button>
             </div>
           ))}
+        </div>
+      </div>
+      
+      <div className="flex justify-between items-center">
+        <div className="flex justify-end space-x-1000 my-5">
+          <button
+            onClick={toggleLikeDislike}
+            className={`bg-${
+              isLiked ? "gray" : "gray"
+            }-800 text-white px-4 py-2 rounded-md ml-2`}
+          >
+            {isLiked ? (
+              <img src="/images/heart.svg" alt="Dislike" className="w-8 h-8" />
+            ) : (
+              <img src="/images/hearth.svg" alt="Like" className="w-8 h-8" />
+            )}
+          </button>
         </div>
       </div>
 

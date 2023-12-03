@@ -93,6 +93,7 @@ const VideoPage = () => {
       );
 
       const IDivideo = videoData.url;
+      const IDivideoimage = videoData.image;
 
       if (!user_session) {
         console.error("Utilisateur non connecté");
@@ -137,6 +138,7 @@ const VideoPage = () => {
               id_user: user_session.id,
               url_video: IDivideo,
               id_video: video,
+              imagevideo: IDivideoimage,
             },
           ]);
 
