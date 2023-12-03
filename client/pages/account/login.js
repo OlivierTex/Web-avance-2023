@@ -29,7 +29,7 @@ const Login = () => {
           const user = data[0];
           if (user.type_compte === "user") {
             setTimeout(() => {
-              router.push(`/account`);
+              router.push({pathname:`/account`, query: { id: user_session.id },});
             }, 500);
           } else if (user.type_compte === "admin") {
             setTimeout(() => {

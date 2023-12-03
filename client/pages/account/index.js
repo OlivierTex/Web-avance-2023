@@ -2,84 +2,66 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useRouter } from "next/router";
 import Dashboard from "../../components/UserDashboard";
-import Link from "next/link";
-import { useAuth } from "../../components/AuthContext";
 
 const Utilisateur = () => {
   const router = useRouter();
-  const { user_session } = useAuth();
+  const [images, setImages] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [favorisImageData, setFavorisImageData] = useState([]);
-  const [favorisVideoData, setFavorisVideoData] = useState([]);
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: user } = await supabase.auth.getUser();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) {
+        router.push("/account/login");
+      } else {
+        setLoading(true);
+        loadImages();
+      }
+    });
+  }, []);
 
-        if (!user) {
-          router.push("/account/login");
-        } else {
-          console.debug("User session:", user);
-          setLoading(true);
-        }
-        if (user_session.id) {
-          fetchFavorisData(user_session.id);
-        } else {
-          console.error("User ID is undefined");
-        }
-      } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-    };
-
-    fetchData();
-  }, [router]);
-
-  const fetchFavorisData = async (userId) => {
+  const loadImages = async () => {
     try {
+      const { user, session } = supabase.auth;
+      if (user) {
+        const { data: userFavorites, error } = await supabase
+          .from("favoris")
+          .select("url_images, api_image_id, boolean_column")
+          .filter("id_user", "eq", session.user.id);
 
-      const { data: imageData, error: imageError } = await supabase
-        .from("favoris_image")
-        .select("*")
-        .eq("id_user", userId);
+        console.log("userFavorites:", userFavorites);
 
-      if (imageError) {
-        throw imageError;
+        if (!error) {
+          const favoriteMedia = userFavorites.map((favorite, index) => ({
+            src: favorite.url_images,
+            isVideo: favorite.like_boolean,
+            api_image_id: favorite.api_image_id,
+          }));
+
+          console.log("favoriteMedia:", favoriteMedia);
+
+          setImages(favoriteMedia);
+          setTotalPages(Math.ceil(favoriteMedia.length / itemsPerPage));
+        }
       }
-
-      console.log("Favoris_album data:", albumData);
-
-      const { data: videoData, error: videoError } = await supabase
-        .from("favoris_video")
-        .select("*")
-        .eq("id_user", userId);
-
-      if (videoError) {
-        throw videoError;
-      }
-
-      setFavorisImageData(imageData);
-      setFavorisVideoData(videoData);
     } catch (error) {
-      console.error("Erreur lors de la récupération des données des favoris:", error);
+      console.error(error);
     }
   };
 
   const deconnecterUtilisateur = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        throw error;
-      }
-      router.push("/account/login");
-    } catch (error) {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
       console.error("Error signing out:", error);
+    } else {
+      router.push("/account/login");
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
+      <div>
       <div className="mx-auto w-4/5">
         <div className={`bg-light dark:bg-dark p-8`}>
           <div className="content-center mb-4">
@@ -92,45 +74,14 @@ const Utilisateur = () => {
             >
               Se déconnecter
             </button>
-            <Dashboard />
+            
           </div>
-
-          <div className="mb-4">
-            <h2 className="h2 mb-2">Image Likés</h2>
-            {favorisImageData.map((image) => (
-              <div key={image.id} className="m-2">
-                <Link href={`/image/${image.id_image}`} passHref>
-                  <img
-                    src={image.url_image}
-                    alt={`Image ${image.id}`}
-                    className="rounded-md max-w-xs cursor-pointer"
-                  />
-                </Link>
-              </div>
-            ))}
-            <h2 className="h2 mb-2">Video likés</h2>
-            {favorisVideoData.map((video) => (
-              <div key={video.id} className="m-2">
-                <Link href={`/video/${video.id_video}`} passHref>
-                  <img
-                    src={video.imagevideo}
-                    alt={`Video ${video.id}`}
-                    className="rounded-md max-w-xs cursor-pointer"
-                  />
-                </Link>
-              </div>
-            ))}
-            <h2 className="h2 mb-2">Album Likés</h2>
-
-            <div className="flex flex-wrap justify-center mt-8 gap-y-4">
-            </div>
-          </div>
+          
         </div>
       </div>
+      <Dashboard />
+      </div>
     );
-  }
-
-  return <div>Chargement...</div>;
 };
 
 export default Utilisateur;
