@@ -27,18 +27,21 @@ function Dashboard() {
           setUsername(users[0].username);
           setEmail(users[0].email);
           setBio(users[0].bio);
+
+          setInitialUsername(users[0].username);
+          setInitialEmail(users[0].email);
+          setInitialBio(users[0].bio);
         }
       }
     };
-    setInitialUsername(username);
-    setInitialEmail(email);
-    setInitialBio(bio);
+
     fetchUserData();
+
   }, [user_session]);
 
   const handleSaveChanges = async (event) => {
     event.preventDefault();
-    // Update user settings
+    // Mise à jour des paramètres utilisateurs | un update du type_compte (admin/user) par un user déclenchera un trigger qui refusera la requête
     const { error } = await supabase
       .from("user")
       .update({
