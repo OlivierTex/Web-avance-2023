@@ -62,14 +62,14 @@ const Utilisateur = () => {
   if (loading)
     return (
       <div className="mx-auto w-4/5">
-        <div className={`bg-light dark:bg-dark p-8`}>
+        <div className={`bg-light dark:bg-dark`}>
           <div className="content-center mb-4">
-            <h1 className="text-3xl text-center font-bold ">
+            <h1 className="text-3xl text-center font-bold mt-6">
               Compte Utilisateur
             </h1>
             <button
               onClick={deconnecterUtilisateur}
-              className="bg-gray-800 text-white px-4 py-2"
+              className="bg-gray-800 text-white px-4 py-2 mt-4"
             >
               Se déconnecter
             </button>
