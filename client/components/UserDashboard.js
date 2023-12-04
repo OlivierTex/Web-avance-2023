@@ -58,6 +58,17 @@ function Dashboard() {
 
     if (error) {
       console.error(error);
+      let errorMessage = "";
+
+      switch (error.message) {
+        case 'duplicate key value violates unique constraint "user_username_key"':
+          errorMessage = "Le nom d'utilisateur est déjà utilisé.";
+          break;
+        default:
+          errorMessage = "Une erreur inconnue s'est produite.";
+      }
+
+      alert(errorMessage);
     } else {
       console.log("User settings updated successfully");
       setInitialUsername(username);
@@ -163,14 +174,14 @@ function Dashboard() {
 
   return (
     <div>
-      <div className="flex justify-start w-1/3 space-y-4 bg-gray-400 p-4">
+      <div className="flex justify-start w-2/5 space-y-4 bg-gray-400 p-4">
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Paramètres du compte</h2>
           <div
             className="grid grid-cols-3 gap-4 items-start"
-            style={{ gridTemplateColumns: "1fr 2fr auto" }}
+            style={{ gridTemplateColumns: "1fr 5fr auto" }}
           >
-            {/* Username */}
+            {/* Champ Username */}
             <label htmlFor="username" className="block text-right">
               Username
             </label>
@@ -198,7 +209,7 @@ function Dashboard() {
               <div />
             )}
 
-            {/* Email */}
+            {/* Champ Email */}
             <label htmlFor="email" className="block text-right ">
               Email
             </label>
@@ -226,7 +237,7 @@ function Dashboard() {
               <div />
             )}
 
-            {/* Bio */}
+            {/* Champ Bio */}
             <label htmlFor="bio" className="block text-right ">
               Bio
             </label>
@@ -256,7 +267,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="flex justify-end w-1/3 space-y-4 bg-gray-400 p-4">
+      <div className="flex justify-end w-2/5 space-y-4 bg-gray-400 p-4">
         <button
           onClick={handleSaveChanges}
           className={`px-4 py-2 rounded text-white ${
