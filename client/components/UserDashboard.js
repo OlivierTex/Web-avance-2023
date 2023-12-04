@@ -180,12 +180,12 @@ function Dashboard() {
 
   return (
     <div>
-      <div className="flex justify-start w-1/2 space-y-4 bg-gray-400 p-4">
+      <div className="flex justify-start w-2/5 space-y-4 bg-gray-400 p-4">
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Paramètres du compte</h2>
           <div
             className="grid grid-cols-3 gap-4 items-start"
-            style={{ gridTemplateColumns: "1fr 4fr auto" }}
+            style={{ gridTemplateColumns: "1fr 5fr auto" }}
           >
             {/* Champ Username */}
             <label htmlFor="username" className="block text-right">
@@ -243,33 +243,7 @@ function Dashboard() {
               <div />
             )}
 
-            {/* Champ Bio */}
-            <label htmlFor="bio" className="block text-right ">
-              Bio
-            </label>
-            <textarea
-              id="bio"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className={`w-full p-2 border rounded h-12 max-h-64 min-h-12 ${
-                bio == initialBio ? "bg-gray-300" : ""
-              } `}
-            />
-            {bio !== initialBio ? (
-              <button
-                onClick={() => setBio(initialBio)}
-                className="flex items-center justify-center mt-1"
-              >
-                <img
-                  className="w-8 h-8"
-                  src="/images/arrow-rotate-left-solid.svg"
-                  alt="Reset"
-                />
-              </button>
-            ) : (
-              <div />
-            )}
-
+            {/* Champ Langue */}
             <label htmlFor="language" className="block text-right">
               Langue
             </label>
@@ -299,11 +273,38 @@ function Dashboard() {
             ) : (
               <div />
             )}
+
+            {/* Champ Bio */}
+            <label htmlFor="bio" className="block text-right ">
+              Bio
+            </label>
+            <textarea
+              id="bio"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className={`w-full p-2 border rounded h-12 max-h-64 min-h-12 ${
+                bio == initialBio ? "bg-gray-300" : ""
+              } `}
+            />
+            {bio !== initialBio ? (
+              <button
+                onClick={() => setBio(initialBio)}
+                className="flex items-center justify-center mt-1"
+              >
+                <img
+                  className="w-8 h-8"
+                  src="/images/arrow-rotate-left-solid.svg"
+                  alt="Reset"
+                />
+              </button>
+            ) : (
+              <div />
+            )}
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end w-1/2 space-y-4 bg-gray-400 p-4">
+      <div className="flex justify-end w-2/5 space-y-4 bg-gray-400 p-4">
         <button
           onClick={handleSaveChanges}
           className={`px-4 py-2 rounded text-white ${
