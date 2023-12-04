@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { supabase } from "../supabase";
 import { useRouter } from "next/router";
-import gravatar from 'gravatar';
+import gravatar from "gravatar";
 
 const Header = () => {
   const router = useRouter();
   const [username, setUsername] = useState("");
-  const [gravatarUrl, setGravatarUrl] = useState('');
+  const [gravatarUrl, setGravatarUrl] = useState("");
   const { user_session, isAdmin } = useAuth();
   const isAuthenticated = user_session !== null;
 
@@ -39,7 +39,9 @@ const Header = () => {
           console.error(error);
         } else if (users.length > 0) {
           setUsername(users[0].username);
-          setGravatarUrl(gravatar.url(users[0].email, { s: '32', r: 'g', d: 'retro' }, true));
+          setGravatarUrl(
+            gravatar.url(users[0].email, { s: "32", r: "g", d: "retro" }, true),
+          );
         }
       }
     };
@@ -61,7 +63,7 @@ const Header = () => {
             >
               {isAuthenticated && (
                 <div className="bg-gray-300 rounded h-8 flex items-center">
-                  <img src={gravatarUrl} alt="Avatar" className="mr-3" />  
+                  <img src={gravatarUrl} alt="Avatar" className="mr-3" />
                   <span className="mr-2">{username}</span>
                 </div>
               )}

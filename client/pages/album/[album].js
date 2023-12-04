@@ -76,12 +76,11 @@ function AlbumPage() {
 
   const toggleLikeDislike = async () => {
     try {
-
       const { data: albumData, error } = await supabase
-          .from("album")
-          .select("id, name_liste, description_liste, username")
-          .single();
-      
+        .from("album")
+        .select("id, name_liste, description_liste, username")
+        .single();
+
       const IDalbum = albumData.id;
 
       if (!user_session) {
@@ -440,7 +439,7 @@ function AlbumPage() {
           ))}
         </div>
       </div>
-      
+
       <div className="flex justify-between items-center">
         <div className="flex justify-end space-x-1000 my-5">
           <button

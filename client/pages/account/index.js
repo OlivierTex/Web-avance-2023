@@ -61,7 +61,6 @@ const Utilisateur = () => {
 
   if (loading)
     return (
-      <div>
       <div className="mx-auto w-4/5">
         <div className={`bg-light dark:bg-dark p-8`}>
           <div className="content-center mb-4">
@@ -74,12 +73,9 @@ const Utilisateur = () => {
             >
               Se déconnecter
             </button>
-            
           </div>
-          
         </div>
-      </div>
-      <Dashboard />
+        <Dashboard />
       </div>
     );
 };
