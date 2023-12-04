@@ -163,10 +163,14 @@ function Dashboard() {
 
   return (
     <div>
-      <div className="flex justify-start w-3/5 space-y-4 bg-gray-400 p-4">
+      <div className="flex justify-start w-1/3 space-y-4 bg-gray-400 p-4">
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Paramètres du compte</h2>
-          <div className="grid grid-cols-2 gap-4 items-start">
+          <div
+            className="grid grid-cols-3 gap-4 items-start"
+            style={{ gridTemplateColumns: "1fr 2fr auto" }}
+          >
+            {/* Username */}
             <label htmlFor="username" className="block text-right">
               Username
             </label>
@@ -177,9 +181,25 @@ function Dashboard() {
               onChange={(e) => setUsername(e.target.value)}
               className={`w-full p-2 border rounded ${
                 username == initialUsername ? "bg-gray-300" : ""
-              }`}
+              } `}
             />
-            <label htmlFor="email" className="block text-right">
+            {username !== initialUsername ? (
+              <button
+                onClick={() => setUsername(initialUsername)}
+                className="flex items-center justify-center mt-1"
+              >
+                <img
+                  className="w-8 h-8"
+                  src="/images/arrow-rotate-left-solid.svg"
+                  alt="Reset"
+                />
+              </button>
+            ) : (
+              <div />
+            )}
+
+            {/* Email */}
+            <label htmlFor="email" className="block text-right ">
               Email
             </label>
             <input
@@ -189,9 +209,25 @@ function Dashboard() {
               onChange={(e) => setEmail(e.target.value)}
               className={`w-full p-2 border rounded ${
                 email == initialEmail ? "bg-gray-300" : ""
-              }`}
+              } `}
             />
-            <label htmlFor="bio" className="block text-right">
+            {email !== initialEmail ? (
+              <button
+                onClick={() => setEmail(initialEmail)}
+                className="flex items-center justify-center mt-1"
+              >
+                <img
+                  className="w-8 h-8"
+                  src="/images/arrow-rotate-left-solid.svg"
+                  alt="Reset"
+                />
+              </button>
+            ) : (
+              <div />
+            )}
+
+            {/* Bio */}
+            <label htmlFor="bio" className="block text-right ">
               Bio
             </label>
             <textarea
@@ -200,28 +236,44 @@ function Dashboard() {
               onChange={(e) => setBio(e.target.value)}
               className={`w-full p-2 border rounded h-12 max-h-64 min-h-12 ${
                 bio == initialBio ? "bg-gray-300" : ""
-              }`}
+              } `}
             />
+            {bio !== initialBio ? (
+              <button
+                onClick={() => setBio(initialBio)}
+                className="flex items-center justify-center mt-1"
+              >
+                <img
+                  className="w-8 h-8"
+                  src="/images/arrow-rotate-left-solid.svg"
+                  alt="Reset"
+                />
+              </button>
+            ) : (
+              <div />
+            )}
           </div>
-          <button
-            onClick={handleSaveChanges}
-            className={`px-4 py-2 rounded float-right text-white ${
-              username === initialUsername &&
-              email === initialEmail &&
-              bio === initialBio
-                ? "bg-gray-500"
-                : "bg-green-600"
-            }`}
-            disabled={
-              username === initialUsername &&
-              email === initialEmail &&
-              bio === initialBio
-            }
-          >
-            {" "}
-            Enregistrer{" "}
-          </button>
         </div>
+      </div>
+
+      <div className="flex justify-end w-1/3 space-y-4 bg-gray-400 p-4">
+        <button
+          onClick={handleSaveChanges}
+          className={`px-4 py-2 rounded text-white ${
+            username === initialUsername &&
+            email === initialEmail &&
+            bio === initialBio
+              ? "bg-gray-500"
+              : "bg-green-600"
+          }`}
+          disabled={
+            username === initialUsername &&
+            email === initialEmail &&
+            bio === initialBio
+          }
+        >
+          Enregistrer
+        </button>
       </div>
 
       <div className="mb-4">
