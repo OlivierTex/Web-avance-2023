@@ -9,10 +9,12 @@ function Dashboard() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
+  const [language, setLanguage] = useState("");
 
   const [initialUsername, setInitialUsername] = useState(username);
   const [initialEmail, setInitialEmail] = useState(email);
   const [initialBio, setInitialBio] = useState(bio);
+  const [initialLanguage, setInitialLanguage] = useState(language);
 
   const [favorisAlbumData, setFavorisAlbumData] = useState([]);
   const [favorisImageData, setFavorisImageData] = useState([]);
@@ -23,7 +25,7 @@ function Dashboard() {
       if (user_session) {
         const { data: users, error } = await supabase
           .from("user")
-          .select("username, email, bio")
+          .select("username, email, bio, language")
           .eq("id", user_session.id);
 
         if (error) {
@@ -32,10 +34,12 @@ function Dashboard() {
           setUsername(users[0].username);
           setEmail(users[0].email);
           setBio(users[0].bio);
+          setLanguage(users[0].language);
 
           setInitialUsername(users[0].username);
           setInitialEmail(users[0].email);
           setInitialBio(users[0].bio);
+          setInitialLanguage(users[0].language);
         }
       }
     };
@@ -53,6 +57,7 @@ function Dashboard() {
         username: username,
         email: email,
         bio: bio,
+        language: language,
       })
       .eq("id", user_session.id);
 
@@ -74,6 +79,7 @@ function Dashboard() {
       setInitialUsername(username);
       setInitialEmail(email);
       setInitialBio(bio);
+      setInitialLanguage(language);
     }
   };
 
@@ -174,12 +180,12 @@ function Dashboard() {
 
   return (
     <div>
-      <div className="flex justify-start w-2/5 space-y-4 bg-gray-400 p-4">
+      <div className="flex justify-start w-1/2 space-y-4 bg-gray-400 p-4">
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Paramètres du compte</h2>
           <div
             className="grid grid-cols-3 gap-4 items-start"
-            style={{ gridTemplateColumns: "1fr 5fr auto" }}
+            style={{ gridTemplateColumns: "1fr 4fr auto" }}
           >
             {/* Champ Username */}
             <label htmlFor="username" className="block text-right">
@@ -263,24 +269,56 @@ function Dashboard() {
             ) : (
               <div />
             )}
+
+            <label htmlFor="language" className="block text-right">
+              Langue
+            </label>
+            <select
+              id="language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className={`w-full p-2 border rounded ${
+                language == initialLanguage ? "bg-gray-300" : ""
+              }`}
+            >
+              <option value="Non renseigné">Non renseigné</option>
+              <option value="Français">Français</option>
+              <option value="English">English</option>
+            </select>
+            {language !== initialLanguage ? (
+              <button
+                onClick={() => setLanguage(initialLanguage)}
+                className="flex items-center justify-center mt-1"
+              >
+                <img
+                  className="w-8 h-8"
+                  src="/images/arrow-rotate-left-solid.svg"
+                  alt="Reset"
+                />
+              </button>
+            ) : (
+              <div />
+            )}
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end w-2/5 space-y-4 bg-gray-400 p-4">
+      <div className="flex justify-end w-1/2 space-y-4 bg-gray-400 p-4">
         <button
           onClick={handleSaveChanges}
           className={`px-4 py-2 rounded text-white ${
             username === initialUsername &&
             email === initialEmail &&
-            bio === initialBio
+            bio === initialBio &&
+            language === initialLanguage
               ? "bg-gray-500"
               : "bg-green-600"
           }`}
           disabled={
             username === initialUsername &&
             email === initialEmail &&
-            bio === initialBio
+            bio === initialBio &&
+            language === initialLanguage
           }
         >
           Enregistrer
