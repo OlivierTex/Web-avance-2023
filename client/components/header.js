@@ -52,53 +52,55 @@ const Header = () => {
   return (
     <div className={`bg-light dark:bg-dark`}>
       <header className="header">
-        <div className="flex justify-between items-center mb-4">
-          <DarkModeToggle />
-          <a className="name-site">ImageHive</a>
-          <div className="flex items-center justify-end space-x-2">
-            {/* Méthode ci-dessous nécessaire pour afficher correctement les images de comptes après déconnexion ou connexion.*/}
-            <Link
-              href={isAuthenticated ? "/account" : "/account/login"}
-              className="bg-gray-300 text-black px-4 py-2 rounded-md flex items-center"
-            >
-              {isAuthenticated && (
-                <div className="bg-gray-300 rounded h-8 flex items-center">
-                  <img src={gravatarUrl} alt="Avatar" className="mr-3" />
-                  <span className="mr-2">{username}</span>
-                </div>
-              )}
-              <img
-                className="w-8 h-8"
-                src="/images/user-solid.svg"
-                alt="Compte"
-                style={{ display: isAuthenticated ? "none" : "block" }}
-              />
-            </Link>
-            {isAdmin && (
+        <div className="flex flex-col items-center mb-4">
+          <div className="flex justify-between items-center w-full">
+            <DarkModeToggle />
+            <div className="flex items-center justify-end space-x-2">
+              {/* Méthode ci-dessous nécessaire pour afficher correctement les images de comptes après déconnexion ou connexion.*/}
               <Link
-                href="/account/admin"
-                className="bg-gray-300 text-black px-4 py-2 rounded-md"
+                href={isAuthenticated ? "/account" : "/account/login"}
+                className="bg-gray-300 text-black px-4 py-2 rounded-md flex items-center"
               >
+                {isAuthenticated && (
+                  <div className="bg-gray-300 rounded h-8 flex items-center">
+                    <img src={gravatarUrl} alt="Avatar" className="mr-3" />
+                    <span className="mr-2">{username}</span>
+                  </div>
+                )}
                 <img
                   className="w-8 h-8"
-                  src="/images/user-secret-solid.svg"
-                  alt="Admin"
+                  src="/images/user-solid.svg"
+                  alt="Compte"
+                  style={{ display: isAuthenticated ? "none" : "block" }}
                 />
               </Link>
-            )}
-            {isAuthenticated && (
-              <button
-                onClick={deconnecterUtilisateur}
-                className="bg-gray-300 text-black px-4 py-2 rounded-md"
-              >
-                <img
-                  className="w-8 h-8"
-                  src="/images/arrow-right-from-bracket-solid.svg"
-                  alt="Logout"
-                />
-              </button>
-            )}
+              {isAdmin && (
+                <Link
+                  href="/account/admin"
+                  className="bg-gray-300 text-black px-4 py-2 rounded-md"
+                >
+                  <img
+                    className="w-8 h-8"
+                    src="/images/user-secret-solid.svg"
+                    alt="Admin"
+                  />
+                </Link>
+              )}
+              {isAuthenticated && (
+                <button
+                  onClick={deconnecterUtilisateur}
+                  className="bg-gray-300 text-black px-4 py-2 rounded-md"
+                >
+                  <img
+                    className="w-8 h-8"
+                    src="/images/arrow-right-from-bracket-solid.svg"
+                    alt="Logout"
+                  />
+                </button>
+              )}
+            </div>
           </div>
+          <a className="name-site">ImageHive</a>
         </div>
         <nav className="flex items-center justify-center h-full">
           <Link href="/" className="nav-link">
