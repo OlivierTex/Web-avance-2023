@@ -10,52 +10,60 @@ function Album() {
   const [albumName, setAlbumName] = useState("");
   const [albumDescription, setAlbumDescription] = useState("");
   const { user_session } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    const fetchAlbums = async () => {
-      try {
-        const { data: albumsData, error } = await supabase
-          .from("album")
-          .select("id, name_liste, description_liste, username, created_at");
-
-        if (error) {
-          throw error;
-        }
-
-        const albumsWithMedia = await Promise.all(
-          albumsData.map(async (album) => {
-            const { data: imageMedia, error: imageError } = await supabase
-              .from("link_image_album")
-              .select("id_image, id_album, url")
-              .eq("id_album", album.id)
-              .limit(5);
-
-            const { data: videoMedia, error: videoError } = await supabase
-              .from("link_video_album")
-              .select("id_video, id_album, url,imagevideo")
-              .eq("id_album", album.id)
-              .limit(5);
-
-            if (imageError || videoError) {
-              throw imageError || videoError;
-            }
-
-            return {
-              ...album,
-              images: imageMedia || [],
-              videos: videoMedia || [],
-            };
-          }),
-        );
-
-        setAlbums(albumsWithMedia);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des albums:", error);
-      }
-    };
-
     fetchAlbums();
-  }, []);
+  }, [currentPage]);
+
+  const fetchAlbums = async () => {
+    try {
+      const { data: albumsData, count, error } = await supabase
+        .from("album")
+        .select("id, name_liste, description_liste, username, created_at")
+        .order("created_at", { ascending: false })
+        .range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1);
+  
+      if (error) {
+        throw error;
+      }
+  
+      setTotalPages(Math.ceil(count / itemsPerPage));
+  
+      const albumsWithMedia = await Promise.all(
+        albumsData.map(async (album) => {
+          const { data: imageMedia, error: imageError } = await supabase
+            .from("link_image_album")
+            .select("id_image, id_album, url")
+            .eq("id_album", album.id)
+            .limit(5);
+  
+          const { data: videoMedia, error: videoError } = await supabase
+            .from("link_video_album")
+            .select("id_video, id_album, url, imagevideo")
+            .eq("id_album", album.id)
+            .limit(5);
+  
+          if (imageError || videoError) {
+            throw imageError || videoError;
+          }
+  
+          return {
+            ...album,
+            images: imageMedia || [],
+            videos: videoMedia || [],
+          };
+        })
+      );
+  
+      setAlbums(albumsWithMedia);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des albums:", error);
+    }
+  };
+  
 
   const filteredAlbums = albums.filter((album) => {
     const searchFields = [album.username, album.name_liste];
@@ -92,7 +100,7 @@ function Album() {
         if (!error) {
           console.log("Nouvel album créé avec succès:", data);
           setShowOptions(false);
-          fetchUserAlbums();
+          fetchAlbums();
         } else {
           console.error("Erreur lors de la création de l'album:", error);
         }
@@ -102,7 +110,14 @@ function Album() {
     }
   };
 
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  
+
+
   return (
+    <div className={`bg-light dark:bg-dark`}>
     <div className="mx-auto w-4/5">
       <div className={`bg-light dark:bg-dark`}>
         <h1 className="h1 mb-3">Albums</h1>
@@ -215,7 +230,7 @@ function Album() {
                 <div className="flex space-x-4 mb-4">
                   {album.images.map((image) => (
                     <img
-                      key={image.id}
+                      key={image.id_image}
                       src={image.url}
                       alt={`Image ${image.id}`}
                       className="w-24 h-24"
@@ -226,7 +241,7 @@ function Album() {
                 <div className="flex space-x-4">
                   {album.videos.map((video) => (
                     <img
-                      key={video.id}
+                      key={video.id_video}
                       src={video.imagevideo}
                       alt={`Video ${video.id}`}
                       className="w-24 h-24"
@@ -237,6 +252,60 @@ function Album() {
             </Link>
           </div>
         ))}
+      </div>
+      </div>
+      <div className="flex justify-center mb-4">
+        <ul className="inline-flex -space-x-px text-sm">
+            <li>
+              <button
+                onClick={() => handlePageClick(Math.max(1, currentPage - 1))}
+                className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                  currentPage === 1
+                    ? "cursor-not-allowed dark:text-gray-600 dark:bg-gray-700"
+                    : ""
+                }`}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+            </li>
+
+            {Array.from({ length: 5 }, (_, index) => {
+              let pageNumber =
+                currentPage > 2 ? currentPage - 2 + index : index + 1;
+              return (
+                <li key={pageNumber}>
+                  <button
+                    onClick={() => handlePageClick(pageNumber)}
+                    aria-current={currentPage === pageNumber ? "page" : undefined}
+                    className={`flex items-center justify-center px-3 h-8 leading-tight border ${
+                      currentPage === pageNumber
+                        ? "text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-gray-700 dark:text-white"
+                        : "text-gray-500 bg-white hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                </li>
+              );
+            })}
+
+          <li>
+            <button
+              onClick={() =>
+                handlePageClick(Math.min(totalPages, currentPage + 1))
+              }
+              className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                currentPage === totalPages
+                  ? "cursor-not-allowed dark:text-gray-600 dark:bg-gray-700"
+                  : ""
+              }`}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   );

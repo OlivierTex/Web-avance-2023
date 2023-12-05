@@ -74,6 +74,11 @@ function AlbumPage() {
     }
   }, [album]);
 
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  
   const toggleLikeDislike = async () => {
     try {
       const { data: albumData, error } = await supabase
