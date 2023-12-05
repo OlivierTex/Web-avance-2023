@@ -25,7 +25,7 @@ function AlbumPage() {
       try {
         const { data: albumData, error } = await supabase
           .from("album")
-          .select("id, name_liste, description_liste, username")
+          .select("id, name_liste, description_liste, username,id_user")
           .eq("id", album)
           .single();
 
@@ -75,9 +75,6 @@ function AlbumPage() {
   }, [album]);
 
 
-  const handlePageClick = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
   
   const toggleLikeDislike = async () => {
     try {
@@ -151,6 +148,7 @@ function AlbumPage() {
 
   const handleDeleteMedia = async (mediaId, isVideo) => {
     try {
+      if (user_session.id === albumData.id_user) {
       const mediaTable = isVideo ? "link_video_album" : "link_image_album";
 
       const { data: linkMediaData, error: linkMediaError } = await supabase
@@ -171,13 +169,18 @@ function AlbumPage() {
           prevImages.filter((image) => image.id !== mediaId),
         );
       }
-    } catch (error) {
+    } else {
+      console.error("User does not have permission to edit this album");
+    }
+  } catch (error) {
       console.error("Erreur lors de la suppression de l'image/vidéo:", error);
     }
   };
 
   const handleDeleteAlbum = async () => {
     try {
+      if (user_session.id === albumData.id_user) {
+
       await supabase.from("link_image_album").delete().eq("id_album", album);
 
       await supabase.from("link_video_album").delete().eq("id_album", album);
@@ -192,13 +195,19 @@ function AlbumPage() {
       }
 
       router.push("/album");
-    } catch (error) {
+    } else {
+      console.error("User does not have permission to edit this album");
+    }
+  }
+    catch (error) {
       console.error("Erreur lors de la suppression de l'album:", error);
     }
   };
 
   const handleEditAlbum = async (newTitle, newDescription) => {
     try {
+      if (user_session.id === albumData.id_user) {
+     
       const { data, error } = await supabase
         .from("album")
         .update({
@@ -216,7 +225,12 @@ function AlbumPage() {
         name_liste: newTitle,
         description_liste: newDescription,
       }));
-    } catch (error) {
+    } else {
+      console.error("User does not have permission to edit this album");
+    }
+    }
+   
+    catch (error) {
       console.error("Erreur lors de la mise à jour de l'album:", error);
     }
   };
