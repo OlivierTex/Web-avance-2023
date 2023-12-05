@@ -1,21 +1,56 @@
 import React, { useState } from "react";
+import { useAuth } from "../components/AuthContext"; 
+import { useRouter } from "next/router"; 
 import supabase from "../supabase";
 
 export default function Contacts() {
+  const { user_session } = useAuth(); 
+  const router = useRouter(); 
   const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const ajouter_commentaire = async (comment) => {
+    try {
+      if (!user_session) {
+        console.error("User not logged in");
+        router.push("/login"); 
+        return;
+      }
 
-    const { data, error } = await supabase
-      .from("commentaire_admin")
-      .upsert([{ commentaire: message }]);
+      const { data: userData, error: userError } = await supabase
+        .from("user")
+        .select("username")
+        .eq("id", user_session.id)
+        .single();
 
-    if (error) {
-      console.error("Erreur lors de l'envoi du commentaire à Supabase:", error);
-    } else {
-      console.log("Commentaire envoyé avec succès:", data);
+      if (userError) {
+        throw userError;
+      }
+
+      const username = userData?.username;
+
+      const { data, error } = await supabase.from("commentaire_admin").insert([
+        {
+          commentaire: comment,
+          id_user: user_session.id,
+          username: username,
+        },
+      ]);
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("Comment added successfully:", data);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error adding comment:", error.message);
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    ajouter_commentaire(message);
+    setMessage(""); 
   };
 
   return (
@@ -26,10 +61,15 @@ export default function Contacts() {
           <div className="mb-4">
             <label
               htmlFor="name"
-              className="block text-custom5 text-sm dark:text-white mb-2"
+              className="text-lg font-semibold mb-3"
             >
               Commentaire :
             </label>
+            <p className="mb-3">
+              Vous pouvez nous laisser un commentaire, une suggestion ou un
+              avis sur notre site web. Nous vous répondrons dans les plus brefs grace à votre adresse mail.
+              Merci de votre aide !
+            </p>
             <input
               type="text"
               id="name"

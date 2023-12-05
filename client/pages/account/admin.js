@@ -167,23 +167,36 @@ export default function Admin() {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      if (!session.user.id) {
-        console.error("User not logged in");
-        return;
-      }
-
       const { data, error } = await supabase
         .from("commentaire")
         .delete()
-        .eq("id", commentId)
-        .eq("id_user", session.user.id);
-
-      window.location.reload();
-
+        .eq("id", commentId);
+  
+      fetchComments();
+  
       if (error) {
         throw error;
       }
+  
+      setIsEditingComment(true);
+    } catch (error) {
+      console.error("Error deleting comment:", error.message);
+    }
+  };
 
+  const handleDeleteCommentAdmin = async (commentId) => {
+    try {
+      const { data, error } = await supabase
+        .from("commentaire_admin")
+        .delete()
+        .eq("id", commentId);
+  
+      fetchCommentsAdmin();
+  
+      if (error) {
+        throw error;
+      }
+  
       setIsEditingComment(true);
     } catch (error) {
       console.error("Error deleting comment:", error.message);
@@ -191,9 +204,11 @@ export default function Admin() {
   };
 
   const [comments, setComments] = useState([]);
+  const [commentss, setCommentss] = useState([]);
 
   useEffect(() => {
     fetchComments();
+    fetchCommentsAdmin();
   }, []);
 
   const fetchComments = async () => {
@@ -213,6 +228,22 @@ export default function Admin() {
         "An error occurred while fetching comments:",
         error.message,
       );
+    }
+  };
+
+  const fetchCommentsAdmin = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("commentaire_admin")
+        .select("*");
+
+      if (error) {
+        console.error("Error fetching comments:", error);
+      } else {
+        setCommentss(data);
+      }
+    } catch (error) {
+      console.error("An error occurred while fetching comments:", error.message);
     }
   };
 
@@ -371,7 +402,50 @@ export default function Admin() {
               ))}
             </ul>
           </div>
+
+
           <h2 className="h2">Message pour un contact</h2>
+          <ul className="space-y-6">
+              {commentss && commentss.map((commentss) => (
+                <li
+                  key={commentss.id}
+                  className="border p-6 rounded-md bg-white shadow-md"
+                >
+                  <p className="text-xl font-semibold mb-2 text-blue-600">
+                    {commentss.username}
+                  </p>
+                  {editedComments[commentss.id] ? (
+                    <div className="mb-4">
+                      <textarea
+                        value={commentss.newComment || ""}
+                        onChange={(e) =>
+                          handleCommentChange(commentss.id, e.target.value)
+                        }
+                        className="w-full p-2 border rounded-md"
+                      />
+                      <div className="flex justify-end space-x-2 mt-2">
+                        <button
+                          onClick={() => handleSaveEdit(commentss.id)}
+                          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
+                        >
+                          Enregistrer
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-gray-700">{commentss.commentaire}</p>
+                  )}
+                  <div className="flex justify-end space-x-4 mt-4">
+                    <button
+                      onClick={() => handleDeleteCommentAdmin(commentss.id)}
+                      className="text-red-500 hover:underline focus:outline-none"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
         </div>
       </div>
     );
