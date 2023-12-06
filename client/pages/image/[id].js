@@ -4,6 +4,7 @@ import axios from "axios";
 import { getAPIKey, getAPIBaseURL } from "../../API/API_pexels";
 import supabase from "../../supabase";
 import { useAuth } from "../../components/AuthContext";
+import Link from "next/link";
 
 const ImageDetail = () => {
   const router = useRouter();
@@ -44,7 +45,7 @@ const ImageDetail = () => {
             .eq("api_image_id", id);
 
           setComments(commentsResponse.data);
-        }
+        }c
       } catch (error) {
         console.error("Fetching image details failed:", error);
       }
@@ -316,7 +317,12 @@ const ImageDetail = () => {
       }
 
       console.log("Comment added successfully:", data);
-      window.location.reload();
+      const commentsResponse = await supabase
+            .from("commentaire")
+            .select("*")
+            .eq("api_image_id", id);
+
+          setComments(commentsResponse.data);
     } catch (error) {
       console.error("Error adding comment:", error.message);
     }
@@ -347,7 +353,12 @@ const ImageDetail = () => {
         }
 
         console.log("Comment edited successfully:", data);
-        window.location.reload();
+        const commentsResponse = await supabase
+            .from("commentaire")
+            .select("*")
+            .eq("api_image_id", id);
+
+          setComments(commentsResponse.data);
       } else {
         console.error("User does not have permission to edit this comment");
       }
@@ -420,7 +431,12 @@ const ImageDetail = () => {
           throw error;
         }
         console.log("Comment deleted successfully:", data);
-        window.location.reload();
+        const commentsResponse = await supabase
+            .from("commentaire")
+            .select("*")
+            .eq("api_image_id", id);
+
+          setComments(commentsResponse.data);
         setEditingCommentId(commentId);
       } else {
         console.error("User does not have permission to delete this comment");
@@ -730,7 +746,9 @@ const ImageDetail = () => {
           {comments.map((comment) => (
             <li key={comment.id} className="border p-6 rounded-md bg-white ">
               <p className="text-xl font-semibold mb-2 text-blue-600">
-                {comment.username}
+                <Link href={`/account_user/${comment.username}`} passHref>
+                  {comment.username}
+                </Link>
               </p>
               {editedComments[comment.id] ? (
                 <div className="mb-4">

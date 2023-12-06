@@ -25,7 +25,7 @@ function AlbumPage() {
       try {
         const { data: albumData, error } = await supabase
           .from("album")
-          .select("id, name_liste, description_liste, username,id_user")
+          .select("id, name_liste, description_liste, username,id_user,created_at")
           .eq("id", album)
           .single();
 
@@ -416,7 +416,12 @@ function AlbumPage() {
         Description : {albumData.description_liste}
       </p>
       <p className="text-gray-500  ml-20 mb-4">
-        Créé par : {albumData.username}
+        <Link href={`/account_user/${albumData.username}`} passHref>
+          Créé par : {albumData.username}
+        </Link>
+      </p>
+      <p className="text-gray-500  ml-20 mb-4">
+        Créé le : {albumData.created_at}
       </p>
 
       <div className="w-4/5 mx-auto">
@@ -533,7 +538,9 @@ function AlbumPage() {
           {comments.map((comment) => (
             <li key={comment.id} className="border p-6 rounded-md bg-white ">
               <p className="text-xl font-semibold mb-2 text-blue-600">
-                {comment.username}
+                <Link href={`/account_user/${comment.username}`} passHref>
+                  {comment.username}
+                </Link>
               </p>
               {editedComments[comment.id] ? (
                 <div className="mb-4">

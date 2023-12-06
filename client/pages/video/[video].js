@@ -4,6 +4,7 @@ import axios from "axios";
 import { getAPIKey, getAPIBaseURL } from "../../API/API_pexels";
 import { useAuth } from "../../components/AuthContext";
 import supabase from "../../supabase";
+import Link from "next/link";
 
 const VideoPage = () => {
   const router = useRouter();
@@ -593,9 +594,9 @@ const VideoPage = () => {
         <ul className="space-y-6">
           {comments.map((comment) => (
             <li key={comment.id} className="border p-6 rounded-md bg-white ">
-              <p className="text-xl font-semibold mb-2 text-blue-600">
-                {comment.username}
-              </p>
+                <Link href={`/account_user/${comment.username}`} passHref>
+                  {comment.username}
+                </Link>
               {editedComments[comment.id] ? (
                 <div className="mb-4">
                   <textarea
