@@ -77,13 +77,16 @@ function AlbumPage() {
 
   
   const toggleLikeDislike = async () => {
+    const IDalbum = albumData.id;
     try {
       const { data: albumData, error } = await supabase
         .from("album")
         .select("id, name_liste, description_liste, username")
         .single();
 
-      const IDalbum = albumData.id;
+      
+
+      console.log( user_session.id);
 
       if (!user_session) {
         console.error("Utilisateur non connecté");
@@ -93,6 +96,11 @@ function AlbumPage() {
       }
 
       setIsLiked((prevIsLiked) => !prevIsLiked);
+
+      if (!user_session || !IDalbum) {
+        console.error('user_session or IDalbum is not defined');
+        return;
+      }
 
       const likeKey = `like_${user_session?.id}_${IDalbum}`;
       localStorage.setItem(likeKey, isLiked ? "false" : "true");

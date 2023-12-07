@@ -330,9 +330,10 @@ function Dashboard() {
         <h2 className="mx-auto h2 mb-2">Image Likés</h2>
         <div className="mx-auto grid grid-cols-3 justify-items-center gap-y-4 mt-8">
           {favorisImageData.map((image) => (
-            <div key={image.id} className="m-2">
+            <div className="m-2">
               <Link href={`/image/${image.id_image}`} passHref>
                 <img
+                   key={image.id}
                   src={image.url_image}
                   alt={`Image ${image.id}`}
                   className="rounded-md max-w-xs cursor-pointer"
@@ -344,9 +345,10 @@ function Dashboard() {
         <h2 className="mx-auto h2 mb-2">Video likés</h2>
         <div className="mx-auto grid grid-cols-3 justify-items-center gap-y-4 mt-8">
           {favorisVideoData.map((video) => (
-            <div key={video.id} className="m-2">
+            <div  className="m-2">
               <Link href={`/video/${video.id_video}`} passHref>
                 <img
+                  key={video.id}
                   src={video.imagevideo}
                   alt={`Video ${video.id}`}
                   className="rounded-md max-w-xs cursor-pointer"
@@ -373,6 +375,7 @@ function Dashboard() {
               <div className="flex space-x-4 mb-4">
                 {album.images.map((image) => (
                   <img
+                    key={image.id}
                     src={image.url}
                     alt={`Image ${image.id}`}
                     className="w-24 h-24"
@@ -383,6 +386,7 @@ function Dashboard() {
               <div className="flex space-x-4">
                 {album.videos.map((video) => (
                   <img
+                    key={video.id}
                     src={video.imagevideo}
                     alt={`Video ${video.id}`}
                     className="w-24 h-24"
