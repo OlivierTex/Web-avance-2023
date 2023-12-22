@@ -62,7 +62,8 @@ npm start
 - Démarrer Supabase
 
 ```bash
-npx supabase start
+cd supabase
+docker-compose up
 ```
 
 ## Authors
@@ -76,66 +77,62 @@ Greg DEMIRDJIAN : greg.demirdjian@edu.ece.fr
 ### Project management:
 
 - Naming convention
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 2/2
+    - Comments: 
 - Project structure
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 2/2
+    - Comments: Nous avons essayé de créer une structure de projet et des dossiers la plus simple et la plus compréhensible au possible. Ainsi les composants sont tous regroupés en un dossier, les images sont organisés dans le dossier public, pour les pages, nous avons essayé de les regrouper au maximum de manière logique dans des dossiers quand c'était possible.
 - Git
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 2/2
+    - Comments: Nous avons suivi les conventionnal commits ce qui est vérifiable dans l'historique des commits.
 - Code quality
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 4/4
+    - Comments: Nous utilisons Prettier.
 - Design, UX, and content
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 4/4
+    - Comments: Le visuel de la webapp a été pensé pour être simple d'utilisation et intuitif. Par exemple, pour l'affichage des banques, nous avons créé une grid view en x2 x4 ou x6 images par ligne. De plus, pour toutes nos classes tailwind et leurs dimensions nous nous basons sur la taille de la fenêtre afin de pouvoir adpater l'affichage à tous les écrans. Nous avons essayé d'utiliser le minimum de composants préfaits et avons privilégié de les créer nous-même.
 
 ### Application development:
 
 - Home page
     - Self-evaluation: place your objective evaluation
     - Comments: place your comments
+- Navigation
+    - Self-evaluation: 2/2
+    - Comments: La barre de navigation est intégrée dans le composant Layout qui est appelé dans le _app.js et donc dans toutes les pages de notre webapp. Cette barre contient tous les liens vers les banques, albums, comptes, accueil, about, contact, etc ...
 - Login and profile page
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
-- New articles creation
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
-- New comment creation
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 4/4
+    - Comments: Nous utilisons le composant Auth de Supabase pour la connexion des utilisateurs. Lorsqu'un utilisateur se connecte, il a un bouton avec son image de profil Gravatar et son username qui le dirige vers sa page personnelle. Celle-ci lui permet de voir et modifier ses informations. De plus nous avons ajouté une page spécialement pour les administrateurs. Celle-ci n'est accessible que par eux via un bouton qui s'affiche dans le header si l'on est admin. Ils peuvent notamment gérer les utilisateurs et modérer s'il y a eu des signalements de commentaires.
+- Post creation and display
+    - Self-evaluation: 6/6
+    - Comments: Pour cette partie nous avons décidé de donner la possibilité de créer des albums aux utilisateurs connectés. Ils peuvent donc ajouter des images et vidéos depuis les banques dans leurs albums. Les albums sont tous affichés sur la page album, avec pagination et tri par date de création. Lorsque l'on clique sur un album, chacun a une page à part entière avec le contenu et les commentaires des autres utilisateurs s'il y en a. Pour choisir quelle image ou vidéo ajouter à un album, il faut aller sur la page de la dite image ou vidéo et cliquer sur le bouton associé qui ouvrira un menu dans ce but.
+- Comment creation and display
+    - Self-evaluation: 4/4
+    - Comments: Sur les albums, un utilisateur connecté peut ajouter un commentaire en bas de la page, il peut aussi signaler un autre commentaire ou éditer ses propres commentaires. De plus, un utilisateur peut aussi rajouter des commentaires directement sur les images et vidéos des banques.
+- Post modification and removal
+    - Self-evaluation: 4/4
+    - Comments: Après avoir créé un album, seul l'utilisateur qui l'a créé peut le modifier, que ce soit la description ou ajouter et supprimer des photos ou vidéos. De plus, il peut aussi supprimer son album.
+- Search
+    - Self-evaluation: 6/6
+    - Comments: Un utilisateur connecté ou non peut effectuer une recherche sur la page album via la barre de recherche associée. Celle-ci est effectuée côté serveur. De plus, dans les banques d'images et vidéos, il est également possible d'effectuer une recherche sur la banque Pexels.
+- Use an external API
+    - Self-evaluation: 2/2
+    - Comments: Nous utilisons l'API de Pexels pour récupérer des images et vidéos de qualité. C'est sur cette base que nous avons intégré la banque d'images et vidéos ainsi que les albums. Nous y récupérons les images et vidéos ainsi que leurs informations.
 - Resource access control
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
-- Article modification
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
-- Article removal
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
-- Comment modification
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
-- Comment removal
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 6/6
+    - Comments: La RLS a été activée, en particulier sur notre table user. Les utilsateurs n'ont accès qu'à leurs informations et ne peuvent pas modifier leur catégorie user/admin. Les admins ont accès à toutes les informations, peuvent les modifier, supprimer ou insérer à leur gré. Cela a été fait en utilisant des policies sur la RLS d'une part et des triggers pour un cas particulier.
 - Account settings
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 4/4
+    - Comments: Sur la page de son compte l'utilisateur peut modifier : Username, email, langue et bio. Chacun des paramètres est envoyé en BDD lorsque valdié.
 - WYSIWYG integration
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 
+    - Comments: 
 - Gravatar integration
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+    - Self-evaluation: 2/2
+    - Comments: Nous avons intégré Gravatar pour associer une image de profile aux utilisateurs via leur adresse mail. Par exemple, celle-ci est affichée dans le header à côté du username lorsque l'utilisateur est connecté. Nous avons attribué l'image 'rétro' par défault.
 - Light/dark theme
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
-- Accent color selection
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
-
+    - Self-evaluation: 2/2
+    - Comments: Un bouton pour changer de mode Light/Dark est disponible dans le header, en haut à gauche sur toute les pages.
 ## Bonuses
 
 - Task title
