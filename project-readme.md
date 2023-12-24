@@ -95,7 +95,7 @@ Greg DEMIRDJIAN : greg.demirdjian@edu.ece.fr
 ### Application development:
 
 - Home page
-    - Self-evaluation: place your objective evaluation
+    - Self-evaluation: 2/2
     - Comments: place your comments
 - Navigation
     - Self-evaluation: 2/2
@@ -135,6 +135,12 @@ Greg DEMIRDJIAN : greg.demirdjian@edu.ece.fr
     - Comments: Un bouton pour changer de mode Light/Dark est disponible dans le header, en haut à gauche sur toute les pages.
 ## Bonuses
 
-- Task title
-    - Self-evaluation: place your objective evaluation
-    - Comments: place your comments
+- Admin dashboard to manage users and posts
+    - Self-evaluation: fonctionnelle 
+    - Comments: Vous pouvez vous connecter en tant qu'administrateur. Cela vous permet d'ajouter et de supprimer un utilisateur. Vous pouvez également gérer les commentaires signalés et répondre aux messages qui ont été envoyés.
+- Add likes and/or reactions on posts.
+    - Self-evaluation: fonctionnelle 
+    - Comments: Vous pouvez réagir aux images, vidéos et albums avec des likes. Cela vous permet de les retrouver à tout moment sur votre compte utilisateur.
+- Add nested comments.
+    - Self-evaluation: fonctionnelle 
+    - Comments: Vous pouvez réagir aux images, vidéos et albums avec des likes. Cela vous permet de les retrouver à tout moment sur votre compte utilisateur.
