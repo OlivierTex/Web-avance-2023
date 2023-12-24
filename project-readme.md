@@ -72,6 +72,30 @@ Olivier TEXIER : olivier.texier@edu.ece.fr
 Marc HAM-CHOU-CHONG : marc.hamchouchong@edu.ece.fr  
 Greg DEMIRDJIAN : greg.demirdjian@edu.ece.fr
 
+## Log :
+
+Compte utilisateur :
+
+```bash
+user@user.user
+```
+
+```bash
+user
+```
+
+Compte admin :
+
+```bash
+admin@admin.admin
+```
+
+```bash
+admin
+```
+
+
+
 ## Tasks
 
 ### Project management:
@@ -143,4 +167,7 @@ Greg DEMIRDJIAN : greg.demirdjian@edu.ece.fr
     - Comments: Vous pouvez réagir aux images, vidéos et albums avec des likes. Cela vous permet de les retrouver à tout moment sur votre compte utilisateur.
 - Add nested comments.
     - Self-evaluation: fonctionnelle 
-    - Comments: Vous pouvez réagir aux images, vidéos et albums avec des likes. Cela vous permet de les retrouver à tout moment sur votre compte utilisateur.
+    - Comments: Vous pouvez réagir aux images, vidéos et albums avec des commentaires. Que vous pouvez modifier, supprimer et signaler.
+- Preview video.
+    - Self-evaluation: fonctionnelle 
+    - Comments: Si vous accédez à la page vidéo et basculez en mode "Grid View", vous avez la possibilité d'apercevoir le début de la vidéo en survolant la souris. Veuillez noter que la page peut mettre du temps à se charger.
