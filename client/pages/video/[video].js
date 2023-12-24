@@ -446,7 +446,7 @@ const VideoPage = () => {
               className="bg-gray-800 text-white px-4 py-2 rounded-md mr-2"
               onClick={handleButtonClicks}
             >
-              Ajouter l'image à un album
+              Ajouter la video à un album
             </button>
             {showOptions2 && (
               <div className="absolute botom-10 right-29 bg-white border border-gray-300 p-2 rounded">
