@@ -1,4 +1,4 @@
-import Layout from "../components/layout";
+import Layout from "../components/Layout";
 import { UserContext } from "../components/AuthContext";
 import "../styles/globals.css";
 
