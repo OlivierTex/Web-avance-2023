@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase";
 import { useAuth } from "./AuthContext";
+import gravatar from "gravatar";
 import Link from "next/link";
 
 function Dashboard() {
@@ -326,6 +327,15 @@ function Dashboard() {
         </button>
       </div>
 
+      <div className="w-2/5 space-y-4 bg-gray-400 p-4">
+        <h2 className="text-2xl font-bold">Image de profil</h2>
+        <img
+          src={gravatar.url(email, { s: "300", r: "x", d: "retro" }, true)}
+          alt="Gravatar User Icon"
+          className="mx-auto"
+        />
+      </div>
+
       <div className="mb-4">
         <h2 className="mx-auto h2 mb-2">Image Likés</h2>
         <div className="mx-auto grid grid-cols-3 justify-items-center gap-y-4 mt-8">
@@ -333,7 +343,7 @@ function Dashboard() {
             <div className="m-2">
               <Link href={`/image/${image.id_image}`} passHref>
                 <img
-                   key={image.id}
+                  key={image.id}
                   src={image.url_image}
                   alt={`Image ${image.id}`}
                   className="rounded-md max-w-xs cursor-pointer"
@@ -345,7 +355,7 @@ function Dashboard() {
         <h2 className="mx-auto h2 mb-2">Video likés</h2>
         <div className="mx-auto grid grid-cols-3 justify-items-center gap-y-4 mt-8">
           {favorisVideoData.map((video) => (
-            <div  className="m-2">
+            <div className="m-2">
               <Link href={`/video/${video.id_video}`} passHref>
                 <img
                   key={video.id}

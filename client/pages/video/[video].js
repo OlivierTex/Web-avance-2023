@@ -594,9 +594,9 @@ const VideoPage = () => {
         <ul className="space-y-6">
           {comments.map((comment) => (
             <li key={comment.id} className="border p-6 rounded-md bg-white ">
-                <Link href={`/account_user/${comment.username}`} passHref>
-                  {comment.username}
-                </Link>
+              <Link href={`/account_user/${comment.username}`} passHref>
+                {comment.username}
+              </Link>
               {editedComments[comment.id] ? (
                 <div className="mb-4">
                   <textarea

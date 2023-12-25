@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { useAuth } from "../components/AuthContext"; 
-import { useRouter } from "next/router"; 
+import { useAuth } from "../components/AuthContext";
+import { useRouter } from "next/router";
 import supabase from "../supabase";
 
 export default function Contacts() {
-  const { user_session } = useAuth(); 
-  const router = useRouter(); 
+  const { user_session } = useAuth();
+  const router = useRouter();
   const [message, setMessage] = useState("");
 
   const ajouter_commentaire = async (comment) => {
     try {
       if (!user_session) {
         console.error("User not logged in");
-        router.push("/login"); 
+        router.push("/login");
         return;
       }
 
@@ -50,7 +50,7 @@ export default function Contacts() {
   const handleSubmit = (e) => {
     e.preventDefault();
     ajouter_commentaire(message);
-    setMessage(""); 
+    setMessage("");
   };
 
   return (
@@ -59,16 +59,13 @@ export default function Contacts() {
         <h1 className="text-3xl font-bold mb-6 dark:text-white">Contacts</h1>
         <form className="mb-8" onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="text-lg font-semibold mb-3"
-            >
+            <label htmlFor="name" className="text-lg font-semibold mb-3">
               Commentaire :
             </label>
             <p className="mb-3">
-              Vous pouvez nous laisser un commentaire, une suggestion ou un
-              avis sur notre site web. Nous vous répondrons dans les plus brefs grace à votre adresse mail.
-              Merci de votre aide !
+              Vous pouvez nous laisser un commentaire, une suggestion ou un avis
+              sur notre site web. Nous vous répondrons dans les plus brefs grace
+              à votre adresse mail. Merci de votre aide !
             </p>
             <input
               type="text"

@@ -56,7 +56,7 @@ function Home() {
     <div className="bg-light dark:bg-dark min-h-screen">
       <div className="text-center py-10">
         <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
-        Welcome to our image and video bank website
+          Welcome to our image and video bank website
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 mt-2 mb-2">
           Discover our selection of high-quality photos and videos.

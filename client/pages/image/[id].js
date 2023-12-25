@@ -45,7 +45,8 @@ const ImageDetail = () => {
             .eq("api_image_id", id);
 
           setComments(commentsResponse.data);
-        }c
+        }
+        c;
       } catch (error) {
         console.error("Fetching image details failed:", error);
       }
@@ -318,11 +319,11 @@ const ImageDetail = () => {
 
       console.log("Comment added successfully:", data);
       const commentsResponse = await supabase
-            .from("commentaire")
-            .select("*")
-            .eq("api_image_id", id);
+        .from("commentaire")
+        .select("*")
+        .eq("api_image_id", id);
 
-          setComments(commentsResponse.data);
+      setComments(commentsResponse.data);
     } catch (error) {
       console.error("Error adding comment:", error.message);
     }
@@ -354,11 +355,11 @@ const ImageDetail = () => {
 
         console.log("Comment edited successfully:", data);
         const commentsResponse = await supabase
-            .from("commentaire")
-            .select("*")
-            .eq("api_image_id", id);
+          .from("commentaire")
+          .select("*")
+          .eq("api_image_id", id);
 
-          setComments(commentsResponse.data);
+        setComments(commentsResponse.data);
       } else {
         console.error("User does not have permission to edit this comment");
       }
@@ -432,11 +433,11 @@ const ImageDetail = () => {
         }
         console.log("Comment deleted successfully:", data);
         const commentsResponse = await supabase
-            .from("commentaire")
-            .select("*")
-            .eq("api_image_id", id);
+          .from("commentaire")
+          .select("*")
+          .eq("api_image_id", id);
 
-          setComments(commentsResponse.data);
+        setComments(commentsResponse.data);
         setEditingCommentId(commentId);
       } else {
         console.error("User does not have permission to delete this comment");

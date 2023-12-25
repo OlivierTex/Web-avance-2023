@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DarkModeToggle from "../components/DarkModeToggle";
+import DarkModeToggle from "./DarkModeToggle";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { supabase } from "../supabase";
@@ -32,7 +32,7 @@ const Header = () => {
       if (user_session) {
         const { data: users, error } = await supabase
           .from("user")
-          .select("username")
+          .select("username, email")
           .eq("id", user_session.id);
 
         if (error) {

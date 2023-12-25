@@ -10,7 +10,7 @@ function Users() {
   const [userInfo, setUserInfo] = useState({ username: "", bio: "" });
 
   useEffect(() => {
-    console.log("router.query:", router.query)
+    console.log("router.query:", router.query);
     const fetchData = async () => {
       try {
         if (!username) {
@@ -26,7 +26,9 @@ function Users() {
           .eq("username", username);
 
         if (userError) {
-          throw new Error("Erreur lors de la récupération des données utilisateur");
+          throw new Error(
+            "Erreur lors de la récupération des données utilisateur",
+          );
         }
 
         if (!userData || userData.length === 0) {
@@ -79,12 +81,11 @@ function Users() {
               console.error("L'album n'a pas d'id défini :", album);
               return null;
             }
-          })
+          }),
         );
 
         setAlbumData(albumsWithMedia);
-        setUserInfo(userData[0]); 
-
+        setUserInfo(userData[0]);
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
       }

@@ -25,7 +25,9 @@ function AlbumPage() {
       try {
         const { data: albumData, error } = await supabase
           .from("album")
-          .select("id, name_liste, description_liste, username,id_user,created_at")
+          .select(
+            "id, name_liste, description_liste, username,id_user,created_at",
+          )
           .eq("id", album)
           .single();
 
@@ -74,8 +76,6 @@ function AlbumPage() {
     }
   }, [album]);
 
-
-  
   const toggleLikeDislike = async () => {
     const IDalbum = albumData.id;
     try {
@@ -84,9 +84,7 @@ function AlbumPage() {
         .select("id, name_liste, description_liste, username")
         .single();
 
-      
-
-      console.log( user_session.id);
+      console.log(user_session.id);
 
       if (!user_session) {
         console.error("Utilisateur non connecté");
@@ -98,7 +96,7 @@ function AlbumPage() {
       setIsLiked((prevIsLiked) => !prevIsLiked);
 
       if (!user_session || !IDalbum) {
-        console.error('user_session or IDalbum is not defined');
+        console.error("user_session or IDalbum is not defined");
         return;
       }
 
@@ -157,30 +155,30 @@ function AlbumPage() {
   const handleDeleteMedia = async (mediaId, isVideo) => {
     try {
       if (user_session.id === albumData.id_user) {
-      const mediaTable = isVideo ? "link_video_album" : "link_image_album";
+        const mediaTable = isVideo ? "link_video_album" : "link_image_album";
 
-      const { data: linkMediaData, error: linkMediaError } = await supabase
-        .from(mediaTable)
-        .delete()
-        .eq("id", mediaId);
+        const { data: linkMediaData, error: linkMediaError } = await supabase
+          .from(mediaTable)
+          .delete()
+          .eq("id", mediaId);
 
-      if (linkMediaError) {
-        throw linkMediaError;
-      }
+        if (linkMediaError) {
+          throw linkMediaError;
+        }
 
-      if (isVideo) {
-        setAlbumVideos((prevVideos) =>
-          prevVideos.filter((video) => video.id !== mediaId),
-        );
+        if (isVideo) {
+          setAlbumVideos((prevVideos) =>
+            prevVideos.filter((video) => video.id !== mediaId),
+          );
+        } else {
+          setAlbumImages((prevImages) =>
+            prevImages.filter((image) => image.id !== mediaId),
+          );
+        }
       } else {
-        setAlbumImages((prevImages) =>
-          prevImages.filter((image) => image.id !== mediaId),
-        );
+        console.error("User does not have permission to edit this album");
       }
-    } else {
-      console.error("User does not have permission to edit this album");
-    }
-  } catch (error) {
+    } catch (error) {
       console.error("Erreur lors de la suppression de l'image/vidéo:", error);
     }
   };
@@ -188,26 +186,24 @@ function AlbumPage() {
   const handleDeleteAlbum = async () => {
     try {
       if (user_session.id === albumData.id_user) {
+        await supabase.from("link_image_album").delete().eq("id_album", album);
 
-      await supabase.from("link_image_album").delete().eq("id_album", album);
+        await supabase.from("link_video_album").delete().eq("id_album", album);
 
-      await supabase.from("link_video_album").delete().eq("id_album", album);
+        const { data, error } = await supabase
+          .from("album")
+          .delete()
+          .eq("id", album);
 
-      const { data, error } = await supabase
-        .from("album")
-        .delete()
-        .eq("id", album);
+        if (error) {
+          throw error;
+        }
 
-      if (error) {
-        throw error;
+        router.push("/album");
+      } else {
+        console.error("User does not have permission to edit this album");
       }
-
-      router.push("/album");
-    } else {
-      console.error("User does not have permission to edit this album");
-    }
-  }
-    catch (error) {
+    } catch (error) {
       console.error("Erreur lors de la suppression de l'album:", error);
     }
   };
@@ -215,30 +211,27 @@ function AlbumPage() {
   const handleEditAlbum = async (newTitle, newDescription) => {
     try {
       if (user_session.id === albumData.id_user) {
-     
-      const { data, error } = await supabase
-        .from("album")
-        .update({
+        const { data, error } = await supabase
+          .from("album")
+          .update({
+            name_liste: newTitle,
+            description_liste: newDescription,
+          })
+          .eq("id", album);
+
+        if (error) {
+          throw error;
+        }
+
+        setAlbumData((prevData) => ({
+          ...prevData,
           name_liste: newTitle,
           description_liste: newDescription,
-        })
-        .eq("id", album);
-
-      if (error) {
-        throw error;
+        }));
+      } else {
+        console.error("User does not have permission to edit this album");
       }
-
-      setAlbumData((prevData) => ({
-        ...prevData,
-        name_liste: newTitle,
-        description_liste: newDescription,
-      }));
-    } else {
-      console.error("User does not have permission to edit this album");
-    }
-    }
-   
-    catch (error) {
+    } catch (error) {
       console.error("Erreur lors de la mise à jour de l'album:", error);
     }
   };

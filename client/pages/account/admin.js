@@ -171,13 +171,13 @@ export default function Admin() {
         .from("commentaire")
         .delete()
         .eq("id", commentId);
-  
+
       fetchComments();
-  
+
       if (error) {
         throw error;
       }
-  
+
       setIsEditingComment(true);
     } catch (error) {
       console.error("Error deleting comment:", error.message);
@@ -190,13 +190,13 @@ export default function Admin() {
         .from("commentaire_admin")
         .delete()
         .eq("id", commentId);
-  
+
       fetchCommentsAdmin();
-  
+
       if (error) {
         throw error;
       }
-  
+
       setIsEditingComment(true);
     } catch (error) {
       console.error("Error deleting comment:", error.message);
@@ -243,7 +243,10 @@ export default function Admin() {
         setCommentss(data);
       }
     } catch (error) {
-      console.error("An error occurred while fetching comments:", error.message);
+      console.error(
+        "An error occurred while fetching comments:",
+        error.message,
+      );
     }
   };
 
@@ -403,10 +406,10 @@ export default function Admin() {
             </ul>
           </div>
 
-
           <h2 className="h2">Message pour un contact</h2>
           <ul className="space-y-6">
-              {commentss && commentss.map((commentss) => (
+            {commentss &&
+              commentss.map((commentss) => (
                 <li
                   key={commentss.id}
                   className="border p-6 rounded-md bg-white shadow-md"
@@ -445,7 +448,7 @@ export default function Admin() {
                   </div>
                 </li>
               ))}
-            </ul>
+          </ul>
         </div>
       </div>
     );
