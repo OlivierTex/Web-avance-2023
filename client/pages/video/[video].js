@@ -5,6 +5,8 @@ import { getAPIKey, getAPIBaseURL } from "../../API/API_pexels";
 import { useAuth } from "../../components/AuthContext";
 import supabase from "../../supabase";
 import Link from "next/link";
+import gravatar from "gravatar";
+
 
 const VideoPage = () => {
   const router = useRouter();
@@ -176,7 +178,7 @@ const VideoPage = () => {
 
       const { data: userData, error: userError } = await supabase
         .from("user")
-        .select("username")
+        .select("*")
         .eq("id", user_session.id)
         .single();
 
@@ -184,7 +186,13 @@ const VideoPage = () => {
         throw userError;
       }
 
+      if (!userData) {
+        console.error('userData is not defined');
+        return;
+      }
+
       const username = userData?.username;
+      const email = userData?.email;
 
       const { data, error } = await supabase.from("commentaire").insert([
         {
@@ -193,6 +201,7 @@ const VideoPage = () => {
           url_image: IDivideo,
           api_image_id: video,
           username: username,
+          email: email,
           signaler: false,
         },
       ]);
@@ -200,6 +209,7 @@ const VideoPage = () => {
       if (error) {
         throw error;
       }
+
 
       console.log("Comment added successfully:", data);
       window.location.reload();
@@ -594,9 +604,17 @@ const VideoPage = () => {
         <ul className="space-y-6">
           {comments.map((comment) => (
             <li key={comment.id} className="border p-6 rounded-md bg-white ">
+              <div className="flex items-center text-xl font-semibold mb-2 text-blue-600">
+              {console.log(comment.userEmail)} 
+              <img
+                src={gravatar.url(comment.email, { s: "50", r: "x", d: "retro" }, true)}
+                alt="Gravatar User Icon"
+                className="mr-2"
+              />
               <Link href={`/account_user/${comment.username}`} passHref>
                 {comment.username}
               </Link>
+            </div>
               {editedComments[comment.id] ? (
                 <div className="mb-4">
                   <textarea

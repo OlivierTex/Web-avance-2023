@@ -4,6 +4,7 @@ import Link from "next/link";
 import supabase from "../../supabase";
 import { useAuth } from "../../components/AuthContext";
 import axios from "axios";
+import gravatar from "gravatar";
 
 function AlbumPage() {
   const router = useRouter();
@@ -250,7 +251,7 @@ function AlbumPage() {
 
       const { data: userData, error: userError } = await supabase
         .from("user")
-        .select("username")
+        .select("*")
         .eq("id", user_session.id)
         .single();
 
@@ -258,7 +259,14 @@ function AlbumPage() {
         throw userError;
       }
 
+      if (!userData) {
+        console.error('userData is not defined');
+        return;
+      }
+
+      
       const username = userData?.username;
+      const email = userData?.email;
 
       const { data, error } = await supabase.from("commentaire").insert([
         {
@@ -267,9 +275,14 @@ function AlbumPage() {
           url_image: null,
           api_image_id: albumData.id,
           username: username,
+          email: email,
           signaler: false,
         },
       ]);
+
+      if (error) {
+        throw error;
+      }
 
       if (error) {
         throw error;
@@ -538,11 +551,17 @@ function AlbumPage() {
         <ul className="space-y-6">
           {comments.map((comment) => (
             <li key={comment.id} className="border p-6 rounded-md bg-white ">
-              <p className="text-xl font-semibold mb-2 text-blue-600">
-                <Link href={`/account_user/${comment.username}`} passHref>
-                  {comment.username}
-                </Link>
-              </p>
+              <div className="flex items-center text-xl font-semibold mb-2 text-blue-600">
+              {console.log(comment.userEmail)} 
+              <img
+                src={gravatar.url(comment.email, { s: "50", r: "x", d: "retro" }, true)}
+                alt="Gravatar User Icon"
+                className="mr-2"
+              />
+              <Link href={`/account_user/${comment.username}`} passHref>
+                {comment.username}
+              </Link>
+            </div>
               {editedComments[comment.id] ? (
                 <div className="mb-4">
                   <textarea
