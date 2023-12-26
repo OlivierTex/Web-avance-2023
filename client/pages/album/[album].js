@@ -413,15 +413,15 @@ function AlbumPage() {
   return (
     <div className="bg-light dark:bg-dark">
       <h1 className="h1 mb-3">{albumData.name_liste}</h1>
-      <p className="text-gray-600  ml-20 mb-4">
+      <p className="dark:text-white m-4">
         Description : {albumData.description_liste}
       </p>
-      <p className="text-gray-500  ml-20 mb-4">
+      <p className="dark:text-white m-4">
         <Link href={`/account_user/${albumData.username}`} passHref>
           Créé par : {albumData.username}
         </Link>
       </p>
-      <p className="text-gray-500  ml-20 mb-4">
+      <p className="dark:text-white m-4">
         Créé le : {albumData.created_at}
       </p>
 
@@ -482,7 +482,7 @@ function AlbumPage() {
         </div>
       </div>
 
-      <h2 className="text-3xl  m-6 text-gray-800">Gestion album:</h2>
+      <h2 className="h2 ml-3">Gestion album:</h2>
       <div className="border p-6 rounded-md m-6 bg-white mb-1">
         <div className="mt-4">
           <h2 className="text-lg font-semibold mb-2">Éditer l'album</h2>
@@ -515,7 +515,7 @@ function AlbumPage() {
         </div>
       </div>
 
-      <h2 className="text-3xl  m-6 text-gray-800">Commentaires:</h2>
+      <h2 className="h2 ml-3">Commentaires:</h2>
       <div className="p-4">
         <textarea
           id="commentaireInput"

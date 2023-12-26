@@ -64,7 +64,7 @@ const Utilisateur = () => {
       <div className="mx-auto w-4/5">
         <div className={`bg-light dark:bg-dark`}>
           <div className="content-center mb-4">
-            <h1 className="text-3xl text-center font-bold mt-6">
+            <h1 className="h1">
               Compte Utilisateur
             </h1>
             <button

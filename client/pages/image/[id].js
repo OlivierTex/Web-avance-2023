@@ -699,7 +699,7 @@ const ImageDetail = () => {
         </div>
       </div>
 
-      <h2 className="text-3xl  m-6 text-gray-800">Infomartions:</h2>
+      <h2 className="h2 ml-3">Infomartions:</h2>
       <div className="dark:text-white space-y-2 text-center">
         <p>Photographer: {imageDetails.photographer}</p>
         <p>
@@ -723,7 +723,7 @@ const ImageDetail = () => {
         </p>
       </div>
 
-      <h2 className="text-3xl  m-6 text-gray-800">Commentaires:</h2>
+      <h2 className="h2 ml-3">Commentaires:</h2>
       <div className="p-4">
         <textarea
           id="commentaireInput"

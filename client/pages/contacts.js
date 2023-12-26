@@ -59,10 +59,10 @@ export default function Contacts() {
         <h1 className="text-3xl font-bold mb-6 dark:text-white">Contacts</h1>
         <form className="mb-8" onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="name" className="text-lg font-semibold mb-3">
+            <label htmlFor="name" className="dark:text-white m-4">
               Commentaire :
             </label>
-            <p className="mb-3">
+            <p className="mb-3 dark:text-white m-4">
               Vous pouvez nous laisser un commentaire, une suggestion ou un avis
               sur notre site web. Nous vous répondrons dans les plus brefs grace
               à votre adresse mail. Merci de votre aide !
