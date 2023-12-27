@@ -7,7 +7,7 @@ import times from "lodash/times";
 
 function Home() {
   const [randomImages, setRandomImages] = useState([]);
-  const [randomImages2, setRandomImages2] = useState([]); 
+  const [randomImages2, setRandomImages2] = useState([]);
   const [randomImagess, setRandomImagess] = useState([]);
   const router = useRouter();
 
@@ -71,7 +71,7 @@ function Home() {
 
     fetchRandomImagess();
     fetchRandomImages();
-    fetchRandomImages2(); 
+    fetchRandomImages2();
   }, []);
 
   const handleImageClick = (id) => {
@@ -90,7 +90,11 @@ function Home() {
 
         <Marquee velocity={15}>
           {times(randomImages.length, Number).map((id) => (
-            <div key={id} className="flex justify-center" style={{ margin: '10px' }}>
+            <div
+              key={id}
+              className="flex justify-center"
+              style={{ margin: "10px" }}
+            >
               <img
                 src={randomImages[id].src.large}
                 alt={`Random ${randomImages[id].id}`}
@@ -103,7 +107,11 @@ function Home() {
 
         <Marquee velocity={15}>
           {times(randomImagess.length, Number).map((id) => (
-            <div key={id} className="flex justify-center" style={{ margin: '10px' }}>
+            <div
+              key={id}
+              className="flex justify-center"
+              style={{ margin: "10px" }}
+            >
               <img
                 src={randomImagess[id].src.large}
                 alt={`Random ${randomImagess[id].id}`}
@@ -116,7 +124,11 @@ function Home() {
 
         <Marquee velocity={15}>
           {times(randomImages2.length, Number).map((id) => (
-            <div key={id} className="flex justify-center" style={{ margin: '10px' }}>
+            <div
+              key={id}
+              className="flex justify-center"
+              style={{ margin: "10px" }}
+            >
               <img
                 src={randomImages2[id].src.large}
                 alt={`Random ${randomImages2[id].id}`}

@@ -145,21 +145,21 @@ function Album() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
-                type="button"
+              type="button"
+              className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4 w-14 h-12"
+              onClick={() => setSearchTerm("")}
+            >
+              <img
+                src="/images/delete-left-solid.svg"
+                alt="Réinitialiser"
+                className="w-6 h-6 mr-2 "
+              />
+            </button>
+            <div className="relative inline-block ">
+              <button
                 className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4 w-14 h-12"
-                onClick={() => setSearchTerm("")}
+                onClick={handleButtonClick}
               >
-                <img
-                  src="/images/delete-left-solid.svg"
-                  alt="Réinitialiser"
-                  className="w-6 h-6 mr-2 "
-                />
-              </button>
-              <div className="relative inline-block ">
-                <button
-                  className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4 w-14 h-12"
-                  onClick={handleButtonClick}
-                >
                 <img
                   src="/images/folder-plus-solid.svg"
                   alt="Créer un album"
@@ -227,15 +227,9 @@ function Album() {
               <Link href={`/album/${album.id}`}>
                 <div className="border p-6 rounded-md bg-white mb-1 dark:bg-gray-700 dark:text-white">
                   <h2 className="text-xl font-bold mb-1">{album.name_liste}</h2>
-                  <p className="">
-                    Description : {album.description_liste}
-                  </p>
-                  <p className="">
-                    Créé par : {album.username}
-                  </p>
-                  <p className="">
-                    Date de création : {album.created_at}
-                  </p>
+                  <p className="">Description : {album.description_liste}</p>
+                  <p className="">Créé par : {album.username}</p>
+                  <p className="">Date de création : {album.created_at}</p>
                   <p className="">Image :</p>
                   <div className="flex space-x-4 mb-4">
                     {album.images.map((image) => (

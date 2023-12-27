@@ -255,9 +255,7 @@ export default function Admin() {
       <div className="mx-auto w-4/5">
         <div className={`bg-light dark:bg-dark`}>
           <div className="content-center mb-4">
-            <h1 className="h1">
-              Compte Admin
-            </h1>
+            <h1 className="h1">Compte Admin</h1>
             <button
               onClick={deconnecterUtilisateur}
               className="bg-gray-800 text-white px-4 py-2 mt-4"

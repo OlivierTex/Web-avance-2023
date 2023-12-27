@@ -14,7 +14,7 @@ export default function DarkModeToggle() {
           .select("darkMode")
           .eq("id", user_session.id)
           .single();
-  
+
         if (error) {
           console.error(error);
         } else if (data) {
@@ -27,20 +27,20 @@ export default function DarkModeToggle() {
         }
       }
     };
-  
+
     fetchUserDarkMode();
   }, [user_session]);
 
   const toggleDarkMode = async () => {
     const newDarkMode = !isDarkMode;
     setIsDarkMode(newDarkMode);
-  
+
     if (newDarkMode) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  
+
     if (user_session) {
       const { error } = await supabase
         .from("user")
@@ -48,16 +48,16 @@ export default function DarkModeToggle() {
           darkMode: newDarkMode,
         })
         .eq("id", user_session.id);
-  
+
       if (error) {
         console.error(error);
         let errorMessage = "";
-  
+
         switch (error.message) {
           default:
             errorMessage = "Une erreur s'est produite.";
         }
-  
+
         alert(errorMessage);
       } else {
         console.log("User dark mode preference updated successfully");

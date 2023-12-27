@@ -303,11 +303,10 @@ const ImageDetail = () => {
       }
 
       if (!userData) {
-        console.error('userData is not defined');
+        console.error("userData is not defined");
         return;
       }
 
-      
       const username = userData?.username;
       const email = userData?.email;
 
@@ -712,7 +711,7 @@ const ImageDetail = () => {
       </div>
 
       <h2 className="h2 ml-3">Infomartions:</h2>
-    
+
       <div className="dark:text-white space-y-2 text-center">
         <p>Photographer: {imageDetails.photographer}</p>
         <p>
@@ -760,16 +759,20 @@ const ImageDetail = () => {
           {comments.map((comment) => (
             <li key={comment.id} className="border p-6 rounded-md bg-white ">
               <div className="flex items-center text-xl font-semibold mb-2 text-blue-600">
-              {console.log(comment.userEmail)} 
-              <img
-                src={gravatar.url(comment.email, { s: "50", r: "x", d: "retro" }, true)}
-                alt="Gravatar User Icon"
-                className="mr-2"
-              />
-              <Link href={`/account_user/${comment.username}`} passHref>
-                {comment.username}
-              </Link>
-            </div>
+                {console.log(comment.userEmail)}
+                <img
+                  src={gravatar.url(
+                    comment.email,
+                    { s: "50", r: "x", d: "retro" },
+                    true,
+                  )}
+                  alt="Gravatar User Icon"
+                  className="mr-2"
+                />
+                <Link href={`/account_user/${comment.username}`} passHref>
+                  {comment.username}
+                </Link>
+              </div>
               {editedComments[comment.id] ? (
                 <div className="mb-4">
                   <textarea
@@ -792,21 +795,21 @@ const ImageDetail = () => {
                 <p className="text-gray-700">{comment.commentaire}</p>
               )}
               <div className="flex justify-end space-x-4 mt-4">
-              {user_session && user_session.id === comment.id_user && (
-                <div>
-                <button
-                  onClick={() => handleDeleteComment(comment.id)}
-                  className="text-blue-500 hover:underline focus:outline-none mr-4"
-                >
-                  Supprimer
-                </button>
-                <button
-                  onClick={() => handleEditComment(comment.id)}
-                  className="text-blue-500 hover:underline focus:outline-none"
-                >
-                  Modifier
-                </button>
-                </div>
+                {user_session && user_session.id === comment.id_user && (
+                  <div>
+                    <button
+                      onClick={() => handleDeleteComment(comment.id)}
+                      className="text-blue-500 hover:underline focus:outline-none mr-4"
+                    >
+                      Supprimer
+                    </button>
+                    <button
+                      onClick={() => handleEditComment(comment.id)}
+                      className="text-blue-500 hover:underline focus:outline-none"
+                    >
+                      Modifier
+                    </button>
+                  </div>
                 )}
                 <button
                   onClick={() => signalerCommentaire(comment.id)}
@@ -814,7 +817,6 @@ const ImageDetail = () => {
                 >
                   Signaler
                 </button>
-                
               </div>
             </li>
           ))}

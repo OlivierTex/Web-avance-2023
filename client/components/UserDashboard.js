@@ -374,13 +374,9 @@ function Dashboard() {
           <Link href={`/album/${album.id}`}>
             <div className="border p-6 rounded-md bg-white mb-1 dark:bg-gray-700 dark:text-white">
               <h2 className="text-xl font-bold mb-1">{album.name_liste}</h2>
-              <p className="">
-                Description : {album.description_liste}
-              </p>
+              <p className="">Description : {album.description_liste}</p>
               <p className="">Créé par : {album.username}</p>
-              <p className="">
-                Date de création : {album.created_at}
-              </p>
+              <p className="">Date de création : {album.created_at}</p>
               <p className=" ">Image :</p>
               <div className="flex space-x-4 mb-4">
                 {album.images.map((image) => (
