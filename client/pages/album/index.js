@@ -145,21 +145,21 @@ function Album() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
-              type="button"
-              className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4"
-              onClick={() => setSearchTerm("")}
-            >
-              <img
-                src="/images/delete-left-solid.svg"
-                alt="Réinitialiser"
-                className="w-6 h-6 mr-2 "
-              />
-            </button>
-            <div className="relative inline-block ">
-              <button
-                className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4"
-                onClick={handleButtonClick}
+                type="button"
+                className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4 w-14 h-12"
+                onClick={() => setSearchTerm("")}
               >
+                <img
+                  src="/images/delete-left-solid.svg"
+                  alt="Réinitialiser"
+                  className="w-6 h-6 mr-2 "
+                />
+              </button>
+              <div className="relative inline-block ">
+                <button
+                  className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4 w-14 h-12"
+                  onClick={handleButtonClick}
+                >
                 <img
                   src="/images/folder-plus-solid.svg"
                   alt="Créer un album"
