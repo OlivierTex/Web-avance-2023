@@ -146,13 +146,13 @@ function Album() {
             />
             <button
               type="button"
-              className="text-white bg-gray-100 px-4 py-2 rounded-md ml-4"
+              className="text-white bg-gray-100 px-4 py-2 rounded-md ml-4 dark:bg-gray-500 dark:text-white"
               onClick={() => setSearchTerm("")}
             >
               <img
                 src="/images/delete-left-solid.svg"
                 alt="Réinitialiser"
-                className="w-6 h-6 mr-2"
+                className="w-6 h-6 mr-2 "
               />
             </button>
             <div className="relative inline-block ">

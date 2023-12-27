@@ -72,6 +72,7 @@ function AlbumPage() {
       setComments(commentsResponse.data);
     };
 
+
     if (album) {
       fetchAlbumData();
     }
@@ -449,13 +450,18 @@ function AlbumPage() {
                   className="rounded-md max-w-xs cursor-pointer"
                 />
               </Link>
+              {user_session.id === albumData.id_user && (
+              <div>
               <button
                 onClick={() => handleDeleteMedia(image.id, false)}
                 className="text-red-500 block mt-2 cursor-pointer"
               >
                 Supprimer l'image
               </button>
-            </div>
+              </div>
+              )}
+            </div>  
+            
           ))}
 
           {albumVideos.map((video) => (
@@ -467,12 +473,16 @@ function AlbumPage() {
                   className="rounded-md max-w-xs cursor-pointer"
                 />
               </Link>
+              {user_session.id === albumData.id_user && (
+                <div>
               <button
                 onClick={() => handleDeleteMedia(video.id, true)}
                 className="text-red-500 block mt-2 cursor-pointer"
               >
                 Supprimer la video
               </button>
+              </div>
+              )}
             </div>
           ))}
         </div>
@@ -494,8 +504,10 @@ function AlbumPage() {
           </button>
         </div>
       </div>
-
-      <h2 className="h2 ml-3">Gestion album:</h2>
+      
+    
+      {user_session.id === albumData.id_user && (
+      <div><h2 className="h2 ml-3">Gestion album:</h2>
       <div className="border p-6 rounded-md m-6 bg-white mb-1">
         <div className="mt-4">
           <h2 className="text-lg font-semibold mb-2">Éditer l'album</h2>
@@ -527,6 +539,8 @@ function AlbumPage() {
           </button>
         </div>
       </div>
+      </div>
+      )}
 
       <h2 className="h2 ml-3">Commentaires:</h2>
       <div className="p-4">
@@ -584,23 +598,27 @@ function AlbumPage() {
                 <p className="text-gray-700">{comment.commentaire}</p>
               )}
               <div className="flex justify-end space-x-4 mt-4">
+              {user_session.id === comment.id_user && (
+                <div>
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
-                  className="text-red-500 hover:underline focus:outline-none"
+                  className="text-blue-500 hover:underline focus:outline-none mr-4"
                 >
                   Supprimer
-                </button>
-                <button
-                  onClick={() => signalerCommentaire(comment.id)}
-                  className="text-red-500 hover:underline focus:outline-none"
-                >
-                  Signaler
                 </button>
                 <button
                   onClick={() => handleEditComment(comment.id)}
                   className="text-blue-500 hover:underline focus:outline-none"
                 >
                   Modifier
+                </button>
+                </div>
+                )}
+                <button
+                  onClick={() => signalerCommentaire(comment.id)}
+                  className="text-red-500 hover:underline focus:outline-none"
+                >
+                  Signaler
                 </button>
               </div>
             </li>

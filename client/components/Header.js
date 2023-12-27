@@ -59,10 +59,10 @@ const Header = () => {
               {/* Méthode ci-dessous nécessaire pour afficher correctement les images de comptes après déconnexion ou connexion.*/}
               <Link
                 href={isAuthenticated ? "/account" : "/account/login"}
-                className="bg-gray-300 text-black px-4 py-2 rounded-md flex items-center"
+                className="bg-gray-800 text-white px-4 py-2 rounded-md flex items-center"
               >
                 {isAuthenticated && (
-                  <div className="bg-gray-300 rounded h-8 flex items-center">
+                  <div className="bg-gray-800 rounded h-8 flex items-center">
                     <img src={gravatarUrl} alt="Avatar" className="mr-3" />
                     <span className="mr-2">{username}</span>
                   </div>
@@ -77,7 +77,7 @@ const Header = () => {
               {isAdmin && (
                 <Link
                   href="/account/admin"
-                  className="bg-gray-300 text-black px-4 py-2 rounded-md"
+                  className="bg-gray-800 text-black px-4 py-2 rounded-md"
                 >
                   <img
                     className="w-8 h-8"
@@ -89,7 +89,7 @@ const Header = () => {
               {isAuthenticated && (
                 <button
                   onClick={deconnecterUtilisateur}
-                  className="bg-gray-300 text-black px-4 py-2 rounded-md"
+                  className="bg-gray-800 text-black px-4 py-2 rounded-md"
                 >
                   <img
                     className="w-8 h-8"

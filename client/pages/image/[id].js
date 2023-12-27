@@ -792,17 +792,13 @@ const ImageDetail = () => {
                 <p className="text-gray-700">{comment.commentaire}</p>
               )}
               <div className="flex justify-end space-x-4 mt-4">
+              {user_session.id === comment.id_user && (
+                <div>
                 <button
                   onClick={() => handleDeleteComment(comment.id)}
-                  className="text-red-500 hover:underline focus:outline-none"
+                  className="text-blue-500 hover:underline focus:outline-none mr-4"
                 >
                   Supprimer
-                </button>
-                <button
-                  onClick={() => signalerCommentaire(comment.id)}
-                  className="text-red-500 hover:underline focus:outline-none"
-                >
-                  Signaler
                 </button>
                 <button
                   onClick={() => handleEditComment(comment.id)}
@@ -810,6 +806,14 @@ const ImageDetail = () => {
                 >
                   Modifier
                 </button>
+                </div>
+                )}
+                <button
+                  onClick={() => signalerCommentaire(comment.id)}
+                  className="text-red-500 hover:underline focus:outline-none"
+                >
+                  Signaler
+                </button>  
               </div>
             </li>
           ))}
