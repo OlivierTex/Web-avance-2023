@@ -244,22 +244,22 @@ const Video = () => {
 
       <div className="container mx-auto ">
         <div className="flex justify-center mb-4 ">
-          <button
-            onClick={() => setViewMode("default")}
-            className={`px-4 py-2 rounded-md ${
-              viewMode === "default" ? "bg-gray-400" : ""
-            }`}
-          >
-            Default View
-          </button>
-          <button
-            onClick={() => setViewMode("grid")}
-            className={`px-4 py-2 rounded-md ml-2 ${
-              viewMode === "grid" ? "bg-gray-300" : ""
-            }`}
-          >
-            Grid View
-          </button>
+        <button
+          onClick={() => setViewMode("default")}
+          className={`px-4 py-2 rounded-md ${
+            viewMode === "default" ? "border border-gray-800 bg-gray-400 text-white " : "bg-gray-800 text-white "
+          }`}
+        >
+          Grid View
+        </button>
+        <button
+          onClick={() => setViewMode("grid")}
+          className={`px-4 py-2 rounded-md ml-2  ${
+            viewMode === "grid" ? "border border-gray-800 bg-gray-400 text-white " : "bg-gray-800 text-white "
+          }`}
+        >
+          Previous View
+        </button>
         </div>
         {viewMode === "default" ? <DefaultView /> : null}
         {viewMode === "grid" ? <GridView /> : null}
