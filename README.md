@@ -156,7 +156,7 @@ admin
     - Comments: Nous avons intégré Gravatar pour associer une image de profile aux utilisateurs via leur adresse mail. Par exemple, celle-ci est affichée dans le header à côté du username lorsque l'utilisateur est connecté. Elle est aussi présente sur les commentaires et la page du compte utilisateur. Nous avons attribué l'image 'rétro' par défault.
 - Light/dark theme
     - Self-evaluation: 2/2
-    - Comments: Un bouton pour changer de mode Light/Dark est disponible dans le header, en haut à gauche sur toute les pages.
+    - Comments: Un bouton pour changer de mode Light/Dark est disponible dans le header, en haut à gauche sur toute les pages. Celui-ci est persistant d'une session à l'autre pour un utilisateur avec un compte.
 ## Bonuses
 
 - Panneau Admin pour gérer les utilisateurs et les signalements.
