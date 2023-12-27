@@ -637,7 +637,7 @@ const VideoPage = () => {
                 <p className="text-gray-700">{comment.commentaire}</p>
               )}
               <div className="flex justify-end space-x-4 mt-4">
-              {user_session.id === comment.id_user && (
+              {user_session && user_session.id === comment.id_user && (
                 <div>
                 <button
                   onClick={() => handleDeleteComment(comment.id)}

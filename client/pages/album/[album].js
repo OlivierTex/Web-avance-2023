@@ -450,7 +450,7 @@ function AlbumPage() {
                   className="rounded-md max-w-xs cursor-pointer"
                 />
               </Link>
-              {user_session.id === albumData.id_user && (
+              {user_session && user_session.id === albumData.id_user && (
               <div>
               <button
                 onClick={() => handleDeleteMedia(image.id, false)}
@@ -473,7 +473,7 @@ function AlbumPage() {
                   className="rounded-md max-w-xs cursor-pointer"
                 />
               </Link>
-              {user_session.id === albumData.id_user && (
+              {user_session && user_session.id === albumData.id_user && (
                 <div>
               <button
                 onClick={() => handleDeleteMedia(video.id, true)}
@@ -506,7 +506,7 @@ function AlbumPage() {
       </div>
       
     
-      {user_session.id === albumData.id_user && (
+      {user_session && user_session.id === albumData.id_user && (
       <div><h2 className="h2 ml-3">Gestion album:</h2>
       <div className="border p-6 rounded-md m-6 bg-white mb-1">
         <div className="mt-4">
