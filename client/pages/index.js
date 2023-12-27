@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import Slider from "react-slick";
 import axios from "axios";
 import { getAPIKey, getAPIBaseURL } from "../API/API_pexels";
 import { useRouter } from "next/router";
-
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import Marquee from "react-marquee-slider";
+import times from "lodash/times";
 
 function Home() {
   const [randomImages, setRandomImages] = useState([]);
+  const [randomImages2, setRandomImages2] = useState([]); 
+  const [randomImagess, setRandomImagess] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     const fetchRandomImages = async () => {
       const randomPage = Math.floor(Math.random() * 1000) + 1;
       const baseUrl = getAPIBaseURL();
-      const apiUrl = `${baseUrl}curated?per_page=5&page=${randomPage}`;
+      const apiUrl = `${baseUrl}curated?per_page=10&page=${randomPage}`;
       const apiKey = getAPIKey();
 
       try {
@@ -31,22 +31,48 @@ function Home() {
       }
     };
 
+    const fetchRandomImages2 = async () => {
+      const randomPage = Math.floor(Math.random() * 1000) + 1;
+      const baseUrl = getAPIBaseURL();
+      const apiUrl = `${baseUrl}curated?per_page=10&page=${randomPage}`;
+      const apiKey = getAPIKey();
+
+      try {
+        const response = await axios.get(apiUrl, {
+          headers: {
+            Authorization: apiKey,
+          },
+        });
+        const randomPhotos = response.data.photos;
+        setRandomImages2(randomPhotos);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchRandomImagess = async () => {
+      const randomPage = Math.floor(Math.random() * 1000) + 1;
+      const baseUrl = getAPIBaseURL();
+      const apiUrl = `${baseUrl}curated?per_page=10&page=${randomPage}`;
+      const apiKey = getAPIKey();
+
+      try {
+        const response = await axios.get(apiUrl, {
+          headers: {
+            Authorization: apiKey,
+          },
+        });
+        const randomPhotos = response.data.photos;
+        setRandomImagess(randomPhotos);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchRandomImagess();
     fetchRandomImages();
+    fetchRandomImages2(); 
   }, []);
-
-  if (randomImages.length === 0) {
-    return <div>Loading...</div>;
-  }
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 20000,
-  };
 
   const handleImageClick = (id) => {
     router.push(`/image/${id}`);
@@ -58,21 +84,48 @@ function Home() {
         <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
           Welcome to our image and video bank website
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 mt-2 mb-2">
+        <p className="text-xl text-gray-600 dark:text-gray-300 mt-2 mb-5">
           Discover our selection of high-quality photos and videos.
         </p>
-        <Slider {...settings}>
-          {randomImages.map((image) => (
-            <div key={image.id} className="flex justify-center">
+
+        <Marquee velocity={15}>
+          {times(randomImages.length, Number).map((id) => (
+            <div key={id} className="flex justify-center" style={{ margin: '10px' }}>
               <img
-                src={image.src.large}
-                alt={`Random ${image.id}`}
-                className="rounded shadow-lg cursor-pointer max-w-full h-auto mx-auto"
-                onClick={() => handleImageClick(image.id)}
+                src={randomImages[id].src.large}
+                alt={`Random ${randomImages[id].id}`}
+                className="rounded shadow-lg cursor-pointer h-80 object-cover"
+                onClick={() => handleImageClick(randomImages[id].id)}
               />
             </div>
           ))}
-        </Slider>
+        </Marquee>
+
+        <Marquee velocity={15}>
+          {times(randomImagess.length, Number).map((id) => (
+            <div key={id} className="flex justify-center" style={{ margin: '10px' }}>
+              <img
+                src={randomImagess[id].src.large}
+                alt={`Random ${randomImagess[id].id}`}
+                className="rounded shadow-lg cursor-pointer h-80 object-cover"
+                onClick={() => handleImageClick(randomImagess[id].id)}
+              />
+            </div>
+          ))}
+        </Marquee>
+
+        <Marquee velocity={15}>
+          {times(randomImages2.length, Number).map((id) => (
+            <div key={id} className="flex justify-center" style={{ margin: '10px' }}>
+              <img
+                src={randomImages2[id].src.large}
+                alt={`Random ${randomImages2[id].id}`}
+                className="rounded shadow-lg cursor-pointer h-80 object-cover"
+                onClick={() => handleImageClick(randomImages2[id].id)}
+              />
+            </div>
+          ))}
+        </Marquee>
       </div>
     </div>
   );
