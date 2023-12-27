@@ -813,7 +813,8 @@ const ImageDetail = () => {
                   className="text-red-500 hover:underline focus:outline-none"
                 >
                   Signaler
-                </button>  
+                </button>
+                
               </div>
             </li>
           ))}

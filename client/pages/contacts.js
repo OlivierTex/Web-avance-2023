@@ -74,7 +74,7 @@ export default function Contacts() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Saisissez votre commentaire"
-              className="form-input p-2 w-full bg-custom2 border-2 border-custom3 rounded-md"
+              className="form-input p-2 w-full bg-custom2 border-2 border-custom3 rounded-md dark:bg-gray-700 dark:text-white"
             />
           </div>
 

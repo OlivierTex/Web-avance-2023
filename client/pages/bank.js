@@ -147,7 +147,7 @@ function Bank() {
           />
           <button
             type="submit"
-            className="text-white bg-gray-100 px-4 py-2 rounded-md ml-4 overflow-hidden"
+            className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4 overflow-hidden"
           >
             <img
               src="/images/magnifying-glass-solid.svg"
@@ -160,8 +160,8 @@ function Bank() {
               onClick={() => handleImagesPerRowChange(2)}
               className={`${
                 imagesPerRow === 2
-                  ? "border border-gray-800 bg-gray-200"
-                  : "bg-gray-100"
+                  ? "border border-gray-800 bg-gray-400"
+                  : "bg-gray-800"
               } px-4 py-2 rounded-md`}
             >
               <img src="/images/layout-1-64.svg" className="w-8 h-8" />
@@ -170,8 +170,8 @@ function Bank() {
               onClick={() => handleImagesPerRowChange(4)}
               className={`${
                 imagesPerRow === 4
-                  ? "border border-gray-800 bg-gray-200"
-                  : "bg-gray-100"
+                  ? "border border-gray-800 bg-gray-400"
+                  : "bg-gray-800"
               } px-4 py-2 rounded-md ml-2`}
             >
               <img src="/images/layout-2-64.svg" className="w-8 h-8" />
@@ -180,8 +180,8 @@ function Bank() {
               onClick={() => handleImagesPerRowChange(6)}
               className={`${
                 imagesPerRow === 6
-                  ? "border border-gray-800 bg-gray-200"
-                  : "bg-gray-100"
+                  ? "border border-gray-800 bg-gray-400"
+                  : "bg-gray-800"
               } px-4 py-2 rounded-md ml-2`}
             >
               <img src="/images/layout-3-64.svg" className="w-8 h-8" />

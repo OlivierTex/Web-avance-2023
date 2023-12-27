@@ -273,7 +273,7 @@ export default function Admin() {
                 <select
                   onChange={(e) => setAccountType(e.target.value)}
                   value={accountType}
-                  className="px-4 py-2 border rounded"
+                  className="px-4 py-2 border rounded dark:bg-gray-700 dark:text-white"
                 >
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
@@ -283,21 +283,21 @@ export default function Admin() {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Nom d'utilisateur"
                   type="text"
-                  className="px-4 py-2 border rounded"
+                  className="px-4 py-2 border rounded dark:bg-gray-700 dark:text-white"
                 />
                 <input
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
                   type="email"
-                  className="px-4 py-2 border rounded"
+                  className="px-4 py-2 border rounded dark:bg-gray-700 dark:text-white"
                 />
                 <input
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mot de passe"
                   type="password"
-                  className="px-4 py-2 border rounded"
+                  className="px-4 py-2 border rounded dark:bg-gray-700 dark:text-white"
                 />
                 <button
                   type="submit"
@@ -313,14 +313,14 @@ export default function Admin() {
             <h2 className="h2">Gestion utilisateur</h2>
             <select
               onChange={(e) => setFilter(e.target.value)}
-              className="px-4 py-2 border rounded"
+              className="px-4 py-2 border rounded dark:bg-gray-700 dark:text-white"
             >
               <option value="all">Tous</option>
               <option value="admin">Admin</option>
               <option value="user">User</option>
             </select>
-            <div className="mt-4 overflow-hidden shadow-md rounded">
-              <table className="min-w-full divide-y divide-gray-200">
+            <div className="mt-4 overflow-hidden shadow-md rounded ">
+              <table className="min-w-full divide-y divide-gray-200 ">
                 <tbody>
                   {filteredUsers.map((user) => (
                     <tr key={user.id} className="bg-white">
@@ -361,7 +361,7 @@ export default function Admin() {
               {comments.map((comment) => (
                 <li
                   key={comment.id}
-                  className="border p-6 rounded-md bg-white shadow-md"
+                  className="border p-6 rounded-md bg-white shadow-md "
                 >
                   <p className="text-xl font-semibold mb-2 text-blue-600">
                     {comment.username}

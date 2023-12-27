@@ -370,18 +370,18 @@ function Dashboard() {
       </div>
       <h2 className="mx-auto h2 mb-2">Album likés</h2>
       {favorisAlbumData.map((album) => (
-        <div key={album.id} className="comments-container p-6 rounded-md">
+        <div key={album.id} className="comments-container p-6 rounded-md ">
           <Link href={`/album/${album.id}`}>
-            <div className="border p-6 rounded-md bg-white mb-1">
+            <div className="border p-6 rounded-md bg-white mb-1 dark:bg-gray-700 dark:text-white">
               <h2 className="text-xl font-bold mb-1">{album.name_liste}</h2>
-              <p className="text-gray-600 mb-1">
+              <p className="">
                 Description : {album.description_liste}
               </p>
-              <p className="text-gray-500 mb-1">Créé par : {album.username}</p>
-              <p className="text-gray-500 mb-1">
+              <p className="">Créé par : {album.username}</p>
+              <p className="">
                 Date de création : {album.created_at}
               </p>
-              <p className="text-gray-600 ">Image :</p>
+              <p className=" ">Image :</p>
               <div className="flex space-x-4 mb-4">
                 {album.images.map((image) => (
                   <img
@@ -392,7 +392,7 @@ function Dashboard() {
                   />
                 ))}
               </div>
-              <p className="text-gray-600">Video :</p>
+              <p className="">Video :</p>
               <div className="flex space-x-4">
                 {album.videos.map((video) => (
                   <img

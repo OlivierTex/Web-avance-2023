@@ -146,7 +146,7 @@ function Album() {
             />
             <button
               type="button"
-              className="text-white bg-gray-100 px-4 py-2 rounded-md ml-4 dark:bg-gray-500 dark:text-white"
+              className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4"
               onClick={() => setSearchTerm("")}
             >
               <img
@@ -157,7 +157,7 @@ function Album() {
             </button>
             <div className="relative inline-block ">
               <button
-                className="text-white bg-gray-100 px-4 py-2 rounded-md ml-4"
+                className="text-white bg-gray-800 px-4 py-2 rounded-md ml-4"
                 onClick={handleButtonClick}
               >
                 <img
@@ -170,7 +170,7 @@ function Album() {
                 <div
                   className={`absolute ${
                     showOptions ? "top-10" : "hidden"
-                  } right-0 bg-white border border-gray-300 p-2 rounded mr-3`}
+                  } right-0 bg-white border border-gray-300 p-2 rounded mr-3  `}
                 >
                   <div className="mb-2">
                     <label
@@ -223,20 +223,20 @@ function Album() {
           </div>
 
           {filteredAlbums.map((album) => (
-            <div key={album.id} className="comments-container p-6 rounded-md">
+            <div key={album.id} className="comments-container p-6 rounded-md ">
               <Link href={`/album/${album.id}`}>
-                <div className="border p-6 rounded-md bg-white mb-1">
+                <div className="border p-6 rounded-md bg-white mb-1 dark:bg-gray-700 dark:text-white">
                   <h2 className="text-xl font-bold mb-1">{album.name_liste}</h2>
-                  <p className="text-gray-600 mb-1">
+                  <p className="">
                     Description : {album.description_liste}
                   </p>
-                  <p className="text-gray-500 mb-1">
+                  <p className="">
                     Créé par : {album.username}
                   </p>
-                  <p className="text-gray-500 mb-1">
+                  <p className="">
                     Date de création : {album.created_at}
                   </p>
-                  <p className="text-gray-600 ">Image :</p>
+                  <p className="">Image :</p>
                   <div className="flex space-x-4 mb-4">
                     {album.images.map((image) => (
                       <img
@@ -247,7 +247,7 @@ function Album() {
                       />
                     ))}
                   </div>
-                  <p className="text-gray-600">Video :</p>
+                  <p className="">Video :</p>
                   <div className="flex space-x-4">
                     {album.videos.map((video) => (
                       <img
