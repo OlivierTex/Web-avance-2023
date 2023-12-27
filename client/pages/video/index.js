@@ -262,7 +262,7 @@ const Video = () => {
                 : "bg-gray-800 text-white "
             }`}
           >
-            Previous View
+            Preview
           </button>
         </div>
         {viewMode === "default" ? <DefaultView /> : null}

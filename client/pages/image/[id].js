@@ -549,7 +549,7 @@ const ImageDetail = () => {
   };
 
   return (
-    <div className="body">
+    <div className="w-4/5 mx-auto body">
       <div className="relative">
         <p className="h1 dark:text-white text-center my-5">
           <strong>Image Name:</strong> {imageDetails.alt}

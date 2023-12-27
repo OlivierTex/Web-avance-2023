@@ -417,7 +417,7 @@ const VideoPage = () => {
   };
 
   return (
-    <div>
+    <div className="w-4/5 mx-auto">
       <p className="h1 dark:text-white text-center my-5">
         <strong>Video:</strong>{" "}
       </p>
