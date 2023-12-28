@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import supabase from "../../supabase";
 import { useAuth } from "../../components/AuthContext";
-import axios from "axios";
 import gravatar from "gravatar";
 
 function AlbumPage() {
@@ -423,7 +422,7 @@ function AlbumPage() {
   };
 
   return (
-    <div className="bg-light dark:bg-dark">
+    <div className="mx-auto w-4/5 bg-light dark:bg-dark">
       <h1 className="h1 mb-3">{albumData.name_liste}</h1>
       <p className="dark:text-white m-4">
         Description : {albumData.description_liste}

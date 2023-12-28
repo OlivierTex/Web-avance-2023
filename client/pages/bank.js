@@ -3,12 +3,12 @@ import axios from "axios";
 import Link from "next/link";
 import { getAPIKey, getAPIBaseURL } from "../API/API_pexels";
 
-function Bank() {
+function Bank({ randomImages: propRandomImages, images: propImages, totalPages: propTotalPages }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [images, setImages] = useState([]);
-  const [randomImages, setRandomImages] = useState([]);
+  const [images, setImages] = useState(propImages || []);
+  const [randomImages, setRandomImages] = useState(propRandomImages || []);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(propTotalPages || 0);
   const apiKey = getAPIKey();
   const itemsPerPage = 24;
   const [imagesPerRow, setImagesPerRow] = useState(4);
@@ -275,6 +275,45 @@ function Bank() {
       </div>
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const apiKey = getAPIKey();
+  const itemsPerPage = 24;
+  const randomPage = Math.floor(Math.random() * 1000) + 1;
+  const baseUrl = getAPIBaseURL();
+  const randomApiUrl = `${baseUrl}curated?per_page=${itemsPerPage}&page=${randomPage}`;
+
+  try {
+    const [randomResponse] = await Promise.all([
+      axios.get(randomApiUrl, {
+        headers: {
+          Authorization: apiKey,
+        },
+      }),
+    ]);
+
+    const randomImages = randomResponse.data.photos;
+
+    return {
+      props: {
+        randomImages,
+        images: [],
+        totalPages: 0,
+      },
+      revalidate: 3600,
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+    return {
+      props: {
+        randomImages: [],
+        images: [],
+        totalPages: 0,
+      },
+      revalidate: 3600,
+    };
+  }
 }
 
 export default Bank;

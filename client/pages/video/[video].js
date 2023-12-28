@@ -7,14 +7,12 @@ import supabase from "../../supabase";
 import Link from "next/link";
 import gravatar from "gravatar";
 
-const VideoPage = () => {
+const VideoPage = ({ videoData, comments }) => {
   const router = useRouter();
   const { video } = router.query;
-  const [videoData, setVideoData] = useState(null);
   const apiKey = getAPIKey();
   const [isLiked, setIsLiked] = useState(false);
   const { user_session } = useAuth();
-  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [editedComments, setEditedComments] = useState({});
   const [showOptions, setShowOptions] = useState(false);
@@ -23,35 +21,6 @@ const VideoPage = () => {
   const [albumDescription, setAlbumDescription] = useState("");
   const [userAlbums, setUserAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(undefined);
-
-  useEffect(() => {
-    const fetchVideoData = async () => {
-      if (video) {
-        try {
-          const response = await axios.get(
-            `https://api.pexels.com/videos/videos/${video}`,
-            {
-              headers: {
-                Authorization: apiKey,
-              },
-            },
-          );
-
-          setVideoData(response.data);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-      const commentsResponse = await supabase
-        .from("commentaire")
-        .select("*")
-        .eq("api_image_id", video);
-
-      setComments(commentsResponse.data);
-    };
-
-    fetchVideoData();
-  }, [video, apiKey]);
 
   useEffect(() => {
     fetchUserAlbums();

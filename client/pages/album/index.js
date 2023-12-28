@@ -3,8 +3,7 @@ import Link from "next/link";
 import supabase from "../../supabase";
 import { useAuth } from "../../components/AuthContext";
 
-function Album() {
-  const [albums, setAlbums] = useState([]);
+function Album({ albums }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [albumName, setAlbumName] = useState("");
@@ -314,5 +313,47 @@ function Album() {
     </div>
   );
 }
+
+export async function getStaticProps() {
+  const { data: albumsData, error } = await supabase
+    .from('album')
+    .select('id, name_liste, description_liste, username, created_at')
+    .order('created_at', { ascending: false })
+    .range(0, 5); // Mettez à jour la plage selon vos besoins
+
+  const albums = await Promise.all(
+    albumsData.map(async (album) => {
+      const { data: imageMedia, error: imageError } = await supabase
+        .from('link_image_album')
+        .select('id_image, id_album, url')
+        .eq('id_album', album.id)
+        .limit(5);
+
+      const { data: videoMedia, error: videoError } = await supabase
+        .from('link_video_album')
+        .select('id_video, id_album, url, imagevideo')
+        .eq('id_album', album.id)
+        .limit(5);
+
+      if (imageError || videoError) {
+        throw imageError || videoError;
+      }
+
+      return {
+        ...album,
+        images: imageMedia || [],
+        videos: videoMedia || [],
+      };
+    })
+  );
+
+  return {
+    props: {
+      albums,
+    },
+    revalidate: 60, // Mettez à jour la page toutes les 60 secondes (ajustez selon vos besoins)
+  };
+}
+
 
 export default Album;

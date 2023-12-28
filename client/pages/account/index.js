@@ -3,12 +3,9 @@ import { supabase } from "../../supabase";
 import { useRouter } from "next/router";
 import Dashboard from "../../components/UserDashboard";
 
-const Utilisateur = () => {
+const Utilisateur = ({ images }) => {
   const router = useRouter();
-  const [images, setImages] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
-  const itemsPerPage = 10;
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -16,39 +13,9 @@ const Utilisateur = () => {
         router.push("/account/login");
       } else {
         setLoading(true);
-        loadImages();
       }
     });
   }, []);
-
-  const loadImages = async () => {
-    try {
-      const { user, session } = supabase.auth;
-      if (user) {
-        const { data: userFavorites, error } = await supabase
-          .from("favoris")
-          .select("url_images, api_image_id, boolean_column")
-          .filter("id_user", "eq", session.user.id);
-
-        console.log("userFavorites:", userFavorites);
-
-        if (!error) {
-          const favoriteMedia = userFavorites.map((favorite, index) => ({
-            src: favorite.url_images,
-            isVideo: favorite.like_boolean,
-            api_image_id: favorite.api_image_id,
-          }));
-
-          console.log("favoriteMedia:", favoriteMedia);
-
-          setImages(favoriteMedia);
-          setTotalPages(Math.ceil(favoriteMedia.length / itemsPerPage));
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const deconnecterUtilisateur = async () => {
     const { error } = await supabase.auth.signOut();
@@ -73,9 +40,45 @@ const Utilisateur = () => {
             </button>
           </div>
         </div>
-        <Dashboard />
+        <Dashboard images={images} />
       </div>
     );
+};
+
+export const getStaticProps = async () => {
+  try {
+    const { user, session } = supabase.auth;
+    if (user) {
+      const { data: userFavorites, error } = await supabase
+        .from("favoris")
+        .select("url_images, api_image_id, boolean_column")
+        .filter("id_user", "eq", session.user.id);
+
+      if (!error) {
+        const favoriteMedia = userFavorites.map((favorite, index) => ({
+          src: favorite.url_images,
+          isVideo: favorite.like_boolean,
+          api_image_id: favorite.api_image_id,
+        }));
+
+        return {
+          props: {
+            images: favoriteMedia,
+          },
+          revalidate: 60 * 60,
+        };
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return {
+    props: {
+      images: [],
+    },
+    revalidate: 60 * 60,
+  };
 };
 
 export default Utilisateur;

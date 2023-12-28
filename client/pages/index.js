@@ -5,73 +5,23 @@ import { useRouter } from "next/router";
 import Marquee from "react-marquee-slider";
 import times from "lodash/times";
 
-function Home() {
-  const [randomImages, setRandomImages] = useState([]);
-  const [randomImages2, setRandomImages2] = useState([]);
-  const [randomImagess, setRandomImagess] = useState([]);
+function Home({ initialRandomImages1, initialRandomImages2, initialRandomImages3}) {
+  const [randomImages1, setRandomImages1] = useState(initialRandomImages1);
+  const [randomImages2, setRandomImages2] = useState(initialRandomImages2);
+  const [randomImages3, setRandomImages3] = useState(initialRandomImages3);
   const router = useRouter();
 
   useEffect(() => {
     const fetchRandomImages = async () => {
-      const randomPage = Math.floor(Math.random() * 1000) + 1;
-      const baseUrl = getAPIBaseURL();
-      const apiUrl = `${baseUrl}curated?per_page=10&page=${randomPage}`;
-      const apiKey = getAPIKey();
-
-      try {
-        const response = await axios.get(apiUrl, {
-          headers: {
-            Authorization: apiKey,
-          },
-        });
-        const randomPhotos = response.data.photos;
-        setRandomImages(randomPhotos);
-      } catch (error) {
-        console.error(error);
-      }
+      const newRandomImages1 = await fetchImages();
+      setRandomImages1(newRandomImages1);
+      const newRandomImages2 = await fetchImages();
+      setRandomImages2(newRandomImages2);
+      const newRandomImages3 = await fetchImages();
+      setRandomImages3(newRandomImages3);
     };
 
-    const fetchRandomImages2 = async () => {
-      const randomPage = Math.floor(Math.random() * 1000) + 1;
-      const baseUrl = getAPIBaseURL();
-      const apiUrl = `${baseUrl}curated?per_page=10&page=${randomPage}`;
-      const apiKey = getAPIKey();
-
-      try {
-        const response = await axios.get(apiUrl, {
-          headers: {
-            Authorization: apiKey,
-          },
-        });
-        const randomPhotos = response.data.photos;
-        setRandomImages2(randomPhotos);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchRandomImagess = async () => {
-      const randomPage = Math.floor(Math.random() * 1000) + 1;
-      const baseUrl = getAPIBaseURL();
-      const apiUrl = `${baseUrl}curated?per_page=10&page=${randomPage}`;
-      const apiKey = getAPIKey();
-
-      try {
-        const response = await axios.get(apiUrl, {
-          headers: {
-            Authorization: apiKey,
-          },
-        });
-        const randomPhotos = response.data.photos;
-        setRandomImagess(randomPhotos);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchRandomImagess();
     fetchRandomImages();
-    fetchRandomImages2();
   }, []);
 
   const handleImageClick = (id) => {
@@ -89,34 +39,17 @@ function Home() {
         </p>
 
         <Marquee velocity={15}>
-          {times(randomImages.length, Number).map((id) => (
+          {times(randomImages1.length, Number).map((id) => (
             <div
               key={id}
               className="flex justify-center"
               style={{ margin: "10px" }}
             >
               <img
-                src={randomImages[id].src.large}
-                alt={`Random ${randomImages[id].id}`}
+                src={randomImages1[id].src.large}
+                alt={`Random ${randomImages1[id].id}`}
                 className="rounded shadow-lg cursor-pointer h-80 object-cover"
-                onClick={() => handleImageClick(randomImages[id].id)}
-              />
-            </div>
-          ))}
-        </Marquee>
-
-        <Marquee velocity={15}>
-          {times(randomImagess.length, Number).map((id) => (
-            <div
-              key={id}
-              className="flex justify-center"
-              style={{ margin: "10px" }}
-            >
-              <img
-                src={randomImagess[id].src.large}
-                alt={`Random ${randomImagess[id].id}`}
-                className="rounded shadow-lg cursor-pointer h-80 object-cover"
-                onClick={() => handleImageClick(randomImagess[id].id)}
+                onClick={() => handleImageClick(randomImages1[id].id)}
               />
             </div>
           ))}
@@ -138,9 +71,58 @@ function Home() {
             </div>
           ))}
         </Marquee>
+
+        <Marquee velocity={15}>
+          {times(randomImages3.length, Number).map((id) => (
+            <div
+              key={id}
+              className="flex justify-center"
+              style={{ margin: "10px" }}
+            >
+              <img
+                src={randomImages3[id].src.large}
+                alt={`Random ${randomImages3[id].id}`}
+                className="rounded shadow-lg cursor-pointer h-80 object-cover"
+                onClick={() => handleImageClick(randomImages3[id].id)}
+              />
+            </div>
+          ))}
+        </Marquee>
       </div>
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const initialRandomImages1 = await fetchImages();
+  const initialRandomImages2 = await fetchImages();
+  const initialRandomImages3 = await fetchImages();
+
+  return {
+    props: {
+      initialRandomImages1, initialRandomImages2, initialRandomImages3
+    },
+    revalidate: 60,
+  };
+}
+
+async function fetchImages() {
+  const randomPage = Math.floor(Math.random() * 1000) + 1;
+  const baseUrl = getAPIBaseURL();
+  const apiUrl = `${baseUrl}curated?per_page=10&page=${randomPage}`;
+  const apiKey = getAPIKey();
+
+  try {
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: apiKey,
+      },
+    });
+    return response.data.photos;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
 
 export default Home;

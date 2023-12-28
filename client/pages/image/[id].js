@@ -7,13 +7,13 @@ import { useAuth } from "../../components/AuthContext";
 import Link from "next/link";
 import gravatar from "gravatar";
 
-const ImageDetail = () => {
+const ImageDetail = ({ imageDetailsProp, commentsProp }) => {
   const router = useRouter();
   const { id } = router.query;
   const [email, setEmail] = useState("");
-  const [imageDetails, setImageDetails] = useState(null);
+  const [imageDetails, setImageDetails] = useState(imageDetailsProp);
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(commentsProp);
   const [newComment, setNewComment] = useState("");
   const [editedComments, setEditedComments] = useState({});
   const [isLiked, setIsLiked] = useState(false);
@@ -24,6 +24,11 @@ const ImageDetail = () => {
   const [albumDescription, setAlbumDescription] = useState("");
   const [userAlbums, setUserAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(undefined);
+
+  useEffect(() => {
+    setImageDetails(imageDetailsProp);
+    setComments(commentsProp);
+  }, [imageDetailsProp, commentsProp]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -756,7 +761,7 @@ const ImageDetail = () => {
       </div>
       <div className="comments-container  p-6 rounded-md ">
         <ul className="space-y-6">
-          {comments.map((comment) => (
+          {Array.isArray(comments) && comments.map((comment) => (
             <li key={comment.id} className="border p-6 rounded-md bg-white ">
               <div className="flex items-center text-xl font-semibold mb-2 text-blue-600">
                 {console.log(comment.userEmail)}
@@ -849,5 +854,47 @@ const ImageDetail = () => {
     </div>
   );
 };
+
+export async function getStaticPaths() {
+  return {
+    paths: [], 
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps({ params }) {
+  try {
+    const { id } = params;
+    const apiKey = getAPIKey();
+    const baseUrl = getAPIBaseURL();
+    const url = `${baseUrl}/photos/${id}`;
+    const response = await axios.get(url, { headers: { Authorization: apiKey } });
+
+    const imageDetails = response.data;
+
+    const commentsResponse = await supabase
+      .from("commentaire")
+      .select("*")
+      .eq("api_image_id", id);
+    const comments = commentsResponse.data;
+
+    return {
+      props: {
+        imageDetails,
+        comments,
+      },
+      revalidate: 60,
+    };
+  } catch (error) {
+    console.error("Fetching image details failed:", error);
+    return {
+      props: {
+        imageDetails: null,
+        comments: [],
+      },
+      revalidate: 60,
+    };
+  }
+}
 
 export default ImageDetail;
