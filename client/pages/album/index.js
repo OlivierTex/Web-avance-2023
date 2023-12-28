@@ -3,7 +3,8 @@ import Link from "next/link";
 import supabase from "../../supabase";
 import { useAuth } from "../../components/AuthContext";
 
-function Album({ albums }) {
+function Album() {
+  const [albums, setAlbums] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [albumName, setAlbumName] = useState("");
@@ -15,13 +16,19 @@ function Album({ albums }) {
 
   useEffect(() => {
     fetchAlbums();
-  }, [currentPage]);
+  }, [currentPage, searchTerm]);
 
   const fetchAlbums = async () => {
     try {
       const { count: totalCount } = await supabase
         .from("album")
-        .select("id", { count: "exact" });
+        .select("id", { count: "exact" })
+        .ilike("name_liste", `%${searchTerm}%`);
+
+      setTotalPages(Math.ceil(totalCount / itemsPerPage));
+      console.log("total éléments :", totalCount);
+
+      console.log("total pages :", totalPages);
 
       const {
         data: albumsData,
@@ -31,6 +38,7 @@ function Album({ albums }) {
         .from("album")
         .select("id, name_liste, description_liste, username, created_at")
         .order("created_at", { ascending: false })
+        .ilike("name_liste", `%${searchTerm}%`)
         .range(
           (currentPage - 1) * itemsPerPage,
           currentPage * itemsPerPage - 1,
@@ -39,10 +47,6 @@ function Album({ albums }) {
       if (error) {
         throw error;
       }
-
-      setTotalPages(Math.ceil(totalCount / itemsPerPage));
-      console.log("total pages :", totalPages);
-      console.log("total album :", totalCount);
 
       const albumsWithMedia = await Promise.all(
         albumsData.map(async (album) => {
@@ -131,15 +135,15 @@ function Album({ albums }) {
         <div className={`bg-light dark:bg-dark`}>
           <h1 className="h1 mb-3">Albums</h1>
           <p className="paragraphe mb-4">
-            Créez vos propres albums avec notre large selection d'images et de
+            Créez vos propres albums avec notre large sélection d'images et de
             vidéos
           </p>
           <div className="w-4/5 mx-auto flex justify-center mb-2 dropdown rounded-md">
             <input
               type="search"
               id="default-search"
-              className="block p-4 pl-10 w-1/3 text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white ml-4"
-              placeholder="Rechercher par nom d'utilisateur ou nom de liste..."
+              className="block p-4 w-1/3 text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white ml-4"
+              placeholder="Rechercher un album..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -236,7 +240,7 @@ function Album({ albums }) {
                         key={image.id_image}
                         src={image.url}
                         alt={`Image ${image.id}`}
-                        className="w-24 h-24"
+                        className="w-24 h-24 object-cover"
                       />
                     ))}
                   </div>
@@ -247,7 +251,7 @@ function Album({ albums }) {
                         key={video.id_video}
                         src={video.imagevideo}
                         alt={`Video ${video.id}`}
-                        className="w-24 h-24"
+                        className="w-24 h-24 object-cover"
                       />
                     ))}
                   </div>
@@ -312,47 +316,6 @@ function Album({ albums }) {
       </div>
     </div>
   );
-}
-
-export async function getStaticProps() {
-  const { data: albumsData, error } = await supabase
-    .from("album")
-    .select("id, name_liste, description_liste, username, created_at")
-    .order("created_at", { ascending: false })
-    .range(0, 5);
-
-  const albums = await Promise.all(
-    albumsData.map(async (album) => {
-      const { data: imageMedia, error: imageError } = await supabase
-        .from("link_image_album")
-        .select("id_image, id_album, url")
-        .eq("id_album", album.id)
-        .limit(5);
-
-      const { data: videoMedia, error: videoError } = await supabase
-        .from("link_video_album")
-        .select("id_video, id_album, url, imagevideo")
-        .eq("id_album", album.id)
-        .limit(5);
-
-      if (imageError || videoError) {
-        throw imageError || videoError;
-      }
-
-      return {
-        ...album,
-        images: imageMedia || [],
-        videos: videoMedia || [],
-      };
-    }),
-  );
-
-  return {
-    props: {
-      albums,
-    },
-    revalidate: 60,
-  };
 }
 
 export default Album;
