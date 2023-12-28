@@ -316,23 +316,23 @@ function Album({ albums }) {
 
 export async function getStaticProps() {
   const { data: albumsData, error } = await supabase
-    .from('album')
-    .select('id, name_liste, description_liste, username, created_at')
-    .order('created_at', { ascending: false })
-    .range(0, 5); // Mettez à jour la plage selon vos besoins
+    .from("album")
+    .select("id, name_liste, description_liste, username, created_at")
+    .order("created_at", { ascending: false })
+    .range(0, 5);
 
   const albums = await Promise.all(
     albumsData.map(async (album) => {
       const { data: imageMedia, error: imageError } = await supabase
-        .from('link_image_album')
-        .select('id_image, id_album, url')
-        .eq('id_album', album.id)
+        .from("link_image_album")
+        .select("id_image, id_album, url")
+        .eq("id_album", album.id)
         .limit(5);
 
       const { data: videoMedia, error: videoError } = await supabase
-        .from('link_video_album')
-        .select('id_video, id_album, url, imagevideo')
-        .eq('id_album', album.id)
+        .from("link_video_album")
+        .select("id_video, id_album, url, imagevideo")
+        .eq("id_album", album.id)
         .limit(5);
 
       if (imageError || videoError) {
@@ -344,16 +344,15 @@ export async function getStaticProps() {
         images: imageMedia || [],
         videos: videoMedia || [],
       };
-    })
+    }),
   );
 
   return {
     props: {
       albums,
     },
-    revalidate: 60, // Mettez à jour la page toutes les 60 secondes (ajustez selon vos besoins)
+    revalidate: 60,
   };
 }
-
 
 export default Album;

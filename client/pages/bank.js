@@ -3,7 +3,11 @@ import axios from "axios";
 import Link from "next/link";
 import { getAPIKey, getAPIBaseURL } from "../API/API_pexels";
 
-function Bank({ randomImages: propRandomImages, images: propImages, totalPages: propTotalPages }) {
+function Bank({
+  randomImages: propRandomImages,
+  images: propImages,
+  totalPages: propTotalPages,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [images, setImages] = useState(propImages || []);
   const [randomImages, setRandomImages] = useState(propRandomImages || []);
@@ -73,8 +77,6 @@ function Bank({ randomImages: propRandomImages, images: propImages, totalPages: 
   const GridView = () => {
     return (
       <div className="w-4/5 mx-auto">
-        <br></br>
-        <br></br>
         <div
           className={`grid grid-cols-1 ${
             imagesPerRow === 2 ? "sm:grid-cols-2" : ""
@@ -127,11 +129,10 @@ function Bank({ randomImages: propRandomImages, images: propImages, totalPages: 
   return (
     <div className="bg-light dark:bg-dark">
       <h1 className="h1">Banque d'image</h1>
-      <p className="paragraphe">
+      <p className="paragraphe mb-8">
         Découvrez notre sélection de photos de haute qualité.
       </p>
-      <br></br>
-      <div className="w-4/5 mx-auto">
+      <div className="w-4/5 mx-auto mb-8">
         <form
           onSubmit={handleSearch}
           className="flex justify-center mb-2 dropdown rounded-md"
@@ -189,10 +190,8 @@ function Bank({ randomImages: propRandomImages, images: propImages, totalPages: 
           </div>
         </form>
       </div>
-      <br></br>
-      <br></br>
 
-      <div className="container mx-auto ">
+      <div className="container mx-auto mb-6">
         <div className="flex justify-center mb-4 ">
           <button
             onClick={() => setViewMode("default")}
@@ -217,9 +216,6 @@ function Bank({ randomImages: propRandomImages, images: propImages, totalPages: 
         </div>
         {viewMode === "default" ? <DefaultView /> : <GridView />}
       </div>
-
-      <br></br>
-      <br></br>
       <div className="flex justify-center mb-4">
         <ul className="inline-flex -space-x-px text-sm">
           <li>

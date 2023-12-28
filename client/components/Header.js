@@ -102,7 +102,7 @@ const Header = () => {
           </div>
           <a className="name-site">ImageHive</a>
         </div>
-        <nav className="flex items-center justify-center h-full">
+        <nav className="flex items-center justify-center h-full mb-4">
           <Link href="/" className="nav-link">
             Accueil
           </Link>
@@ -122,7 +122,6 @@ const Header = () => {
             Contacts
           </Link>
         </nav>
-        <br></br>
         <div className="w-full border-b-2 border-black"></div>
       </header>
     </div>

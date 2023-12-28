@@ -3,18 +3,44 @@ import axios from "axios";
 import Link from "next/link";
 import { getAPIKey } from "../../API/API_pexels";
 
-const Video = ({ videos, totalPages }) => {
+const Video = ({ initialVideos }) => {
+  const [videos, setVideos] = useState(initialVideos || []);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const itemsPerPage = 24;
-  const apiKey = getAPIKey();
   const [viewMode, setViewMode] = useState("default");
   const [imagesPerRow, setImagesPerRow] = useState(4);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const itemsPerPage = 24;
+  const apiKey = getAPIKey();
+
+  useEffect(() => {
+    loadVideos(currentPage);
+  }, [currentPage]);
+
+  const loadVideos = async (page) => {
+    const apiUrl =
+      searchTerm === ""
+        ? `https://api.pexels.com/videos/search?query=nature&per_page=${itemsPerPage}&page=${page}`
+        : `https://api.pexels.com/videos/search?query=${searchTerm}&per_page=${itemsPerPage}&page=${page}`;
+
+    try {
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: apiKey,
+        },
+      });
+
+      setVideos(response.data.videos);
+      setTotalPages(Math.ceil(response.data.total_results / itemsPerPage));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
     setCurrentPage(1);
+    loadVideos(1);
   };
 
   const handlePageClick = (pageNumber) => {
@@ -38,7 +64,7 @@ const Video = ({ videos, totalPages }) => {
     }
   };
 
-  const VideoThumbnail = ({ video, index }) => {
+  const VideoThumbnail = ({ video, index, onViewEnter, onViewLeave }) => {
     const videoRef = useRef(null);
 
     useEffect(() => {
@@ -47,7 +73,7 @@ const Video = ({ videos, totalPages }) => {
           if (videoRef.current) {
             if (videoRef.current.paused) {
               await videoRef.current.play();
-              setHoveredIndex(index);
+              onViewEnter(index);
             }
           }
         } catch (error) {
@@ -59,7 +85,7 @@ const Video = ({ videos, totalPages }) => {
         if (videoRef.current) {
           videoRef.current.pause();
           videoRef.current.currentTime = 0;
-          setHoveredIndex(null);
+          onViewLeave(index);
         }
       };
 
@@ -74,7 +100,7 @@ const Video = ({ videos, totalPages }) => {
           videoRef.current.removeEventListener("mouseleave", handleMouseLeave);
         }
       };
-    }, [index]);
+    }, [index, onViewEnter, onViewLeave]);
 
     return (
       <Link key={video.id} href={`/video/${video.id}`} passHref>
@@ -95,59 +121,64 @@ const Video = ({ videos, totalPages }) => {
     );
   };
 
-const GridView = () => {
-  return (
-    <div className="w-4/5 mx-auto">
-      <br />
-      <br />
-      <div
-        className={`grid grid-cols-1 ${
-          imagesPerRow === 2 ? "sm:grid-cols-2" : ""
-        } ${imagesPerRow === 4 ? "md:grid-cols-4" : ""} ${
-          imagesPerRow === 6 ? "grid-cols-6" : ""
-        } gap-4 place-items-center`}
-      >
-        {videos && videos.map((video, index) => (
-          <VideoThumbnail key={video.id} video={video} index={index} />
-        ))}
-      </div>
-    </div>
-  );
-};
+  const GridView = () => {
+    const [hoveredIndex, setHoveredIndex] = useState(null);
 
-const DefaultView = () => {
-  return (
-    <div className="w-4/5 mx-auto">
-      <div className="flex flex-wrap justify-center mt-8 gap-y-4">
-        {videos && videos.map((video) => (
-          <div
-            key={video.id}
-            className={`${getClassName(imagesPerRow)} px-2 aspect-[1]`}
-          >
-            <Link href={`/video/${video.id}`} passHref>
-              <div className="block h-full relative group bg-custom4 border border-custom1 p-1 overflow-hidden cursor-pointer">
-                <img
-                  src={video.image}
-                  className="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110"
-                  alt="Video Thumbnail"
-                />
-              </div>
-            </Link>
-          </div>
-        ))}
+    return (
+      <div className="w-4/5 mx-auto">
+        <div
+          className={`grid grid-cols-1 ${
+            imagesPerRow === 2 ? "sm:grid-cols-2" : ""
+          } ${imagesPerRow === 4 ? "md:grid-cols-4" : ""} ${
+            imagesPerRow === 6 ? "grid-cols-6" : ""
+          } gap-4 place-items-center`}
+        >
+          {videos.map((video, index) => (
+            <VideoThumbnail
+              key={video.id}
+              video={video}
+              index={index}
+              onViewEnter={() => setHoveredIndex(index)}
+              onViewLeave={() => setHoveredIndex(null)}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
+
+  const DefaultView = () => {
+    return (
+      <div className="w-4/5 mx-auto">
+        <div className="flex flex-wrap justify-center mt-8 gap-y-4">
+          {videos.map((video) => (
+            <div
+              key={video.id}
+              className={`${getClassName(imagesPerRow)} px-2 aspect-[1]`}
+            >
+              <Link href={`/video/${video.id}`} passHref>
+                <div className="block h-full relative group bg-custom4 border border-custom1 p-1 overflow-hidden cursor-pointer">
+                  <img
+                    src={video.image}
+                    className="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110"
+                    alt="Video Thumbnail"
+                  />
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="bg-light dark:bg-dark">
       <h1 className="h1">Video Gallery</h1>
-      <p className="paragraphe">
+      <p className="paragraphe mb-8">
         Découvrez notre sélection de vidéos de haute qualité.
       </p>
-      <br />
-      <div className="w-4/5 mx-auto">
+      <div className="w-4/5 mx-auto mb-8">
         <form
           onSubmit={handleSearch}
           className="flex justify-center mb-2 dropdown rounded-md"
@@ -205,10 +236,8 @@ const DefaultView = () => {
           </div>
         </form>
       </div>
-      <br />
-      <br />
 
-      <div className="container mx-auto ">
+      <div className="container mx-auto mb-6">
         <div className="flex justify-center mb-4 ">
           <button
             onClick={() => setViewMode("default")}
@@ -234,11 +263,6 @@ const DefaultView = () => {
         {viewMode === "default" ? <DefaultView /> : null}
         {viewMode === "grid" ? <GridView /> : null}
       </div>
-
-      <br />
-      <br />
-      <br />
-      <br />
       <div className="flex justify-center mb-4">
         <ul className="inline-flex -space-x-px text-sm">
           <li>
@@ -299,33 +323,32 @@ const DefaultView = () => {
 export async function getStaticProps() {
   const apiKey = getAPIKey();
   const itemsPerPage = 24;
-  const randomPage = Math.floor(Math.random() * 1000) + 1;
-  const apiUrl = `https://api.pexels.com/videos/search?query=nature&per_page=${itemsPerPage}&page=${randomPage}`;
 
   try {
-    const response = await axios.get(apiUrl, {
-      headers: {
-        Authorization: apiKey,
+    const response = await axios.get(
+      `https://api.pexels.com/videos/search?query=nature&per_page=${itemsPerPage}&page=1`,
+      {
+        headers: {
+          Authorization: apiKey,
+        },
       },
-    });
+    );
 
     const videos = response.data.videos;
 
     return {
       props: {
-        videos,
-        totalPages: Math.ceil(response.data.total_results / itemsPerPage),
+        initialVideos: videos,
       },
-      revalidate: 3600, 
+      revalidate: 60 * 60,
     };
   } catch (error) {
-    console.error("Error fetching data:", error.message);
+    console.error(error);
     return {
       props: {
-        videos: [],
-        totalPages: 0,
+        initialVideos: [],
       },
-      revalidate: 3600,
+      revalidate: 60 * 5,
     };
   }
 }

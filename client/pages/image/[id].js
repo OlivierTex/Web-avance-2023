@@ -761,70 +761,71 @@ const ImageDetail = ({ imageDetailsProp, commentsProp }) => {
       </div>
       <div className="comments-container  p-6 rounded-md ">
         <ul className="space-y-6">
-          {Array.isArray(comments) && comments.map((comment) => (
-            <li key={comment.id} className="border p-6 rounded-md bg-white ">
-              <div className="flex items-center text-xl font-semibold mb-2 text-blue-600">
-                {console.log(comment.userEmail)}
-                <img
-                  src={gravatar.url(
-                    comment.email,
-                    { s: "50", r: "x", d: "retro" },
-                    true,
-                  )}
-                  alt="Gravatar User Icon"
-                  className="mr-2"
-                />
-                <Link href={`/account_user/${comment.username}`} passHref>
-                  {comment.username}
-                </Link>
-              </div>
-              {editedComments[comment.id] ? (
-                <div className="mb-4">
-                  <textarea
-                    value={comment.newComment || ""}
-                    onChange={(e) =>
-                      handleCommentChange(comment.id, e.target.value)
-                    }
-                    className="w-full p-2 border rounded-md"
+          {Array.isArray(comments) &&
+            comments.map((comment) => (
+              <li key={comment.id} className="border p-6 rounded-md bg-white ">
+                <div className="flex items-center text-xl font-semibold mb-2 text-blue-600">
+                  {console.log(comment.userEmail)}
+                  <img
+                    src={gravatar.url(
+                      comment.email,
+                      { s: "50", r: "x", d: "retro" },
+                      true,
+                    )}
+                    alt="Gravatar User Icon"
+                    className="mr-2"
                   />
-                  <div className="flex justify-end space-x-2 mt-2">
-                    <button
-                      onClick={() => handleSaveEdit(comment.id)}
-                      className="text-blue-500 hover:underline focus:outline-none"
-                    >
-                      Enregistrer
-                    </button>
-                  </div>
+                  <Link href={`/account_user/${comment.username}`} passHref>
+                    {comment.username}
+                  </Link>
                 </div>
-              ) : (
-                <p className="text-gray-700">{comment.commentaire}</p>
-              )}
-              <div className="flex justify-end space-x-4 mt-4">
-                {user_session && user_session.id === comment.id_user && (
-                  <div>
-                    <button
-                      onClick={() => handleDeleteComment(comment.id)}
-                      className="text-blue-500 hover:underline focus:outline-none mr-4"
-                    >
-                      Supprimer
-                    </button>
-                    <button
-                      onClick={() => handleEditComment(comment.id)}
-                      className="text-blue-500 hover:underline focus:outline-none"
-                    >
-                      Modifier
-                    </button>
+                {editedComments[comment.id] ? (
+                  <div className="mb-4">
+                    <textarea
+                      value={comment.newComment || ""}
+                      onChange={(e) =>
+                        handleCommentChange(comment.id, e.target.value)
+                      }
+                      className="w-full p-2 border rounded-md"
+                    />
+                    <div className="flex justify-end space-x-2 mt-2">
+                      <button
+                        onClick={() => handleSaveEdit(comment.id)}
+                        className="text-blue-500 hover:underline focus:outline-none"
+                      >
+                        Enregistrer
+                      </button>
+                    </div>
                   </div>
+                ) : (
+                  <p className="text-gray-700">{comment.commentaire}</p>
                 )}
-                <button
-                  onClick={() => signalerCommentaire(comment.id)}
-                  className="text-red-500 hover:underline focus:outline-none"
-                >
-                  Signaler
-                </button>
-              </div>
-            </li>
-          ))}
+                <div className="flex justify-end space-x-4 mt-4">
+                  {user_session && user_session.id === comment.id_user && (
+                    <div>
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="text-blue-500 hover:underline focus:outline-none mr-4"
+                      >
+                        Supprimer
+                      </button>
+                      <button
+                        onClick={() => handleEditComment(comment.id)}
+                        className="text-blue-500 hover:underline focus:outline-none"
+                      >
+                        Modifier
+                      </button>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => signalerCommentaire(comment.id)}
+                    className="text-red-500 hover:underline focus:outline-none"
+                  >
+                    Signaler
+                  </button>
+                </div>
+              </li>
+            ))}
         </ul>
       </div>
 
@@ -857,7 +858,7 @@ const ImageDetail = ({ imageDetailsProp, commentsProp }) => {
 
 export async function getStaticPaths() {
   return {
-    paths: [], 
+    paths: [],
     fallback: "blocking",
   };
 }
@@ -868,7 +869,9 @@ export async function getStaticProps({ params }) {
     const apiKey = getAPIKey();
     const baseUrl = getAPIBaseURL();
     const url = `${baseUrl}/photos/${id}`;
-    const response = await axios.get(url, { headers: { Authorization: apiKey } });
+    const response = await axios.get(url, {
+      headers: { Authorization: apiKey },
+    });
 
     const imageDetails = response.data;
 

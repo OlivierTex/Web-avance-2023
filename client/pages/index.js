@@ -5,7 +5,11 @@ import { useRouter } from "next/router";
 import Marquee from "react-marquee-slider";
 import times from "lodash/times";
 
-function Home({ initialRandomImages1, initialRandomImages2, initialRandomImages3}) {
+function Home({
+  initialRandomImages1,
+  initialRandomImages2,
+  initialRandomImages3,
+}) {
   const [randomImages1, setRandomImages1] = useState(initialRandomImages1);
   const [randomImages2, setRandomImages2] = useState(initialRandomImages2);
   const [randomImages3, setRandomImages3] = useState(initialRandomImages3);
@@ -100,7 +104,9 @@ export async function getStaticProps() {
 
   return {
     props: {
-      initialRandomImages1, initialRandomImages2, initialRandomImages3
+      initialRandomImages1,
+      initialRandomImages2,
+      initialRandomImages3,
     },
     revalidate: 60,
   };

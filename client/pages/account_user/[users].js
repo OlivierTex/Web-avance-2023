@@ -61,7 +61,6 @@ function Users({ userData, albumData }) {
 }
 
 export async function getStaticPaths() {
-
   const users = ["user1", "user2", "user3"];
 
   const paths = users.map((username) => ({
@@ -153,7 +152,10 @@ export async function getStaticProps({ params }) {
     };
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
-    return { props: { userData: {}, albumData: { albums: [] } }, revalidate: 60 };
+    return {
+      props: { userData: {}, albumData: { albums: [] } },
+      revalidate: 60,
+    };
   }
 }
 
