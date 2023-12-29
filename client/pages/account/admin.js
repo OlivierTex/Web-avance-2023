@@ -405,7 +405,7 @@ export default function Admin() {
           </div>
 
           <h2 className="h2">Message pour un contact</h2>
-          <ul className="space-y-6">
+          <ul className="space-y-6 mb-10">
             {commentss &&
               commentss.map((commentss) => (
                 <li
