@@ -1,13 +1,14 @@
 # Blogging application - ECE Webtech project
 
-Bienvenue sur ImageHive - Votre Source Créative d'Images et de Vidéos
-Introduction
+## Bienvenue sur ImageHive - Votre Source Créative d'Images et de Vidéos  
+
+### Introduction  
 Bienvenue sur ImageHive, l'essence même de l'inspiration visuelle. Notre plateforme est conçue pour répondre à vos besoins créatifs, qu'il s'agisse de projets professionnels, artistiques ou simplement de la recherche d'une dose d'esthétisme au quotidien.
 
-À Propos d'ImageHive
+### À Propos d'ImageHive  
 ImageHive a été créé par une équipe passionnée qui comprend l'importance des images et des vidéos de haute qualité dans le monde moderne. Notre mission est de fournir une banque d'images et de vidéos exceptionnelle, accessible à tous.
 
-Fonctionnalités Principales
+### Fonctionnalités Principales  
 Diversité Créative : Explorez une bibliothèque riche et diversifiée d'images et de vidéos, soigneusement sélectionnées pour répondre à toutes les préférences et tous les projets.
 
 Qualité Exceptionnelle : Chaque média sur ImageHive est choisi pour sa qualité visuelle exceptionnelle, garantissant une source d'inspiration inépuisable.
@@ -16,14 +17,14 @@ Facilité de Téléchargement : Téléchargez facilement des contenus en haute r
 
 Partage Social : Partagez vos découvertes avec la communauté créative sur ImageHive et sur vos réseaux sociaux préférés.
 
-Comment Ça Marche
+### Comment Ça Marche  
 Explorez : Naviguez à travers nos collections diversifiées en utilisant des filtres intuitifs pour trouver l'image ou la vidéo parfaite.
 
 Téléchargez : Téléchargez en toute simplicité en haute résolution, mettant à votre disposition des ressources visuelles exceptionnelles.
 
 Inspirez et Partagez : Partagez vos créations avec le monde et découvrez le travail d'autres artistes pour une inspiration continue.
 
-Crédits
+### Crédits  
 Nous exprimons notre gratitude envers les artistes talentueux qui contribuent à la richesse de ImageHive. Leurs œuvres créatives enrichissent notre plateforme et inspirent la créativité dans le monde entier.
 
 Merci d'avoir choisi ImageHive - Où l'Imagination Prend Vie ! 📸🌟
@@ -48,22 +49,36 @@ git clone https://github.com/OlivierTex/ece-webtech-602
 ```
 
 ```bash
-cd ece-webtech-602/client
+cd ece-webtech-602
 ```
 
-- Installer les dépendances nécessaires et lancer l'application :
-
-```bash
-npm install
-npm run build
-npm start
-```
+- Copier le `.env.example` du dossier supabase vers un `.env` et mettre à jour les identifiants.
 
 - Démarrer Supabase
 
 ```bash
 cd supabase
 docker-compose up
+```
+> Si les conteneurs ne se lancent pas correctement, envisagez de les lancer directement depuis Docker Desktop.
+
+- Importer la base de données :  
+    - Ouvrez l'instance de supabase dockerisée à cette adresse : http://localhost:8000/project/default
+    - Rentrez les identifiants renseignés dans le `.env` : `DASHBOARD_USERNAME` et `DASHBOARD_PASSWORD`.
+    - Ouvrez le SQL Editor sur le panneau latéral.
+    - Ouvrez le fichier `supabase/dev/data.sql`. 
+    - Copiez son contenu dans le SQL Editor et lancez la requête.  
+
+La base de données est alors instanciée avec toutes les tables, fonctions, triggers et policies. Notez bien que les tables créées sont alors vides.
+
+- Copier le `.env.local.example` du dossier client vers un `.env.local`, renseigner les clefs et adresses fournies par Supabase ainsi que la clef API fournie par Pexels.
+
+- Installer les dépendances nécessaires et lancer l'application depuis le dossier `client` :
+
+```bash
+npm install
+npm run build
+npm start
 ```
 
 ## Authors
@@ -120,7 +135,7 @@ admin
 
 - Home page
     - Self-evaluation: 2/2
-    - Comments: La page d'accueil a comme les autres pages le même layout avec les mêmes liens de navigation faciles d'utilisation et intuitifs. Elle présente une galerie complète d'images tournantes sur lesquelles on peut cliquer si l'on a envie. 
+    - Comments: La page d'accueil a comme les autres pages le même layout avec les mêmes liens de navigation faciles d'utilisation et intuitifs. Elle présente une galerie complète d'images tournantes sur lesquelles on peut cliquer si l'on a envie.
 - Navigation
     - Self-evaluation: 2/2
     - Comments: La barre de navigation est intégrée dans le composant Layout qui est appelé dans le _app.js et donc dans toutes les pages de notre webapp. Cette barre contient tous les liens vers les banques, albums, comptes, accueil, about, contact, etc ...
@@ -147,10 +162,10 @@ admin
     - Comments: La RLS a été activée sur toutes nos tables et des policies ont été créées en accord, en particulier sur notre table user. Les utilsateurs n'ont accès qu'à leurs informations et ne peuvent pas modifier leur catégorie user/admin. Les admins ont accès à toutes les informations, peuvent les modifier, supprimer ou insérer à leur gré. Cela a été fait en utilisant des policies sur la RLS d'une part et des triggers pour un cas particulier. 
 - Account settings
     - Self-evaluation: 4/4
-    - Comments: Sur la page de son compte l'utilisateur peut modifier : Username, email, langue et bio. Chacun des paramètres est envoyé en BDD lorsque valdié.
+    - Comments: Sur la page de son compte l'utilisateur peut modifier : Username, email, langue et bio. Chacun des paramètres est persistant et envoyé en BDD lorsque valdié. De plus un username en doublon sera refusé. Il n'y a que l'email qui n'est 'blindé' car il n'est update que sur notre table user et pas auth.user.
 - WYSIWYG integration
-    - Self-evaluation: 
-    - Comments: 
+    - Self-evaluation: 1/2
+    - Comments: Nous avons implémenté le "What you see is what you get" sur les paramètres utilisateurs notamment. Nous avons préféré le faire nous-mêmes sans utiliser une librairie.
 - Gravatar integration
     - Self-evaluation: 2/2
     - Comments: Nous avons intégré Gravatar pour associer une image de profile aux utilisateurs via leur adresse mail. Par exemple, celle-ci est affichée dans le header à côté du username lorsque l'utilisateur est connecté. Elle est aussi présente sur les commentaires et la page du compte utilisateur. Nous avons attribué l'image 'rétro' par défault.
