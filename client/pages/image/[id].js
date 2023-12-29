@@ -293,7 +293,7 @@ const ImageDetail = ({ imageDetailsProp, commentsProp }) => {
 
       if (!user_session) {
         console.error("User not logged in");
-        router.push("/../login");
+        router.push("/../account/login");
         return;
       }
 
