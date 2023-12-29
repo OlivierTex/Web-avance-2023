@@ -172,6 +172,7 @@ admin
 - Light/dark theme
     - Self-evaluation: 2/2
     - Comments: Un bouton pour changer de mode Light/Dark est disponible dans le header, en haut à gauche sur toute les pages. Celui-ci est persistant d'une session à l'autre pour un utilisateur avec un compte.
+
 ## Bonuses
 
 - Panneau Admin pour gérer les utilisateurs et les signalements.
@@ -189,3 +190,16 @@ admin
 - Paramètres utilisateurs appliqués en BDD.
     - Self-evaluation: fonctionnel
     - Comments: Tous les paramètres modifiables sur la page du compte sont enregistrés en BDD.
+
+## Points d'amélioration
+
+- Nous avons commencé à implémenter une génération de pages ISR pour celles que l'on considérait nécessaires, par exemple la page d'accueil, la banque d'image, générer statiquement les pages dynamiques ... Mais nous n'avons pas eu le temps de l'implémenter sur toutes les pages que l'on souhaitait ou de choisir une méthode de génération cohérente pour toutes les pages.
+- Nous avions aussi pour idée de rajouter une feature d'ajout d'ami, qui aurait permis de voir les informations sur les likes, commentaires et albums. Actuellement on peut simplement visualiser les albums et la bio d'un utilisateur en cliquant sur son profil (sur un commentaire) ou en allant à `/account_user/username`.
+- Nous utilisons l'API fournie par Pexels pour la banque d'images et de vidéos mais celle-ci peut très vite devenir limitante : si trop de requêtes sont émises ou que leur service est temporairement non fonctionnel, certaines de nos fonctionnalités et de nos affichages en souffriront. Trouver une solution à ce problème est une piste d'amélioration que ce soit en prévoyant la situation ou en utilisant une autre solution pour la banque d'images.
+- Le projet est encore enrichissable que ce soit au niveau des fonctionnalités et de son apparence.
+- Il y aurait encore des éléments à simplifier et unifier côté code.
+
+## Retours sur le projet
+
+- Ce projet nous a demandé un certain temps et nous avons apprécié le réaliser ainsi que de voir son évolution. Il en est d'autant plus intéressant qu'il peut facilement être ajouté à un CV et servir d'exemple concret, c'est un projet plus tangible que là-plupart sur ce point.
+- L'organisation des cours entre les TP et les heures en distanciel pour les retours sur les projets est bien pensée. Avoir des retours sur notre avancée et ce que nous faisions correctement ou non au fil des semaines a clairement aidé.
