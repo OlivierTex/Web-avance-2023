@@ -2,6 +2,8 @@ const Footer = () => {
   return (
     <div className={`bg-light dark:bg-dark`}>
       <footer className="footer">
+        <div className="w-full border-b-2 border-black"></div>
+
         <p className="flex justify-center my-4 dark:text-white">
           © 2023 - ImageHive{" "}
         </p>

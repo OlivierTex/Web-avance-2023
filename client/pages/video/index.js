@@ -174,7 +174,7 @@ const Video = ({ initialVideos }) => {
 
   return (
     <div className="bg-light dark:bg-dark">
-      <h1 className="h1">Video Gallery</h1>
+      <h1 className="h1">Galerie Vidéo</h1>
       <p className="paragraphe mb-8">
         Découvrez notre sélection de vidéos de haute qualité.
       </p>

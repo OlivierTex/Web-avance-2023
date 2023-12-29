@@ -140,8 +140,8 @@ function Bank({
           <input
             type="search"
             id="default-search"
-            className="block p-4 pl-10 w-1/3 text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white ml-4"
-            placeholder="Search Mockups, Logos..."
+            className="block p-4 w-1/3 text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white ml-4"
+            placeholder="Rechercher un thème, une couleur, une catégorie..."
             required
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

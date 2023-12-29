@@ -107,13 +107,13 @@ const Header = () => {
             Accueil
           </Link>
           <Link href="/bank" className="nav-link">
-            Image
+            Images
           </Link>
           <Link href="/video" className="nav-link">
-            Video
+            Vidéos
           </Link>
           <Link href="/album" className="nav-link">
-            Album
+            Albums
           </Link>
           <Link href="/about" className="nav-link">
             À propos

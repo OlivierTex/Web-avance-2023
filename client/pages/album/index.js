@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import supabase from "../../supabase";
 import { useAuth } from "../../components/AuthContext";
+import { useRouter } from "next/router";
 
 function Album() {
   const [albums, setAlbums] = useState([]);
@@ -13,6 +14,7 @@ function Album() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const itemsPerPage = 6;
+  const router = useRouter();
 
   useEffect(() => {
     fetchAlbums();
@@ -90,10 +92,20 @@ function Album() {
   });
 
   const handleButtonClick = () => {
+    if (!user_session) {
+      router.push("/account/login");
+      return;
+    }
+
     setShowOptions(!showOptions);
   };
 
   const handleCreateAlbum = async () => {
+    if (!user_session) {
+      router.push("/account/login");
+      return;
+    }
+
     const { data: userData, error: userError } = await supabase
       .from("user")
       .select("username")
@@ -136,7 +148,7 @@ function Album() {
           <h1 className="h1 mb-3">Albums</h1>
           <p className="paragraphe mb-4">
             Créez vos propres albums avec notre large sélection d'images et de
-            vidéos
+            vidéos.
           </p>
           <div className="w-4/5 mx-auto flex justify-center mb-2 dropdown rounded-md">
             <input
@@ -233,7 +245,7 @@ function Album() {
                   <p className="">Description : {album.description_liste}</p>
                   <p className="">Créé par : {album.username}</p>
                   <p className="">Date de création : {album.created_at}</p>
-                  <p className="">Image :</p>
+                  <p className="">Images :</p>
                   <div className="flex space-x-4 mb-4">
                     {album.images.map((image) => (
                       <img
@@ -244,7 +256,7 @@ function Album() {
                       />
                     ))}
                   </div>
-                  <p className="">Video :</p>
+                  <p className="">Vidéos :</p>
                   <div className="flex space-x-4">
                     {album.videos.map((video) => (
                       <img
